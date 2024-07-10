@@ -9,27 +9,27 @@ import Head from 'next/head'
 
 
 
-const layouts : any = {
+const layouts: any = {
   Contentlayout: Contentlayout,
   Landingpagelayout: Landingpagelayout,
   Authenticationlayout: Authenticationlayout,
 };
 
-function MyApp({Component, pageProps } : {Component:any ,pageProps :any}) {
+function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
 
-  const Layout : any = layouts[Component.layout] || ((pageProps: any) => <Component>{pageProps}</Component>);
-  
+  const Layout: any = layouts[Component.layout] || ((pageProps: any) => <Component>{pageProps}</Component>);
 
-  
+
+
   return (
-   <>
-       
-    <Layout>
-     
-      <Component {...pageProps} />
-    
-    </Layout>
-   </> 
+    <>
+
+      <Layout>
+
+        <Component {...pageProps} />
+
+      </Layout>
+    </>
   )
 }
 
