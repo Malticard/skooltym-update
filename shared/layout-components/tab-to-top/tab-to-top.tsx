@@ -1,5 +1,8 @@
+import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
+import { Box } from "@mui/material";
 import React, { useState, useEffect, Fragment } from "react";
 import { Button } from "react-bootstrap";
+import Image from "next/image";
 
 
 const TabToTop = () => {
@@ -14,12 +17,13 @@ const TabToTop = () => {
   const screenup = () => {
     window.scrollTo({ top: 10, behavior: "auto", });
   };
+
   return (
     <Fragment>
-
-      <Button   className={`scrollToTop ${BacktoTop}`}   onClick={screenup}>
-      <span className="arrow"><i className="fe fe-arrow-up"></i></span>
+      <Button className={`scrollToTop ${BacktoTop}`} onClick={screenup}>
+        <span className="arrow"><i className="fe fe-arrow-up"></i></span>
       </Button>
+
     </Fragment>
   )
 }

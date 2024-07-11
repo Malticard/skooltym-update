@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Card } from 'react-bootstrap';
 
-const ClassComponent = (props: { title: string; streams: string; students: string; }) => {
+const ClassComponent = (props: { title: string; streams: number; students: number; }) => {
     return (
         <Col xxl={3} xl={6} md={12} sm={12}>
             <Card className="custom-card">

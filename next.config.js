@@ -7,9 +7,13 @@ const nextConfig = {
   swcMinify: true,
   // basePath: isProd ? '/spruha-ts/preview' : undefined,
   // assetPrefix : isProd ? 'https://nextjs.spruko.com/spruha-ts/preview/' : undefined,
+
   images: {
     loader: 'imgix',
     path: '/',
+    domains: [
+      "skooltym-resources.s3.af-south-1.amazonaws.com",
+    ],
   },
 
 }

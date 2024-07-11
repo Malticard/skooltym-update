@@ -5,6 +5,7 @@ import AppUrls from './apis';
 import { SettingsModel } from '@/interfaces/SettingsModel';
 import { DashboardItem } from '@/interfaces/DashboardItem';
 import { OvertimeModel } from '@/interfaces/OvertimeModel';
+import { ClassDataModel, ClassDataModelConvert } from '@/interfaces/ClassDataModel';
 // const router = useRouter();
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
@@ -105,26 +106,26 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const dashboardData: DashboardItem[] = [
         {
             label: "DROP OFFS",
-            value: drops.totalDocuments,
+            value: drops.data.totalDocuments,
             icon: "assets/icons/004-playtime.svg",
             page: "/dashboard/DropOffs",
         },
         {
             label: "PICK UPS",
-            value: picks.totalDocuments,
+            value: picks.data.totalDocuments,
             icon: "assets/icons/009-student.svg",
             page: "/dashboard/PickUps",
         },
         {
             label: "CLEARED OVERTIME",
-            value: clearedOvertimes.totalDocuments,
+            value: clearedOvertimes.data.totalDocuments,
             icon: "assets/icons/002-all.svg",
             page: "/dashboard/ClearedOvertime",
 
         },
         {
             label: "PENDING OVERTIME",
-            value: pendingOvertimes.totalDocuments,
+            value: pendingOvertimes.data.totalDocuments,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/PendingOvertime",
 
@@ -134,7 +135,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const financeData: DashboardItem[] = [
         {
             label: "CLEARED OVERTIME",
-            value: clearedOvertimes.totalDocuments,
+            value: clearedOvertimes.data.totalDocuments,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/ClearedOvertime",
         },
@@ -157,4 +158,15 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     return data.role === 'Admin' ? dashboardData : financeData;
 }
 
+// function to process images
+export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(AppUrls.dashboard + data.school);
+        return ClassDataModelConvert.toClassDataModel(JSON.stringify(response.data));
+    } catch (error: any) {
+        throw new Error(error.toString());
 
+    }
+
+}

@@ -1,30 +1,22 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { MENUITEMS, MenuItem } from "./nav";
 import Link from "next/link";
-// import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useRouter } from "next/router";
-// import { horizontalmenusticky } from "../../../shared/data/switcherdata/switcherdata";
-// import dynamic from "next/dynamic";
 let history: string[] = [];
-// import SimpleBar from 'simplebar-react';
-//Images
-// import logolight from "../../../public/assets/images/brand-logos/desktop-dark.png"
-// import iconlight from "../../../public/assets/images/brand-logos/toggle-white.png"
-// import logo from "../../../public/assets/images/brand-logos/desktop-logo.png"
-// import icon from "../../../public/assets/images/brand-logos/toggle-logo.png"
 import store from "@/shared/redux/store";
 import { ThemeChanger } from "@/shared/redux/actions";
 import { connect } from "react-redux";
-import Image from "next/image";
+import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
 
 const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, ThemeChanger: any }) => {
-  let { basePath } = useRouter()
-
   let location = useRouter();
   const [menuitems, setMenuitems] = useState(MENUITEMS);
+  // local data
+  const [localData, setLocalData] = useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
 
   // initial loading
   useEffect(() => {
+
     history.push(location.pathname);  // add  history to history  stack for current location.pathname to prevent multiple history calls innerWidth  and innerWidth  calls from  multiple users. This is important because the history stack is not always empty when the user clicks  the history       
     if (history.length > 2) {
       history.shift();
@@ -47,6 +39,11 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
 
   }, [location.pathname, mainContentClickFn, setSidemenu]);
 
+  // loading local data
+  React.useEffect(() => {
+    setLocalData(AuthenticatedUserModelConvert.toAuthenticatedUserModel(localStorage.getItem('skooltym_user') as string));
+
+  }, [])
   useEffect(() => {
     if (
       local_varaiable.dataNavLayout == "horizontal" &&
@@ -471,9 +468,13 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
         onMouseOut={() => Outhover()}
       >
         <div className="main-sidebar-header">
-          <Link className="header-logo" href={`/dashboard`}>
-            <img src="/imgs/login.png" alt="skooltym" width={80} height={80} />
-          </Link>
+          {localData && (
+            <Link className="header-logo" href={`/dashboard`}>
+              {/* school bag */}
+              <img src={localData.school_badge} alt="skooltym" width={50} height={50} />
+              {/* <p>{localData.schoolName}</p> */}
+            </Link>
+          )}
         </div>
         <div
           className="main-sidebar" id="sidebar-scroll"

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { ThemeChanger } from "@/shared/redux/actions";
 import store from "@/shared/redux/store";
 import { Defaultmenu, Closedmenu, iconText, iconOverayFn, DetachedFn, DoubletFn } from "@/shared/data/switcherdata/switcherdata";
+import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
 const HeadDropDown = dynamic(
   () => import('../../data/header/head'),
   { ssr: false }
@@ -214,6 +215,13 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
       }
     }
   }
+  // local data
+  const [localData, setLocalData] = useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
+
+  // loading local data
+  React.useEffect(() => {
+    setLocalData(AuthenticatedUserModelConvert.toAuthenticatedUserModel(localStorage.getItem('skooltym_user') as string));
+  }, [])
   return (
     <Fragment>
 
@@ -224,28 +232,39 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
               <div className="horizontal-logo">
                 <Link className="header-logo" href="/dashboard/">
                   {/* mobile view image */}
-                  {/* <img src={`/imgs/login.png`} alt="logo" /> */}
+                  {localData && (
+                    <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                  )}
                 </Link>
 
               </div>
             </div>
             <div className="header-element">
-
               <a aria-label="Hide Sidebar" className="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle" data-bs-toggle="sidebar" onClick={() => headerToggleButton()}><span></span></a>
+              {localData && (
+                <>
+                  <div className="mt-2">
+                    <span className="d-block text-[#eee]"> Logged in as {localData.fname}</span>
+                  </div>
+                </>
+              )}
             </div>
-
-
 
           </div>
           <div className="header-content-right">
             <div className="d-flex order-lg-2 align-items-center ms-auto">
 
               <HeadDropDown />
-              {/* <div className="header-element offcanvas-end " onClick={Switcheropen}>
-                <Nav.Link className="header-link switcher-icon" >
-                  <i className="fe fe-settings header-link-icon"></i>
-                </Nav.Link>
-              </div> */}
+              {/* mobile view image */}
+              {localData && (
+                <>
+                  <div className="p-2 ">
+                    <span className="d-block text-[#eee]"> Logged in as {localData.fname}</span>
+                    {/* <small className="d-block">{localData.role}</small> */}
+                  </div>
+                  <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                </>
+              )}
             </div>
 
           </div>
