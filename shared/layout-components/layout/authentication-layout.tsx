@@ -1,9 +1,9 @@
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import React, { Fragment, ReactNode, useEffect } from 'react'
 import { Provider } from 'react-redux';
 import store from '../../redux/store';
 import Customswitcher from '../switcher/Customswitcher';
-import Landingpageswitcher from '../switcher/landingpageswitcher';
+// import Landingpageswitcher from '../switcher/landingpageswitcher';
 
 
 interface AuthenticationLayoutProps {

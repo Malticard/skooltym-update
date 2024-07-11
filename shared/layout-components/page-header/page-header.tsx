@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PageHeader = (props: { title: string ; item: string ; active_item: string }) => {
+const PageHeader = (props: { title: string; item: string; active_item: string, buttonText?: string; onTap?: () => void }) => {
   return (
     <div className="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
       <div>
@@ -12,15 +12,17 @@ const PageHeader = (props: { title: string ; item: string ; active_item: string 
       </div>
       <div className="d-flex">
         <div className="justify-content-center">
-          <button type="button" className="btn btn-white btn-icon-text my-2 me-2 d-inline-flex align-items-center">
+          {/* <button type="button" className="btn btn-white btn-icon-text my-2 me-2 d-inline-flex align-items-center">
             <i className="fe fe-download me-2"></i> Import
           </button>
           <button type="button" className="btn btn-white btn-icon-text my-2 me-2 d-inline-flex align-items-center">
-            <i className="fe fe-filter me-2"></i> Filter
-          </button>
-          <button type="button" className="btn btn-primary my-2 btn-icon-text d-inline-flex align-items-center">
-            <i className="fe fe-download-cloud me-2"></i> Download Report
-          </button>
+            <i className={`fe fe-filter me-2`}></i> Filter
+          </button> */}
+          {props.buttonText && (<button type="button"
+            onClick={() => props.onTap && props.onTap()}
+            className="btn btn-primary my-2 btn-icon-text d-inline-flex align-items-center">
+            <i className={`${props.buttonText === undefined ? 'fe fe-download-cloud' : 'ti-plus'} me-2`}></i>{props.buttonText ?? "Download Report"}
+          </button>)}
         </div>
       </div>
     </div>

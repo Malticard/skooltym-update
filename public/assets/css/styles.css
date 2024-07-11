@@ -34711,20 +34711,7 @@ table.dataTable thead .sorting_asc_disabled:after,
   position: relative;
   border-radius: 0px;
 }
-.landing-body .landing-top-header::before {
-  position: absolute;
-  content: "";
-  left: 0;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  right: 0;
-  width: auto;
-  height: 170%;
-  top: 0px;
-  overflow: hidden;
-  background-image: url(../landing/images/1.png);
-}
+
 .landing-body .landing-card-header {
   color: var(--primary-color);
 }
@@ -34825,19 +34812,7 @@ table.dataTable thead .sorting_asc_disabled:after,
 .landing-body .main-features-8 .hexagon {
   background: rgb(var(--warning-rgb));
 }
-.landing-body .testimonial-owl-landing {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  top: 0;
-  left: 0;
-  right: 0;
-  color: #fff;
-  position: relative;
-  border-radius: 0px;
-  background: url(../landing/images/2.jpg) center center;
-  padding: 50px 0;
-}
+
 .landing-body .testimonial-owl-landing::before {
   content: "";
   position: absolute;
@@ -34932,7 +34907,7 @@ table.dataTable thead .sorting_asc_disabled:after,
   width: 100%;
   height: 100%;
   inset-block-start: 0;
-  background-image: url("../landing/images/2.jpg");
+  
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,12 +1,12 @@
 import React from 'react'
-import Seo from '../shared/layout-components/seo/seo'
+import Seo from '@/shared/layout-components/seo/seo'
 import Link from 'next/link'
 
 const Custom404 = () => {
     return (
         <div>
-          {/* <!-- Page --> */}
-      <Seo title="Error"/>
+            {/* <!-- Page --> */}
+            <Seo title="Error" />
 
             <div className="page main-signin-wrapper bg-primary construction">
                 <div className="d-flex header-setting-icon demo-icon fa-spin">
@@ -14,7 +14,7 @@ const Custom404 = () => {
                         <i className="fe fe-settings settings-icon "></i>
                     </a>
                 </div>
-    
+
                 <div className="container ">
                     <div className="construction1 text-center details text-white">
                         <div className="">
@@ -29,11 +29,11 @@ const Custom404 = () => {
                         </div>
                     </div>
                 </div>
-    
+
             </div>
             {/* <!-- End Page --> */}
         </div>
-      )
+    )
 }
 
 export default Custom404

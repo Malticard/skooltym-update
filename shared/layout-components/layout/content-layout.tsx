@@ -13,18 +13,18 @@ interface AuthenticationLayoutProps {
   children: ReactNode;
 }
 
-const Contentlayout = ({ children }:AuthenticationLayoutProps) => {
+const Contentlayout = ({ children }: AuthenticationLayoutProps) => {
   const [lateLoad, setlateLoad] = useState(false)
   const Add = () => {
     document.querySelector("body")?.classList.remove("error-1");
     document.querySelector("body")?.classList.remove("landing-body");
   };
-  
+
   useEffect(() => {
     Add();
     setlateLoad(true)
   });
-  
+
 
   const remove = () => {
     document.querySelector("#right-sidebar-canvas")?.classList.remove("show");
@@ -35,9 +35,9 @@ const Contentlayout = ({ children }:AuthenticationLayoutProps) => {
     if (document.querySelector(".card.search-result") != null) {
       document.querySelector(".card.search-result")?.classList.add("d-none");
     }
-    if (document.body.classList.contains("horizontalmenu")){
-      document.querySelectorAll(".nav-sub").forEach((res)    =>{
-        if(res){
+    if (document.body.classList.contains("horizontalmenu")) {
+      document.querySelectorAll(".nav-sub").forEach((res) => {
+        if (res) {
           // res.classList = "nav-sub"
           (res as HTMLElement).style.display = "none"
         }
@@ -49,9 +49,9 @@ const Contentlayout = ({ children }:AuthenticationLayoutProps) => {
     <>
 
       <Provider store={store}>
-        <div style={{display: `${lateLoad ? 'block' : 'none'}`}}>
-          <Switcher/>
-        
+        <div style={{ display: `${lateLoad ? 'block' : 'none'}` }}>
+          <Switcher />
+
           <div className="page">
             <Header />
             <Sidebar />
