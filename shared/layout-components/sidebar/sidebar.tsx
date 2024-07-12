@@ -463,6 +463,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
     <Fragment>
       <div
         className="app-sidebar sticky"
+
         id="sidebar"
         onMouseOver={() => Onhover()}
         onMouseOut={() => Outhover()}
