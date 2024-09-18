@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
       });
 
     } else {
-      console.log(userSession);
+      // console.log(userSession);
     }
   }, [100]);
   return (

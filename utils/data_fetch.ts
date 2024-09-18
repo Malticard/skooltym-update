@@ -6,6 +6,11 @@ import { SettingsModel } from '@/interfaces/SettingsModel';
 import { DashboardItem } from '@/interfaces/DashboardItem';
 import { OvertimeModel } from '@/interfaces/OvertimeModel';
 import { ClassDataModel, ClassDataModelConvert } from '@/interfaces/ClassDataModel';
+import { StudentModelConvert, StudentsModel } from '@/interfaces/StudentsModel';
+import { ClassPaginatedResult } from '@/interfaces/ClassModel';
+import { PaginatedStreamResult } from '@/interfaces/StreamModel';
+import { StaffResponse } from '@/interfaces/StaffModel';
+import { RolesResponse } from '@/interfaces/RolesModel';
 // const router = useRouter();
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
@@ -170,3 +175,115 @@ export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
     }
 
 }
+
+// ----------------------  students
+export async function fetchStudents(page = 1, limit = 15): Promise<StudentsModel> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.getStudents}${data.school}?page=${page}&pageSize=${limit}}`);
+        return StudentModelConvert.toStudentsModel(JSON.stringify(response.data));
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// function to post student data to server
+export async function postStudentData(data: FormData): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.addStudent, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// update student data
+export async function updateStudentData(data: FormData, id: any): Promise<any> {
+    console.log(AppUrls.updateStudent + id);
+    try {
+        let response = await axios.post(AppUrls.updateStudent + id, data);
+        console.log(response.data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// delete student data
+export async function deleteStudentData(id: string): Promise<any> {
+    try {
+        let response = await axios.delete(AppUrls.deleteStudent + id);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ------------- end of student data -------------
+// --------------------- fetch classes
+export async function fetchClasses(page = 1, limit = 10): Promise<ClassPaginatedResult> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+
+// ------- fetch stream
+export async function fetchStream(page = 1, limit = 20): Promise<PaginatedStreamResult> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.getStreams}${data.school}?page=${page}&pageSize=${limit}}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+
+/// ============ staff
+export async function fetchStaff(page = 1, limit = 15): Promise<StaffResponse> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.staff}${data.school}?page=${page}&pageSize=${limit}}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// function to post staff data to server
+export async function postStaffData(data: FormData): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.addStaff, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// update staff data
+export async function updateStaffData(data: FormData, id: any): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.updateStaff + id, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// delete staff data
+export async function deleteStaffData(id: string): Promise<any> {
+    try {
+        let response = await axios.delete(AppUrls.deleteStaff + id);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ----------------- end of staff data ------------
+
+// ============ roles
+export async function fetchRoles(): Promise<RolesResponse> {
+    try {
+        let response = await axios.get(AppUrls.roles);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+//-------- end of roles ---------------------

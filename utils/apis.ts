@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "http://13.127.169.59:5050/";
+    static devURL: string = "http://127.0.0.1:5050/";//"http://13.127.169.59:5050/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "http://13.127.169.59:5050/image/images/";
