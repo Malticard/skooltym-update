@@ -11,6 +11,8 @@ import { ClassPaginatedResult } from '@/interfaces/ClassModel';
 import { PaginatedStreamResult } from '@/interfaces/StreamModel';
 import { StaffResponse } from '@/interfaces/StaffModel';
 import { RolesResponse } from '@/interfaces/RolesModel';
+import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
+import { GuardianResponse } from '@/interfaces/GuardiansModel';
 // const router = useRouter();
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
@@ -217,15 +219,45 @@ export async function deleteStudentData(id: string): Promise<any> {
 }
 // ------------- end of student data -------------
 // --------------------- fetch classes
-export async function fetchClasses(page = 1, limit = 10): Promise<ClassPaginatedResult> {
+export async function fetchClasses(page = 1, limit = 15): Promise<ClassPaginatedResult> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}`);
+        console.log(response.data);
+        return response.data;
+
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// function to post class data to server
+export async function postClassData(data: FormData): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.addClass, data);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
+// update class data
+export async function updateClassData(data: FormData, id: any): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.updateClass + id, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// delete class data
+export async function deleteClassData(id: string): Promise<any> {
+    try {
+        let response = await axios.delete(AppUrls.deleteClass + id);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ----------------- end of class data ------------
 
 // ------- fetch stream
 export async function fetchStream(page = 1, limit = 20): Promise<PaginatedStreamResult> {
@@ -237,6 +269,35 @@ export async function fetchStream(page = 1, limit = 20): Promise<PaginatedStream
         throw new Error(error.toString());
     }
 }
+// post stream data
+export async function postStreamData(data: FormData): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.addStream, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// update stream data
+export async function updateStreamData(data: FormData, id: any): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.updateStream + id, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// delete stream data
+export async function deleteStreamData(id: string): Promise<any> {
+    try {
+        let response = await axios.delete(AppUrls.deleteStream + id);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ----------------- end of stream data ------------
+
 
 /// ============ staff
 export async function fetchStaff(page = 1, limit = 15): Promise<StaffResponse> {
@@ -287,3 +348,52 @@ export async function fetchRoles(): Promise<RolesResponse> {
     }
 }
 //-------- end of roles ---------------------
+
+// ============= guardians
+export async function fetchGuardians(page = 1, limit = 15): Promise<GuardianResponse> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.getGuardians}${data.school}?page=${page}&pageSize=${limit}}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// function to post guardian data to server
+export async function postGuardianData(data: FormData): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.addGuardian, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// update guardian data
+export async function updateGuardianData(data: FormData, id: any): Promise<any> {
+    try {
+        let response = await axios.post(AppUrls.updateGuardian + id, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// delete guardian data
+export async function deleteGuardianData(id: string): Promise<any> {
+    try {
+        let response = await axios.delete(AppUrls.deleteGuardian + id);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ------------- no paginated students
+export async function fetchStudentsNoPaginate(): Promise<StudentsNotPaginated[]> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(`${AppUrls.studentsNotPaginated}${data.school}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// ----------------- end of guardian data ------------

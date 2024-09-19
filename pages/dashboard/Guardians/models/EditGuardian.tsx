@@ -1,19 +1,18 @@
 
 import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import FormElement from './FormElement';
-import SelectComponent, { Option } from './SelectComponent';
-import SwitchTile from './SwitchTile';
 import { updateStaffData } from '@/utils/data_fetch';
-import { Role } from '@/interfaces/RolesModel';
-import { Staff } from '@/interfaces/StaffModel';
-
-const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<Staff | null>>; handleSaveEdit: () => void }) => {
+import { StudentResult } from '@/interfaces/StudentsModel';
+import { Guardian } from '@/interfaces/GuardiansModel';
+import SelectComponent, { Option } from './SelectComponent';
+import FormElement from './FormElement';
+import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
+const EditGuardian = ({ editModalShow, students, loadingClasses = false, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; loadingClasses: boolean; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
     const [imageFile, setImageFile] = React.useState<File | null>(null);
-    const [studentData, setStudentData] = React.useState(currentStaff as Staff);
+    const [guardianData, setGuardianData] = React.useState(currentGuardian as Guardian);
     // function to fetch available classes
 
     let selectedImage = null;
@@ -28,8 +27,8 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         }
     ]
     // streams
-    const rolesOptions: Option[] = [];
-    roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
+    const studentsOptions: Option[] = [];
+    students.map((r) => studentsOptions.push({ name: `${r.student_fname} ${r.student_lname}`, value: r._id }));
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,7 +42,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         // capturing student guardian
         // formData.append('guardians', []);
 
-        Object.entries(currentStaff as any).forEach(([key, value]) => {
+        Object.entries(currentGuardian as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
         if (imageFile) {
@@ -57,10 +56,10 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         // // student username
         // formData.append('username', `${currentStudent?.student_fname.toLowerCase()}${currentStudent?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
         // student key
-        formData.append('staff_key[key]', '');
+        formData.append('guardian_key[key]', '');
         // posting data
-        updateStaffData(formData, currentStaff._id).then((res) => {
-            setMessage('Student added successfully');
+        updateStaffData(formData, currentGuardian?._id).then((res) => {
+            setMessage('Guardian added successfully');
             console.log(res);
             handleSaveEdit();
             setUpdating(false)
@@ -76,38 +75,38 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         <>
             <Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Edit Staff</Modal.Title>
+                    <Modal.Title>Edit Guardian</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentStaff && (
+                    {currentGuardian && (
                         <Form onSubmit={handleEditData}>
                             {/* {currentStudent._id} */}
                             <FormElement
-                                value={currentStaff.staff_fname}
+                                value={currentGuardian.guardian_fname}
                                 label='First name'
-                                onChange={(e) => setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_fname: e.target.value
+                                onChange={(e) => setCurrentGuardian({
+                                    ...currentGuardian,
+                                    guardian_fname: e.target.value
                                 })} />
                             <br />
                             <FormElement label='Last Name'
-                                value={currentStaff.staff_lname}
-                                onChange={(e) => setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_lname: e.target.value
+                                value={currentGuardian.guardian_lname}
+                                onChange={(e) => setCurrentGuardian({
+                                    ...currentGuardian,
+                                    guardian_lname: e.target.value
                                 })} />
                             <br />
                             <FormElement label='Email'
-                                value={currentStaff.staff_email}
-                                onChange={(e) => setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_email: e.target.value
+                                value={currentGuardian.guardian_email}
+                                onChange={(e) => setCurrentGuardian({
+                                    ...currentGuardian,
+                                    guardian_email: e.target.value
                                 })} />
                             <br /> <FormElement label='Contact'
-                                value={currentStaff.staff_contact.toString()}
-                                onChange={(e) => setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_contact: parseInt(e.target.value)
+                                value={currentGuardian.guardian_contact.toString()}
+                                onChange={(e) => setCurrentGuardian({
+                                    ...currentGuardian,
+                                    guardian_contact: parseInt(e.target.value)
                                 })} />
                             <br />
                             {/* student profile pic */}
@@ -116,7 +115,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     <span>Student Profile</span>
                                 </Col>
                                 <Col className='mx-10'>
-                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentStaff.staff_profilePic : selectedImage} alt="student profile" />
+                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentGuardian.guardian_profile_pic : selectedImage} alt="student profile" />
                                 </Col>
                                 <Col className='my-auto'>
                                     <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
@@ -124,9 +123,9 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                         if (file) {
                                             setImageFile(file);
                                             selectedImage = URL.createObjectURL(file);
-                                            setCurrentStaff({
-                                                ...currentStaff,
-                                                staff_profilePic: selectedImage
+                                            setCurrentGuardian({
+                                                ...currentGuardian,
+                                                guardian_profile_pic: selectedImage
                                             });
                                         }
                                     }} />
@@ -138,15 +137,29 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                             </Row>
                             <br />
                             <SelectComponent options={gender} label='Gender' onSelect={(selected) => {
-                                setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_gender: selected,
+                                setCurrentGuardian({
+                                    ...currentGuardian,
+                                    guardian_gender: selected,
                                 })
                             }} /> <br />
-                            <SelectComponent options={rolesOptions} label='Assign Role' onSelect={(selected) => {
-                                setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_role: selected
+                            <SelectComponent options={studentsOptions} label='Type' onSelect={(selected) => {
+                                setCurrentGuardian({
+                                    ...currentGuardian,
+                                    type: selected
+                                });
+                            }} />
+
+                            <SelectComponent options={studentsOptions} label='Students' onSelect={(selected) => {
+                                setCurrentGuardian({
+                                    ...currentGuardian,
+                                    type: selected
+                                });
+                            }} />
+
+                            <SelectComponent options={studentsOptions} label='Relationship' onSelect={(selected) => {
+                                setCurrentGuardian({
+                                    ...currentGuardian,
+                                    type: selected
                                 });
                             }} />
 
@@ -169,4 +182,4 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
     );
 };
 
-export default EditStaff;
+export default EditGuardian;

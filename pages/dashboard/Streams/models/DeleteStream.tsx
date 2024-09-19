@@ -1,17 +1,18 @@
-import { Staff } from '@/interfaces/StaffModel';
+import { SchoolClass } from '@/interfaces/ClassesModel';
+import { Stream } from '@/interfaces/StreamModel';
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-const DeleteStudent = ({ deleteModalShow, deleting, currentStaff, setDeleteModalShow, handleSaveDelete }: { deleting: boolean; deleteModalShow: boolean; currentStaff: Staff | null; setDeleteModalShow: React.Dispatch<React.SetStateAction<boolean>>; handleSaveDelete: () => void }) => {
+const DeleteClass = ({ deleteModalShow, deleting, currentStream, setDeleteModalShow, handleSaveDelete }: { deleting: boolean; deleteModalShow: boolean; currentStream: Stream | null; setDeleteModalShow: React.Dispatch<React.SetStateAction<boolean>>; handleSaveDelete: () => void }) => {
     return (
         <>
             <Modal show={deleteModalShow} onHide={() => setDeleteModalShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Delete Staff</Modal.Title>
+                    <Modal.Title>Delete Stream</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentStaff && (
-                        <p>Are you sure you want to delete {currentStaff?.staff_fname} {currentStaff?.staff_lname}?</p>
+                    {currentStream && (
+                        <p>Are you sure you want to delete {currentStream?.stream_name}?</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
@@ -19,7 +20,7 @@ const DeleteStudent = ({ deleteModalShow, deleting, currentStaff, setDeleteModal
                         Close
                     </Button>
                     <Button variant="primary" disabled={deleting} onClick={handleSaveDelete}>
-                        {deleting ? `Deleting...` : `Save Changes`}
+                        {deleting ? `Deleting...` : `Delete`}
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -27,4 +28,4 @@ const DeleteStudent = ({ deleteModalShow, deleting, currentStaff, setDeleteModal
     );
 };
 
-export default DeleteStudent;
+export default DeleteClass;

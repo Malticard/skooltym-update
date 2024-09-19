@@ -12,7 +12,7 @@ export interface Staff {
     staff_school: string;
     staff_fname: string;
     staff_lname: string;
-    staff_contact: number;
+    staff_contact: any;
     staff_email: string;
     staff_role: StaffRole;
     staff_gender: string;

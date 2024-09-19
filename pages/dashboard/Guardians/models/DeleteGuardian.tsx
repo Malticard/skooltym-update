@@ -1,17 +1,17 @@
-import { Staff } from '@/interfaces/StaffModel';
+import { Guardian } from '@/interfaces/GuardiansModel';
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-const DeleteStudent = ({ deleteModalShow, deleting, currentStaff, setDeleteModalShow, handleSaveDelete }: { deleting: boolean; deleteModalShow: boolean; currentStaff: Staff | null; setDeleteModalShow: React.Dispatch<React.SetStateAction<boolean>>; handleSaveDelete: () => void }) => {
+const DeleteGuardian = ({ deleteModalShow, deleting, currentGuardian, setDeleteModalShow, handleSaveDelete }: { deleting: boolean; deleteModalShow: boolean; currentGuardian: Guardian | null; setDeleteModalShow: React.Dispatch<React.SetStateAction<boolean>>; handleSaveDelete: () => void }) => {
     return (
         <>
             <Modal show={deleteModalShow} onHide={() => setDeleteModalShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Delete Staff</Modal.Title>
+                    <Modal.Title>Delete Guardian</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentStaff && (
-                        <p>Are you sure you want to delete {currentStaff?.staff_fname} {currentStaff?.staff_lname}?</p>
+                    {currentGuardian && (
+                        <p>Are you sure you want to delete {currentGuardian?.guardian_fname} {currentGuardian?.guardian_lname}?</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
@@ -27,4 +27,4 @@ const DeleteStudent = ({ deleteModalShow, deleting, currentStaff, setDeleteModal
     );
 };
 
-export default DeleteStudent;
+export default DeleteGuardian;

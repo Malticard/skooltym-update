@@ -26,9 +26,9 @@ const Orders = () => {
             setLoadingData(false);
         });
         // fetching classes
-        fetchClasses(1, 30).then((res) => {
+        fetchClasses(1, 90).then((res) => {
             setClasses(res.results)
-            // res.results.map((res) => console.log(res._id));
+            res.results.map((res) => console.log(res._id));
             setLoading(false)
         }).catch((error) => {
             setLoading(false);

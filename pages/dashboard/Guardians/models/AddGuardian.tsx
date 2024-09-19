@@ -2,14 +2,14 @@
 import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import FormElement from './FormElement';
+import { postGuardianData } from '@/utils/data_fetch';
+import { Guardian } from '@/interfaces/GuardiansModel';
 import SelectComponent, { Option } from './SelectComponent';
-import { postStaffData } from '@/utils/data_fetch';
-import { Staff } from '@/interfaces/StaffModel';
-import { Role } from '@/interfaces/RolesModel';
+import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 
-const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow, handleSave }: { roles: Role[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Staff) => void }) => {
+const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
     const options = [] as Option[];
-    const [staffData, setStaffData] = React.useState({} as any);
+    const [guardianData, setGuardianData] = React.useState({} as any);
     const [imageFile, setImageFile] = React.useState<File | null>(null);
     const [message, setMessage] = React.useState<string>('');
     const [posting, setPosting] = React.useState(false);
@@ -23,9 +23,22 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
             value: 'Female'
         }
     ]
+    // relationship options
+    const relationship: Option[] = [
+        { name: "Select relationship", value: "" },
+        { name: "Father", value: "Father" },
+        { name: "Mother", value: "Mother" },
+        { name: "Sister", value: "Sister" },
+        { name: "Brother", value: "Brother" },
+        { name: "Guardian", value: "Guardian" },
+    ]
+    // relationship type
+    const relationshipType: Option[] = [
+        { name: "Select relationship type", value: '' }, { name: "Primary", value: 'Primary' }, { name: "Secondary", value: 'Secondary' },
+    ]
     // streams
-    const rolesOptions: Option[] = [];
-    roles.map((stream) => rolesOptions.push({ name: stream.role_type, value: stream._id }));
+    const studentsOptions: Option[] = [];
+    students.map((st) => studentsOptions.push({ name: `${st.student_fname} ${st.student_lname}`, value: st._id }));
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {
@@ -39,18 +52,18 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
         }
         const formData = new FormData();
         // capturing school
-        formData.append('staff_school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
+        formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
         // capturing school name
         formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
 
-        Object.entries(staffData).forEach(([key, value]) => {
+        Object.entries(guardianData).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
         if (imageFile) {
             formData.append('image', imageFile);
         }
         // posting data
-        postStaffData(formData).then((res) => {
+        postGuardianData(formData).then((res) => {
             setMessage('Staff added successfully');
             handleSave(res);
             setPosting(false)
@@ -69,32 +82,32 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
                 <Form onSubmit={handleSubmitData}>
                     <Modal.Body>
                         <FormElement
-                            value={staffData.staff_fname}
+                            value={guardianData.guardian_fname}
                             label='FirstName'
-                            onChange={(e) => setStaffData({
-                                ...staffData,
-                                staff_fname: e.target.value
+                            onChange={(e) => setGuardianData({
+                                ...guardianData,
+                                guardian_fname: e.target.value
                             })} />
                         <br />
                         <FormElement label='LastName'
-                            value={staffData.staff_lname}
-                            onChange={(e) => setStaffData({
-                                ...staffData,
-                                staff_lname: e.target.value
+                            value={guardianData.guardian_lname}
+                            onChange={(e) => setGuardianData({
+                                ...guardianData,
+                                guardian_lname: e.target.value
                             })} />
                         <br />
                         <FormElement label='Email'
-                            value={staffData.staff_email}
-                            onChange={(e) => setStaffData({
-                                ...staffData,
-                                staff_email: e.target.value
+                            value={guardianData.guardian_email}
+                            onChange={(e) => setGuardianData({
+                                ...guardianData,
+                                guardian_email: e.target.value
                             })} />
                         <br />
                         <FormElement label='Phone Number'
-                            value={staffData?.staff_contact}
-                            onChange={(e) => setStaffData({
-                                ...staffData,
-                                staff_contact: parseInt(e.target.value)
+                            value={guardianData?.guardian_contact}
+                            onChange={(e) => setGuardianData({
+                                ...guardianData,
+                                guardian_contact: parseInt(e.target.value)
                             })} />
                         <br />
                         {/* student profile pic */}
@@ -122,14 +135,25 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
                         </Row>
                         <br />
                         <SelectComponent options={gender} label='Gender' onSelect={(selected) => {
-                            setStaffData({
-                                ...staffData,
-                                staff_gender: selected,
+                            setGuardianData({
+                                ...guardianData,
+                                guardian_gender: selected,
                             })
-                        }} />  <br /> <SelectComponent options={rolesOptions} label='Assign role' onSelect={(selected) => {
-                            setStaffData({
-                                ...staffData,
-                                staff_role: selected,
+                        }} />
+                        <br /> <SelectComponent options={relationshipType} label='Type' onSelect={(selected) => {
+                            setGuardianData({
+                                ...guardianData,
+                                type: selected,
+                            })
+                        }} /><br /> <SelectComponent options={studentsOptions} label='Students' onSelect={(selected) => {
+                            setGuardianData({
+                                ...guardianData,
+                                students: selected,
+                            })
+                        }} /><br /> <SelectComponent options={relationship} label='Relationship' onSelect={(selected) => {
+                            setGuardianData({
+                                ...guardianData,
+                                type: selected,
                             })
                         }} />
                     </Modal.Body>
