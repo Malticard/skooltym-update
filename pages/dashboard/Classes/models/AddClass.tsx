@@ -1,20 +1,22 @@
 
 import React from 'react';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { postClassData, postStaffData } from '@/utils/data_fetch';
+import { Button, Form, Modal } from 'react-bootstrap';
+import { postClassData } from '@/utils/data_fetch';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { Stream } from '@/interfaces/StreamModel';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import FormElement from '../../Staff/models/FormElement';
 
-const AddClass = ({ addModalShow, streams, loadingClasses = false, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: SchoolClass) => void }) => {
-    const options = [] as Option[];
+const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: SchoolClass) => void }) => {
+
     const [classData, setClassData] = React.useState({} as any);
     const [message, setMessage] = React.useState<string>('');
     const [posting, setPosting] = React.useState(false);
     // streams
     const streamsOptions: Option[] = [];
-    streams.map((st) => streamsOptions.push({ name: st.stream_name, value: st._id }));
+    if (streams) {
+        streams.map((st) => streamsOptions.push({ name: st.stream_name, value: st._id }));
+    }
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {
@@ -58,7 +60,7 @@ const AddClass = ({ addModalShow, streams, loadingClasses = false, setAddModalSh
                             })} />
                         <br />
 
-                        <SelectComponent options={streamsOptions} label='Streams' onSelect={(selected) => {
+                        <SelectComponent multiSelect options={streamsOptions} label='Streams' onSelect={(selected) => {
                             setClassData({
                                 ...classData,
                                 class_streams: selected,

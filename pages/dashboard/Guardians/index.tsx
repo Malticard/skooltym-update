@@ -7,6 +7,7 @@ import { fetchGuardians, fetchStudentsNoPaginate } from '@/utils/data_fetch';
 import { IconLoader } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import { GuardianResponse } from '@/interfaces/GuardiansModel';
+import LoaderComponent from '@/pages/components/LoaderComponent';
 
 
 const Guardian = () => {
@@ -63,7 +64,7 @@ const Guardian = () => {
             {/* <!-- Row --> */}
             <Row>
                 <Col xl={12}>
-                    {loadingData ? (<><IconLoader /></>) : guardians && (<GuardianDataTable addModalShow={addModalShow} setAddModalShow={setAddModalShow} students={students} loadingClasses={false} updatePage={onChangePage} guardians={guardians} />)}
+                    {loadingData ? (<LoaderComponent />) : guardians && (<GuardianDataTable addModalShow={addModalShow} setAddModalShow={setAddModalShow} students={students} loadingClasses={false} updatePage={onChangePage} guardians={guardians} />)}
                 </Col>
             </Row>
             {/* <!-- End Row --> */}

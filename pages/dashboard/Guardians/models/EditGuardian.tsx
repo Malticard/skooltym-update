@@ -2,11 +2,11 @@
 import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { updateStaffData } from '@/utils/data_fetch';
-import { StudentResult } from '@/interfaces/StudentsModel';
 import { Guardian } from '@/interfaces/GuardiansModel';
-import SelectComponent, { Option } from './SelectComponent';
 import FormElement from './FormElement';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
+import SelectComponent from '../../Staff/models/SelectComponent';
+import type { Option } from '../../Staff/models/SelectComponent';
 const EditGuardian = ({ editModalShow, students, loadingClasses = false, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; loadingClasses: boolean; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
@@ -25,6 +25,16 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
             name: "Female",
             value: 'Female'
         }
+    ]
+    // const currentStudent = 
+    // relationship options
+    const relationship: Option[] = [
+        { name: "Select relationship", value: "" },
+        { name: "Father", value: "Father" },
+        { name: "Mother", value: "Mother" },
+        { name: "Sister", value: "Sister" },
+        { name: "Brother", value: "Brother" },
+        { name: "Guardian", value: "Guardian" },
     ]
     // streams
     const studentsOptions: Option[] = [];
@@ -136,30 +146,30 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
                                 </Col>
                             </Row>
                             <br />
-                            <SelectComponent options={gender} label='Gender' onSelect={(selected) => {
+                            <SelectComponent defaultData={[{ name: currentGuardian.guardian_gender, value: currentGuardian.guardian_gender }]} options={gender} label='Gender' onSelect={(selected) => {
                                 setCurrentGuardian({
                                     ...currentGuardian,
-                                    guardian_gender: selected,
+                                    guardian_gender: selected as string,
                                 })
                             }} /> <br />
-                            <SelectComponent options={studentsOptions} label='Type' onSelect={(selected) => {
+                            <SelectComponent options={studentsOptions} defaultData={[{ name: currentGuardian.type, value: currentGuardian.type }]} label='Type' onSelect={(selected) => {
                                 setCurrentGuardian({
                                     ...currentGuardian,
-                                    type: selected
+                                    type: selected as string,
                                 });
                             }} />
 
                             <SelectComponent options={studentsOptions} label='Students' onSelect={(selected) => {
                                 setCurrentGuardian({
                                     ...currentGuardian,
-                                    type: selected
+                                    students: selected as string[]
                                 });
                             }} />
 
-                            <SelectComponent options={studentsOptions} label='Relationship' onSelect={(selected) => {
+                            <SelectComponent options={relationship} defaultData={[{ name: currentGuardian.relationship, value: currentGuardian.relationship }]} label='Relationship' onSelect={(selected) => {
                                 setCurrentGuardian({
                                     ...currentGuardian,
-                                    type: selected
+                                    relationship: selected as string,
                                 });
                             }} />
 

@@ -3,11 +3,11 @@ import React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { postStreamData } from '@/utils/data_fetch';
 import { Stream } from '@/interfaces/StreamModel';
-import { SchoolClass } from '@/interfaces/ClassModel';
 import FormElement from '../../Staff/models/FormElement';
+import { toast } from 'react-toastify';
 
-const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handleSave }: { loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: Stream) => void }) => {
-    const [classData, setClassData] = React.useState({} as any);
+const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handleSave }: { loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (streamData: Stream) => void }) => {
+    const [streamData, setStreamData] = React.useState({} as Stream);
     const [message, setMessage] = React.useState<string>('');
     const [posting, setPosting] = React.useState(false);
     // pickup subtitle
@@ -16,14 +16,16 @@ const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handl
         e.preventDefault();
         setMessage('')
         setPosting(true);
-
         const formData = new FormData();
+        const school = JSON.parse(localStorage.getItem('skooltym_user') as string).school;
         // capturing school
-        formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
+        formData.append('school', school);
 
-        Object.entries(classData).forEach(([key, value]) => {
+        Object.entries(streamData).forEach(([key, value]) => {
             formData.append(key, value as string);
+            console.log(key, value)
         });
+        console.log(formData.get('school'));
         // posting data
         postStreamData(formData).then((res) => {
             setMessage('Stream added successfully');
@@ -32,6 +34,7 @@ const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handl
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
+            toast.error(err.toString);
             setPosting(false)
         })
     }
@@ -44,11 +47,11 @@ const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handl
                 <Form onSubmit={handleSubmitData}>
                     <Modal.Body>
                         <FormElement
-                            value={classData.class_name}
+                            value={streamData.stream_name}
                             label='Stream Name'
-                            onChange={(e) => setClassData({
-                                ...classData,
-                                staff_fname: e.target.value
+                            onChange={(e) => setStreamData({
+                                ...streamData,
+                                stream_name: e.target.value
                             })} />
                         <br />
                     </Modal.Body>

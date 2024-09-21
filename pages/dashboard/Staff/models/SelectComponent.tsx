@@ -8,12 +8,20 @@ export type Option = {
 type SelectComponentProps = {
     options: Option[];
     label: string;
-    onSelect: (selectedValue: string) => void;
+    onSelect: (selectedValue: string[] | string) => void;
+    multiSelect?: boolean;
+    defaultData?: Option[]; // optional prop to set default selected options
 };
 
-const SelectComponent = ({ options, label, onSelect }: SelectComponentProps) => {
+const SelectComponent = ({
+    options,
+    label,
+    onSelect,
+    multiSelect = false, // defaults to single select if not provided
+    defaultData = [],
+}: SelectComponentProps) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+    const [selectedOptions, setSelectedOptions] = useState<Option[]>(defaultData);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,10 +32,26 @@ const SelectComponent = ({ options, label, onSelect }: SelectComponentProps) => 
 
     // Handle selecting an option
     const handleOptionClick = (option: Option) => {
-        setSelectedOption(option);
-        onSelect(option.value);
-        setDropdownOpen(false);
-        setSearchTerm('');
+        if (multiSelect) {
+            const isSelected = selectedOptions.some(
+                selectedOption => selectedOption.value === option.value
+            );
+            let updatedSelectedOptions: Option[];
+            if (isSelected) {
+                updatedSelectedOptions = selectedOptions.filter(
+                    selectedOption => selectedOption.value !== option.value
+                );
+            } else {
+                updatedSelectedOptions = [...selectedOptions, option];
+            }
+            setSelectedOptions(updatedSelectedOptions);
+            onSelect(updatedSelectedOptions.map(opt => opt.value));
+        } else {
+            setSelectedOptions([option]);
+            onSelect(option.value);
+            setDropdownOpen(false);
+            setSearchTerm('');
+        }
     };
 
     // Handle keyboard navigation (up/down arrow, enter key)
@@ -76,7 +100,9 @@ const SelectComponent = ({ options, label, onSelect }: SelectComponentProps) => 
                     aria-haspopup="listbox"
                 >
                     <span className="text-gray-600">
-                        {selectedOption ? selectedOption.name : 'Select an option'}
+                        {selectedOptions.length > 0
+                            ? selectedOptions.map(option => option.name).join(', ')
+                            : 'Select an option'}
                     </span>
                     <svg
                         className="w-4 h-4 text-gray-600"
@@ -112,6 +138,11 @@ const SelectComponent = ({ options, label, onSelect }: SelectComponentProps) => 
                                     <li
                                         key={option.value}
                                         className={`p-2 cursor-pointer hover:bg-gray-100 ${index === focusedOptionIndex ? 'bg-gray-100' : ''
+                                            } ${selectedOptions.some(
+                                                selectedOption => selectedOption.value === option.value
+                                            )
+                                                ? 'font-bold'
+                                                : ''
                                             }`}
                                         onClick={() => handleOptionClick(option)}
                                         onMouseEnter={() => setFocusedOptionIndex(index)}

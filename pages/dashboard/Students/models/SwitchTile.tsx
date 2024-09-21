@@ -1,10 +1,9 @@
 import { FormControlLabel, Switch } from '@mui/material';
 import React from 'react';
 import { useState } from 'react';
-// import { Switch } from '@headlessui/react';
 import { FaBus } from 'react-icons/fa';
-const SwitchTile = ({ label, subtitle, onChange }: { label: string; subtitle: string; onChange: (event: boolean) => void; }) => {
-    const [enabled, setEnabled] = useState(false);
+const SwitchTile = ({ label, defaultValue = false, subtitle, onChange }: { defaultValue?: boolean; label: string; subtitle: string; onChange: (event: boolean) => void; }) => {
+    const [enabled, setEnabled] = useState(defaultValue);
 
     // Handle toggle switch change
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

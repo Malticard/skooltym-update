@@ -13,8 +13,8 @@ import AddClass from './models/AddClass';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function ClassDataTable({ classData, addModalShow, streams, setAddModalShow, loadingClasses, updatePage }: { streams: Stream[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; classData: ClassResponse; }) {
-
+export default function ClassDataTable({ classData, addModalShow, streams, setAddModalShow, loadingClasses, updatePage, updateRows }: { streams: Stream[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; updateRows: (value: number) => void; classData: ClassResponse; }) {
+    console.log(classData.results)
     const [data, setData] = React.useState<SchoolClass[]>(classData.results);
     // State to hold pagination details
     const [currentPage, setCurrentPage] = React.useState(classData.currentPage || 1);
@@ -100,11 +100,21 @@ export default function ClassDataTable({ classData, addModalShow, streams, setAd
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    paginationTotalRows={totalDocuments} // total records in the dataset
+                    paginationDefaultPage={currentPage} // current page being viewed
+                    paginationPerPage={pageSize} // number of records per page
+                    onChangePage={handlePageChange} // handler to change pages
+                    onChangeRowsPerPage={updateRows} // handler for changing rows per page
+                    paginationRowsPerPageOptions={[10, 25, 50, 100]} // options for rows per page
+                    paginationComponentOptions={{
+                        noRowsPerPage: false, // to show rows per page selector
+                        rowsPerPageText: 'Rows per page:', // customize label
+                        rangeSeparatorText: 'of', // customize range text
+                        selectAllRowsItem: true, // include "All" option
+                        selectAllRowsItemText: 'All', // label for the "All" option
+                    }}
                 />
+
             </DataTableExtensions>
             {/* Modal for editing student */}
             <EditClass streams={streams} loadingClasses={loadingClasses} editModalShow={editModalShow} currentClass={currentClass} setCurrentClass={setCurrentClass} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />

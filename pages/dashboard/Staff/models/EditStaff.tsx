@@ -8,7 +8,7 @@ import { updateStaffData } from '@/utils/data_fetch';
 import { Role } from '@/interfaces/RolesModel';
 import { Staff } from '@/interfaces/StaffModel';
 
-const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<Staff | null>>; handleSaveEdit: () => void }) => {
+const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<Staff | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
@@ -27,9 +27,24 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
             value: 'Female'
         }
     ]
+    let defaultRole: Option[] = [];
     // streams
     const rolesOptions: Option[] = [];
-    roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
+    if (roles) {
+        roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
+        if (Object.entries(currentStaff).length > 0) {
+
+            defaultRole = rolesOptions.filter((pred) => pred.name === currentStaff.staff_role.role_type);
+            console.log(defaultRole);
+            if (defaultRole.length > 0) {
+                setCurrentStaff({
+                    ...currentStaff,
+                    staff_role: defaultRole[0].value
+                })
+            }
+        }
+    }
+
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,12 +52,6 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         setUpdating(true);
 
         const formData = new FormData();
-        // capturing school
-        // formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
-
-        // capturing student guardian
-        // formData.append('guardians', []);
-
         Object.entries(currentStaff as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
@@ -53,19 +62,16 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         if (imageFile) {
             formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
         }
-        // console.log(JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-        // // student username
-        // formData.append('username', `${currentStudent?.student_fname.toLowerCase()}${currentStudent?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
-        // student key
         formData.append('staff_key[key]', '');
+
         // posting data
         updateStaffData(formData, currentStaff._id).then((res) => {
             setMessage('Student added successfully');
-            console.log(res);
+            // console.log(res);
             handleSaveEdit();
             setUpdating(false)
         }).catch((err) => {
-            console.warn(err);
+            // console.warn(err);
             setMessage(err.toString());
             setUpdating(false)
         })
@@ -74,7 +80,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
 
     return (
         <>
-            <Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
+            {currentStaff && (<Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Staff</Modal.Title>
                 </Modal.Header>
@@ -104,7 +110,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     staff_email: e.target.value
                                 })} />
                             <br /> <FormElement label='Contact'
-                                value={currentStaff.staff_contact.toString()}
+                                value={currentStaff.staff_contact || ''}
                                 onChange={(e) => setCurrentStaff({
                                     ...currentStaff,
                                     staff_contact: parseInt(e.target.value)
@@ -137,16 +143,16 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                 </Col>
                             </Row>
                             <br />
-                            <SelectComponent options={gender} label='Gender' onSelect={(selected) => {
+                            <SelectComponent options={gender} defaultData={[{ name: currentStaff.staff_gender, value: currentStaff.staff_gender }]} label='Gender' onSelect={(selected) => {
                                 setCurrentStaff({
                                     ...currentStaff,
-                                    staff_gender: selected,
+                                    staff_gender: selected as string,
                                 })
                             }} /> <br />
-                            <SelectComponent options={rolesOptions} label='Assign Role' onSelect={(selected) => {
+                            <SelectComponent options={rolesOptions} defaultData={defaultRole} label='Assign Role' onSelect={(selected) => {
                                 setCurrentStaff({
                                     ...currentStaff,
-                                    staff_role: selected
+                                    staff_role: selected as string,
                                 });
                             }} />
 
@@ -164,7 +170,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                     )}
                 </Modal.Body>
 
-            </Modal>
+            </Modal>)}
         </>
     );
 };

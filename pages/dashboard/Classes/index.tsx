@@ -5,6 +5,7 @@ import React from 'react';
 import ClassDataTable from './ClassDataTable';
 import { ClassResponse } from '@/interfaces/ClassesModel';
 import { Stream } from '@/interfaces/StreamModel';
+import LoaderComponent from '@/pages/components/LoaderComponent';
 const Classes = () => {
     const [classes, setClasses] = React.useState({} as ClassResponse);
     const [streams, setStreams] = React.useState<Stream[]>([]);
@@ -15,6 +16,9 @@ const Classes = () => {
         fetchClasses().then((res) => {
             setClasses(res)
             setLoadingData(false)
+        }).catch((err) => {
+            setLoadingData(false);
+            console.log(err);
         });
         // streams
         fetchStream(1, 100).then((res) => {
@@ -32,7 +36,16 @@ const Classes = () => {
             setLoadingData(false);
         }).catch((error) => {
             setLoadingData(false);
-            console.log(error);
+            // console.log(error);
+        })
+    }
+    const onChangeRow = (page: number) => {
+        fetchClasses(page).then((res) => {
+            setClasses(res);
+            setLoadingData(false);
+        }).catch((error) => {
+            setLoadingData(false);
+            // console.log(error);
         })
     }
     return (
@@ -40,16 +53,8 @@ const Classes = () => {
             <Seo title='Classes' />
             <PageHeader title='Classes' item='Skooltym' active_item='Classes' buttonText='Add Class' onTap={() => setAddModalShow(true)} />
             {loadingData ? (<>
-                <div>
-                    <div className='flex justify-center items-center h-96'>
-                        <div className='flex flex-col items-center'>
-                            {/* <IconLadder className='text-gray-900 w-16 h-16' /> */}
-                            <div className='animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900'></div>
-                            <p className='text-gray-900 text-lg font-semibold mt-4'>Loading...</p>
-                        </div>
-                    </div>
-                </div>
-            </>) : classes && streams && (<ClassDataTable streams={streams} addModalShow={addModalShow} setAddModalShow={setAddModalShow} loadingClasses={false} updatePage={onChangePage} classData={classes} />)}
+                <LoaderComponent />
+            </>) : classes && streams && (<ClassDataTable streams={streams} addModalShow={addModalShow} setAddModalShow={setAddModalShow} loadingClasses={false} updatePage={onChangePage} classData={classes} updateRows={onChangePage} />)}
         </div>
     );
 };

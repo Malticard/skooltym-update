@@ -14,4 +14,4 @@ export interface Role {
     __v: number;
 }
 
-export type RolesResponse = Role[];
+// export type RolesResponse = Role[];

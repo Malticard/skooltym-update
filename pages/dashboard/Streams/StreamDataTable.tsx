@@ -8,12 +8,14 @@ import DeleteStream from './models/DeleteStream';
 import { deleteStreamData } from '@/utils/data_fetch';
 import AddStream from './models/AddStream';
 import { PaginatedStreamResult, Stream } from '@/interfaces/StreamModel';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StreamDataTable({ streamData, addModalShow, setAddModalShow, loadingClasses, updatePage }: { addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; streamData: PaginatedStreamResult; }) {
-
+    const navigate = useRouter();
     const [data, setData] = React.useState<Stream[]>(streamData.results);
     // State to hold pagination details
     const [currentPage, setCurrentPage] = React.useState(streamData.currentPage || 1);
@@ -30,7 +32,6 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
             selector: (row: Stream) => [row.stream_name],
             sortable: true
         },
-
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: Stream) => (
@@ -55,7 +56,15 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
     };
     // handle saving
     const handleSave = (dat: Stream) => {
-        console.log("Save the changes for student", dat);
+        toast.info("Save the changes for stream", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+
+        });
         setAddModalShow(false);
         setData([dat, ...data]);
     };
@@ -73,7 +82,7 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
-            window.location.reload();
+            navigate.reload();
         }).catch((err) => {
             setDeleting(false);
             console.log("error data", err);

@@ -3,18 +3,18 @@ import { StudentResult } from '@/interfaces/StudentsModel';
 import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import FormElement from './FormElement';
-import SelectComponent, { Option } from './SelectComponent';
 import SwitchTile from './SwitchTile';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import { updateStudentData } from '@/utils/data_fetch';
+import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 
-const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, currentStudent, setCurrentStudent, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; editModalShow: boolean; currentStudent: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStudent: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
+const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, studentData, setStudentData, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; editModalShow: boolean; studentData: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setStudentData: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
     const [imageFile, setImageFile] = React.useState<File | null>(null);
-    const [studentData, setStudentData] = React.useState(currentStudent as any);
+    // const [studentData, setStudentData] = React.useState({} as any);
     // function to fetch available classes
     if (loadingClasses == false) {
         classes.map((cls) => options.push({ name: cls.class_name, value: cls.class_name }));
@@ -34,8 +34,8 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
     const streamOptions: Option[] = [];
     streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
     // pickup subtitle
-    const enabled = currentStudent?.isHalfDay;
-    const picked = currentStudent?.isVanStudent;
+    const enabled = studentData?.isHalfDay;
+    const picked = studentData?.isVanStudent;
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,13 +43,8 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
         setUpdating(true);
 
         const formData = new FormData();
-        // capturing school
-        // formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
 
-        // capturing student guardian
-        // formData.append('guardians', []);
-
-        Object.entries(currentStudent as any).forEach(([key, value]) => {
+        Object.entries(studentData as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
         if (imageFile) {
@@ -60,23 +55,22 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
             formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
         }
         // console.log(JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-        // // student username
-        // formData.append('username', `${currentStudent?.student_fname.toLowerCase()}${currentStudent?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
+
+        formData.append('username', `${studentData?.student_fname.toLowerCase()}${studentData?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
         // student key
         formData.append('student_key[key]', '');
         // posting data
-        updateStudentData(formData, currentStudent._id).then((res) => {
-            setMessage('Student added successfully');
-            console.log(res);
+        // console.log(currentStudent);
+        updateStudentData(formData, studentData._id).then((res) => {
+            // setMessage('Student added successfully');
             handleSaveEdit();
             setUpdating(false)
         }).catch((err) => {
-            console.warn(err);
             setMessage(err.toString());
             setUpdating(false)
-        })
-        console.log(currentStudent);
+        });
     }
+    // console.log(currentStudent);
 
     return (
         <>
@@ -85,28 +79,28 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                     <Modal.Title>Edit Student</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentStudent && (
+                    {studentData && (
                         <Form onSubmit={handleEditData}>
                             {/* {currentStudent._id} */}
                             <FormElement
-                                value={currentStudent.student_fname}
+                                value={studentData.student_fname}
                                 label='FirstName'
-                                onChange={(e) => setCurrentStudent({
-                                    ...currentStudent,
+                                onChange={(e) => setStudentData({
+                                    ...studentData,
                                     student_fname: e.target.value
                                 })} />
                             <br />
                             <FormElement label='LastName'
-                                value={currentStudent.student_lname}
-                                onChange={(e) => setCurrentStudent({
-                                    ...currentStudent,
+                                value={studentData.student_lname}
+                                onChange={(e) => setStudentData({
+                                    ...studentData,
                                     student_lname: e.target.value
                                 })} />
                             <br />
                             <FormElement label='Other Name'
-                                value={currentStudent.other_name}
-                                onChange={(e) => setCurrentStudent({
-                                    ...currentStudent,
+                                value={studentData.other_name}
+                                onChange={(e) => setStudentData({
+                                    ...studentData,
                                     other_name: e.target.value
                                 })} />
                             <br />
@@ -116,7 +110,7 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                     <span>Student Profile</span>
                                 </Col>
                                 <Col className='mx-20'>
-                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentStudent.student_profile_pic : selectedImage} alt="student profile" />
+                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? studentData.student_profile_pic : selectedImage} alt="student profile" />
                                 </Col>
                                 <Col className='my-auto'>
                                     <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
@@ -124,8 +118,8 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                         if (file) {
                                             setImageFile(file);
                                             selectedImage = URL.createObjectURL(file);
-                                            setCurrentStudent({
-                                                ...currentStudent,
+                                            setStudentData({
+                                                ...studentData,
                                                 student_profile_pic: selectedImage
                                             });
                                         }
@@ -137,33 +131,34 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                 </Col>
                             </Row>
                             <br />
-                            <SelectComponent options={gender} label='Gender' onSelect={(selected) => {
-                                setCurrentStudent({
-                                    ...currentStudent,
+                            <SelectComponent options={gender} defaultData={[{ name: studentData.student_gender, value: studentData.student_gender }]} label='Gender' onSelect={(selected) => {
+                                setStudentData({
+                                    ...studentData,
                                     student_gender: selected,
                                 })
                             }} />
-                            <SelectComponent options={options} label='Class' onSelect={(selected) => {
-                                setCurrentStudent({
-                                    ...currentStudent,
+                            <SelectComponent options={options} defaultData={[{ name: studentData._class, value: studentData._class }]} label='Class' onSelect={(selected) => {
+                                setStudentData({
+                                    ...studentData,
                                     _class: selected
                                 })
                             }} />
-                            <SelectComponent options={streamOptions} label='Stream' onSelect={(selected) => {
-                                setCurrentStudent({
-                                    ...currentStudent,
+                            <SelectComponent options={streamOptions} defaultData={[{ name: studentData.stream, value: studentData.stream }]} label='Stream' onSelect={(selected) => {
+                                setStudentData({
+                                    ...studentData,
                                     stream: selected
                                 });
                             }} />
-                            <SwitchTile label='Pick Up Session' subtitle={enabled ? 'Half day student' : 'Full day student'} onChange={(value) => {
-                                setCurrentStudent({
-                                    ...currentStudent,
+                            <SwitchTile defaultValue={studentData.isHalfDay} label='Pick Up Session' subtitle={enabled ? 'Half day student' : 'Full day student'} onChange={(value) => {
+                                setStudentData({
+                                    ...studentData,
                                     isHalfDay: value
                                 })
 
-                            }} /> <SwitchTile label='Van Student' subtitle={picked ? 'Van student' : 'Not a van student'} onChange={(value) => {
-                                setCurrentStudent({
-                                    ...currentStudent,
+                            }} />
+                            <SwitchTile label='Van Student' defaultValue={studentData.isVanStudent} subtitle={picked ? 'Van student' : 'Not a van student'} onChange={(value) => {
+                                setStudentData({
+                                    ...studentData,
                                     isVanStudent: value
                                 })
 

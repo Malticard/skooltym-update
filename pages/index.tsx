@@ -1,5 +1,5 @@
 import { Button, Col, Form, Row, Alert, Container, Card } from 'react-bootstrap';
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import styles from '../styles/Home.module.scss'
 import { useState } from 'react';
 import Link from "next/link";
@@ -8,6 +8,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { CircularProgress } from '@mui/material';
 import { loginUser } from '@/utils/data_fetch';
 import React from 'react';
+import { StaffLogin } from '@/interfaces/StaffLogin';
 
 
 const Home = () => {
@@ -20,10 +21,12 @@ const Home = () => {
   const { email, password } = data;
   let navigate = useRouter();
   React.useEffect(() => {
-    const user = localStorage.getItem("skooltym_user");
-    if (user) {
-      navigate.replace("/dashboard");
-    }
+    // const user = localStorage.getItem("skooltym_user");
+    // if (user) {
+    //   navigate.replace("/dashboard");
+    // } else {
+    //   navigate.replace("/");
+    // }
   }, [])
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value })
@@ -34,29 +37,25 @@ const Home = () => {
     e.preventDefault();
     setLoading(true);
     loginUser(email, password).then((res) => {
-      console.log(JSON.stringify(res.data));
-      navigate.replace("/dashboard");
       localStorage.setItem("skooltym_user", JSON.stringify(res.data));
       setLoading(false);
       // handle axios response 
-      // if (response.status === 200 || response.status === 201) {
+      if (res.status === 200 || res.status === 201) {
+        const loginData: StaffLogin = res.data;
+        if (loginData.role == 'Admin' || loginData.role == 'Finance') {
+          // console.log(`Current session for first time is ${context.read<FirstTimeUserController>().state}`);
+          if (loginData.isNewUser === true) {
+            navigate.replace('/dashboard/ChangePassword');
+          } else {
+            navigate.replace('/dashboard');
+          }
+        } else {
+          setError("You are not authorized to access this page");
+        }
 
-      //     const data = response.data;
-      //     // console.log(`Current session for first time is ${context.read<FirstTimeUserController>().state}`);
-      //     console.log(data);
-      //     if (data.isNewUser === true) {
-      //         // router.push('/dashboard/ChangePassword');
-      //     } else {
-
-      //     }
-      //     if (data.role === 'Admin' || data.role === 'Finance') {
-
-      //     } else {
-
-      //     }
-      // } else {
-
-      // }
+      } else {
+        setError("Failed to login");
+      }
     }).catch((err) => {
       setError("Invalid Email or password");
       setLoading(false);
@@ -143,13 +142,9 @@ const Home = () => {
                                 </Link>
                               </div>
                             </div>
-                            {loading ? (
-                              <center>
-                                < CircularProgress color="primary" />
-                              </center>
-                            ) : (<Button type='submit'>
-                              Sign In
-                            </Button>)}
+                            <Button disabled={loading} type='submit'>
+                              {loading ? 'Signing in.....' : ' Sign In'}
+                            </Button>
                           </div>
                         </Form>
                       </Card.Body>

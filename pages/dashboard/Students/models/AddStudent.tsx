@@ -38,11 +38,11 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        if (!imageFile) {
-            setPosting(false)
-            setMessage('Please select an image file');
-            return;
-        }
+        // if (!imageFile) {
+        //     setPosting(false)
+        //     setMessage('Please select an image file');
+        //     return;
+        // }
         const formData = new FormData();
         // capturing school
         formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -114,6 +114,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
+                                    e.preventDefault();
                                     const file = e.target.files?.[0];
                                     if (file) {
                                         if (e.target.files && e.target.files[0]) {

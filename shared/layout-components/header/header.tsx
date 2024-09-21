@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
@@ -230,24 +230,11 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
           <div className="header-content-left">
             <div className="header-element">
               <div className="horizontal-logo">
-                <Link className="header-logo" href="/dashboard/">
-                  {/* mobile view image */}
-                  {localData && (
-                    <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
-                  )}
-                </Link>
-
+                {/*  */}
               </div>
             </div>
             <div className="header-element">
               <a aria-label="Hide Sidebar" className="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle" data-bs-toggle="sidebar" onClick={() => headerToggleButton()}><span></span></a>
-              {localData && (
-                <>
-                  <div className="mt-2">
-                    <span className="d-block text-[#eee]"> Logged in as {localData.fname}</span>
-                  </div>
-                </>
-              )}
             </div>
 
           </div>
@@ -255,16 +242,32 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
             <div className="d-flex order-lg-2 align-items-center ms-auto">
 
               <HeadDropDown />
+
               {/* mobile view image */}
               {localData && (
                 <>
                   <div className="p-2 ">
-                    <span className="d-block text-[#eee]"> Logged in as {localData.fname}</span>
-                    {/* <small className="d-block">{localData.role}</small> */}
+                    <span className="d-block">{localData.fname} {localData.lname}</span>
+                    <small className="d-block">{localData.role}</small>
                   </div>
-                  <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                  <Dropdown>
+                    <Dropdown.Toggle variant="link" id="dropdown-basic">
+                      <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {/* <Dropdown.Item href="#/action-1">Profile</Dropdown.Item> */}
+                      {localData.role == 'Admin' && (<Dropdown.Item href="/dashboard/Settings">Settings</Dropdown.Item>)}
+                      <Dropdown.Item href="javascript:void(0)" onClick={() => {
+                        localStorage.removeItem('skooltym_user')
+                        window.location.replace("/");
+                        window.location.reload();
+                      }}>Logout</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </>
               )}
+
             </div>
 
           </div>

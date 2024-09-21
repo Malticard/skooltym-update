@@ -1,74 +1,70 @@
-import React from 'react'
-import PageHeader from '@/shared/layout-components/page-header/page-header'
-import { Card, Col, Row } from "react-bootstrap";
+import React from 'react';
+import PageHeader from '@/shared/layout-components/page-header/page-header';
+import { Col, Row } from 'react-bootstrap';
 import Seo from '@/shared/layout-components/seo/seo';
-import { StaffDataTable } from './StaffDatatable';
+import StaffDataTable from './StaffDatatable';
 import { StaffResponse } from '@/interfaces/StaffModel';
 import { fetchRoles, fetchStaff } from '@/utils/data_fetch';
-import { RolesResponse } from '@/interfaces/RolesModel';
-import { IconLoader } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
+import { Role } from '@/interfaces/RolesModel';
+import LoaderComponent from '@/pages/components/LoaderComponent';
+import useSWR from 'swr';
 
 const Checkout = () => {
-  const [staff, setStaff] = React.useState<StaffResponse>(null as unknown as StaffResponse);
-  const [roles, setRoles] = React.useState<RolesResponse>(null as unknown as RolesResponse);
-  const [loadingData, setLoadingData] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
   const [addModalShow, setAddModalShow] = React.useState(false);
-  React.useEffect(() => {
-    // fetch staff data
-    fetchStaff().then((data) => {
-      setStaff(data);
-    }).catch((error) => {
-      console.log(error);
-      setLoading(false);
-    });
-    // roles
-    fetchRoles().then((data) => {
-      console.log(data);
-      setRoles(data);
-    }).catch((error) => {
-      console.log(error);
-      setLoading(false);
-    });
-  }, []);
-  // methods for change of page
-  const onChangePage = (page: number) => {
-    // setLoading(true);
-    fetchStaff(page).then((res) => {
-      setStaff(res);
-      console.log(res);
-      // setLoading(false);
-    }).catch((error) => {
-      // setLoading(false);
-      console.log(error);
-    })
+
+  // Fetch staff and roles data using SWR
+  const { data: staff, error: staffError, isValidating: staffLoading, mutate: mutateStaff } = useSWR('fetchStaff', () => fetchStaff());
+  const { data: roles, error: rolesError, isValidating: rolesLoading } = useSWR(['fetchRoles'], fetchRoles);
+  // update data
+  const updates = async () => {
+    const newStaff = await fetchStaff();
+    mutateStaff(newStaff, false); // Optimistically update staff data
   }
+  // Handle page change for pagination
+  const onChangePage = async (page: number) => {
+    try {
+      const newStaff = await fetchStaff(page);
+      mutateStaff(newStaff, false); // Optimistically update staff data
+    } catch (error) {
+      console.error("Error fetching new staff data:", error);
+    }
+  };
+
+  // If loading or error, show loader or error message
+  if (staffLoading || rolesLoading) return <LoaderComponent />;
+  if (staffError || rolesError) return <div>Error loading data</div>;
+
   return (
     <>
       <Seo title="Staff" />
-
       <PageHeader
         title="Staff"
         item="Skooltym"
         active_item="Staff"
         buttonText="Add Staff"
-        onTap={() => {
-          setAddModalShow(true);
-        }}
+        onTap={() => setAddModalShow(true)}
       />
-
-      {/* <!-- Row --> */}
+      {/* Row */}
       <Row>
         <Col xl={12}>
-          {loading ? (<><IconLoader /></>) : staff && (<StaffDataTable addModalShow={addModalShow} setAddModalShow={setAddModalShow} roles={roles} loadingClasses={false} updatePage={onChangePage} staff={staff} />)}
+          {staff && (
+            <StaffDataTable
+              handleUpdates={updates}
+              addModalShow={addModalShow}
+              setAddModalShow={setAddModalShow}
+              roles={roles || []}
+              loadingClasses={false}  // This can be removed as it's no longer needed
+              updatePage={onChangePage}
+              staff={staff}
+            />
+          )}
         </Col>
       </Row>
-      {/* <!-- End Row --> */}
+      {/* End Row */}
     </>
-  )
-}
+  );
+};
 
-Checkout.layout = "Contentlayout"
+Checkout.layout = 'Contentlayout';
 
-
-export default Checkout
+export default Checkout;

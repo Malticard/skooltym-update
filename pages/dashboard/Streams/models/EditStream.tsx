@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { Stream } from '@/interfaces/StreamModel';
-import { SchoolClass } from '@/interfaces/ClassModel';
-import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
-import { updateClassData } from '@/utils/data_fetch';
+import { updateStreamData } from '@/utils/data_fetch';
 import FormElement from '../../Staff/models/FormElement';
+import { toast } from 'react-toastify';
 const EditClass = ({ editModalShow, currentStream, setCurrentStream, setEditModalShow, handleSaveEdit }: { loadingClasses: boolean; editModalShow: boolean; currentStream: Stream | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStream: React.Dispatch<React.SetStateAction<Stream | null>>; handleSaveEdit: () => void }) => {
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
@@ -20,14 +19,22 @@ const EditClass = ({ editModalShow, currentStream, setCurrentStream, setEditModa
         Object.entries(currentStream as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
-
-        formData.append('class_key[key]', '');
+        // formData.append('stream_key[key]', '');
         // posting data
-        updateClassData(formData, currentStream?._id).then((res) => {
-            setMessage('Class added successfully');
+        updateStreamData(formData, currentStream?._id).then((res) => {
+            toast.info(' added successfully', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
             console.log(res);
             handleSaveEdit();
             setUpdating(false)
+            window.location.reload();
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());

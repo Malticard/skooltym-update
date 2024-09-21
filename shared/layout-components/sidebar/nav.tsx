@@ -1,3 +1,5 @@
+import { StaffLogin } from "@/interfaces/StaffLogin";
+
 export interface MenuItem {
   path?: string;
   icon?: string;
@@ -19,6 +21,7 @@ export interface NestedMenuItem extends MenuItem {
   children: (MenuItem | NestedMenuItem)[];
 }
 
+
 export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
   {
     menutitle: "DASHBOARD",
@@ -30,7 +33,8 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         active: true,
         selected: true,
         title: "Dashboard",
-      }, {
+      },
+      {
         path: "/dashboard/Students",
         icon: "ti-user",
         type: "link",
@@ -67,9 +71,9 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         title: "Streams",
       },
 
+    ]
 
-
-    ],
+    ,
   },
   {
     menutitle: "MONITORING SECTION",
@@ -127,6 +131,60 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
       },
     ],
   }
+];
 
-
+export const Finance: (MenuItem | NestedMenuItem)[] = [
+  {
+    menutitle: "DASHBOARD",
+    Items: [
+      {
+        path: "/dashboard",
+        icon: "ti-pie-chart",
+        type: "link",
+        active: true,
+        selected: true,
+        title: "Dashboard",
+      },
+    ]
+  },
+  {
+    menutitle: "MONITORING SECTION",
+    Items: [
+      {
+        path: "/dashboard/PendingOvertime",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Pending Overtime",
+      }, {
+        path: "/dashboard/ClearedOvertime",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Cleared Overtime",
+      }, {
+        path: "/dashboard/Payments",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Payments",
+      },
+    ],
+  },
+  {
+    menutitle: "SETTINGS SECTION",
+    Items: [
+      {
+        path: "/dashboard/ChangePassword",
+        icon: " ti-lock",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Change Password",
+      },
+    ],
+  }
 ];

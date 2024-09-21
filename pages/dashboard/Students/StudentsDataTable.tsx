@@ -13,7 +13,7 @@ import { deleteStudentData } from '@/utils/data_fetch';
 // import { deleteStudentData } from '@/utils/data_fetch';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, streams, loadingClasses, updatePage, classes }: { addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; updatePage: (value: number) => void; students: StudentsModel; }) => {
+export default function StudentsDataTable({ students, handleUpdates, addModalShow, setAddModalShow, streams, loadingClasses, updatePage, classes }: { addModalShow: boolean; handleUpdates: () => void; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; updatePage: (value: number) => void; students: StudentsModel; }) {
 
     const [data, setData] = React.useState<StudentResult[]>(students.results);
     // State to hold pagination details
@@ -42,6 +42,10 @@ export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, str
             name: "Last Name".toLocaleUpperCase(),
             selector: (row: StudentResult) => [row.student_lname],
             sortable: true
+        }, {
+            name: "Class".toLocaleUpperCase(),
+            selector: (row: StudentResult) => [row._class.class_name],
+            sortable: true
         },
 
         {
@@ -69,7 +73,18 @@ export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, str
     ];
     // Handle the "Edit" button click
     const handleEdit = (student: StudentResult) => {
-        setCurrentStudent(student);
+        setCurrentStudent({
+            _id: student._id,
+            student_fname: student.student_fname,
+            student_lname: student.student_lname,
+            other_name: student.other_name,
+            student_gender: student.student_gender,
+            student_profile_pic: student.student_profile_pic,
+            _class: student._class.class_name,
+            stream: student.stream.stream_name,
+            isVanStudent: student.isVanStudent,
+            isHalfDay: student.isHalfDay,
+        });
         setEditModalShow(true);  // Show the edit modal
     };
     // Handle the "Delete" button click
@@ -87,6 +102,7 @@ export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, str
     const handleSaveEdit = () => {
         console.log("Save the changes for student", currentStudent);
         setEditModalShow(false);
+        handleUpdates();
         // window.location.reload();
 
     }; // Handle saving the edited student (you can call an API here)
@@ -97,7 +113,7 @@ export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, str
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
-            window.location.reload();
+            handleUpdates();
         }).catch((err) => {
             setDeleting(false);
             console.log("error data", err);
@@ -130,12 +146,11 @@ export const StudentsDataTable = ({ students, addModalShow, setAddModalShow, str
                 />
             </DataTableExtensions>
             {/* Modal for editing student */}
-            <EditStudent classes={classes} streams={streams} loadingClasses={loadingClasses} editModalShow={editModalShow} currentStudent={currentStudent} setCurrentStudent={setCurrentStudent} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
+            <EditStudent classes={classes} streams={streams} loadingClasses={loadingClasses} editModalShow={editModalShow} studentData={currentStudent} setStudentData={setCurrentStudent} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
             {/* modal to handle deleting */}
             <DeleteStudent deleteModalShow={deleteModalShow} deleting={deleting} currentStudent={currentStudent} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
             {/* Student data */}
             <AddStudent loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} streams={streams} classes={classes} handleSave={handleSave} />
         </>
-
     );
 }

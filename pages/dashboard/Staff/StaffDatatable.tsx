@@ -12,8 +12,7 @@ import AddStaff from './models/AddStaff';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export const StaffDataTable = ({ staff, addModalShow, roles, setAddModalShow, loadingClasses, updatePage }: { roles: Role[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; staff: StaffResponse; }) => {
-
+export default function StaffDataTable({ staff, handleUpdates, addModalShow, roles, setAddModalShow, loadingClasses, updatePage }: { handleUpdates: () => void; roles: Role[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; staff: StaffResponse; }) {
     const [data, setData] = React.useState<Staff[]>(staff.results);
     // State to hold pagination details
     const [currentPage, setCurrentPage] = React.useState(staff.currentPage || 1);
@@ -23,23 +22,33 @@ export const StaffDataTable = ({ staff, addModalShow, roles, setAddModalShow, lo
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
 
-    const [currentStaff, setCurrentStaff] = React.useState<Staff | null>(null);
+    const [currentStaff, setCurrentStaff] = React.useState<Staff | null>({} as Staff);
+
     // Update the data when the students prop changes
     const columns: any = [
         {
-            name: "Student Profile".toLocaleUpperCase(),
+            name: "Staff Profile".toLocaleUpperCase(),
             cell: (row: Staff) => (<img className='m-2 rounded-full w-[3em] h-[3em]' src={row.staff_profilePic} width={50} height={50} alt='' />),
             ignoreRowClick: true,
             allowOverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),
-            selector: (row: Staff) => [row.staff_lname],
+            selector: (row: Staff) => [row.staff_fname],
             sortable: true
         },
         {
             name: "Last Name".toLocaleUpperCase(),
             selector: (row: Staff) => [row.staff_lname],
+            sortable: true
+        }, {
+            name: "role".toLocaleUpperCase(),
+            selector: (row: Staff) => [row.staff_role.role_type],
+            sortable: true
+        },
+        {
+            name: "staff contact".toLocaleUpperCase(),
+            selector: (row: Staff) => [row.staff_contact],
             sortable: true
         },
         {
@@ -55,8 +64,10 @@ export const StaffDataTable = ({ staff, addModalShow, roles, setAddModalShow, lo
         }
     ];
     // Handle the "Edit" button click
-    const handleEdit = (student: Staff) => {
-        setCurrentStaff(student);
+    const handleEdit = (staff: Staff) => {
+        setCurrentStaff(
+            staff
+        );
         setEditModalShow(true);  // Show the edit modal
     };
     // Handle the "Delete" button click
@@ -66,15 +77,16 @@ export const StaffDataTable = ({ staff, addModalShow, roles, setAddModalShow, lo
     };
     // handle saving
     const handleSave = (dat: Staff) => {
-        console.log("Save the changes for student", dat);
+        // console.log("Save the changes for student", dat);
         setAddModalShow(false);
         setData([dat, ...data]);
+        handleUpdates();
     };
     // Handle saving the edited student (you can call an API here)
     const handleSaveEdit = () => {
         console.log("Save the changes for student", currentStaff);
         setEditModalShow(false);
-        // window.location.reload();
+        handleUpdates();
 
     }; // Handle saving the edited student (you can call an API here)
     const handleSaveDelete = () => {
@@ -84,7 +96,7 @@ export const StaffDataTable = ({ staff, addModalShow, roles, setAddModalShow, lo
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
-            window.location.reload();
+            handleUpdates();
         }).catch((err) => {
             setDeleting(false);
             console.log("error data", err);

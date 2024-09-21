@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { MENUITEMS, MenuItem } from "./nav";
+import { Finance, MENUITEMS, MenuItem } from "./nav";
 import Link from "next/link";
 import { useRouter } from "next/router";
 let history: string[] = [];
@@ -7,6 +7,7 @@ import store from "@/shared/redux/store";
 import { ThemeChanger } from "@/shared/redux/actions";
 import { connect } from "react-redux";
 import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
+import { StaffLogin } from "@/interfaces/StaffLogin";
 
 const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, ThemeChanger: any }) => {
   let location = useRouter();
@@ -16,7 +17,15 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
 
   // initial loading
   useEffect(() => {
-
+    // check current role
+    const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
+    if (user) {
+      if (user.role == 'Admin') {
+        setMenuitems(MENUITEMS);
+      } else {
+        setMenuitems(Finance);
+      }
+    }
     history.push(location.pathname);  // add  history to history  stack for current location.pathname to prevent multiple history calls innerWidth  and innerWidth  calls from  multiple users. This is important because the history stack is not always empty when the user clicks  the history       
     if (history.length > 2) {
       history.shift();
@@ -50,7 +59,6 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
       window.innerWidth >= 992
     ) {
       clearMenuActive();
-
     }
   }, []);
 

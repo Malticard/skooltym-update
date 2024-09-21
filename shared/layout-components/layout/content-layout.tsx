@@ -7,6 +7,7 @@ import TabToTop from "../tab-to-top/tab-to-top";
 import Header from "../header/header";
 import Sidebar from "../sidebar/sidebar";
 import Switcher from "../switcher/switcher";
+import { useRouter } from "next/router";
 
 
 interface AuthenticationLayoutProps {
@@ -19,9 +20,14 @@ const Contentlayout = ({ children }: AuthenticationLayoutProps) => {
     document.querySelector("body")?.classList.remove("error-1");
     document.querySelector("body")?.classList.remove("landing-body");
   };
-
+  let navigate = useRouter();
   useEffect(() => {
     Add();
+    const user = localStorage.getItem('skooltym_user');
+    if (!user) {
+      navigate.replace("/");
+      // navigate.reload();s
+    }
     setlateLoad(true)
   });
 

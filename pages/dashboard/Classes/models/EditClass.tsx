@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { Stream } from '@/interfaces/StreamModel';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
@@ -9,7 +9,6 @@ import FormElement from '../../Staff/models/FormElement';
 const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; editModalShow: boolean; currentClass: any | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentClass: React.Dispatch<React.SetStateAction<SchoolClass | null>>; handleSaveEdit: () => void }) => {
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
-    const [classData, setClassData] = React.useState(currentClass as SchoolClass);
     // streams
     const streamsOptions: Option[] = [];
     streams.map((r) => streamsOptions.push({ name: r.stream_name, value: r._id }));
@@ -48,16 +47,15 @@ const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setE
                 <Modal.Body>
                     {currentClass && (
                         <Form onSubmit={handleEditData}>
-                            {/* {currentStudent._id} */}
-
                             <FormElement label='Class Name'
                                 value={currentClass.class_name}
                                 onChange={(e) => setCurrentClass({
                                     ...currentClass,
                                     class_name: e.target.value
                                 })} />
-
-                            <SelectComponent options={streamsOptions} label='Streams' onSelect={(selected) => {
+                            {/* {currentClass.class_streams} */}
+                            <br />
+                            <SelectComponent multiSelect defaultData={currentClass.class_streams} options={streamsOptions} label='Streams' onSelect={(selected) => {
                                 setCurrentClass({
                                     ...currentClass,
                                     class_streams: selected,
