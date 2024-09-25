@@ -8,7 +8,7 @@ import { updateStaffData } from '@/utils/data_fetch';
 import { Role } from '@/interfaces/RolesModel';
 import { Staff } from '@/interfaces/StaffModel';
 
-const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<Staff | null>>; handleSaveEdit: () => void }) => {
+const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<any>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');

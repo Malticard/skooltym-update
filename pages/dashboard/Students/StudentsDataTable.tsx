@@ -10,7 +10,6 @@ import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import AddStudent from './models/AddStudent';
 import { deleteStudentData } from '@/utils/data_fetch';
-// import { deleteStudentData } from '@/utils/data_fetch';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentsDataTable({ students, handleUpdates, addModalShow, setAddModalShow, streams, loadingClasses, updatePage, classes }: { addModalShow: boolean; handleUpdates: () => void; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; updatePage: (value: number) => void; students: StudentsModel; }) {
@@ -24,7 +23,7 @@ export default function StudentsDataTable({ students, handleUpdates, addModalSho
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
 
-    const [currentStudent, setCurrentStudent] = React.useState<StudentResult | null>(null);
+    const [currentStudent, setCurrentStudent] = React.useState<any>({});
     // Update the data when the students prop changes
     const columns: any = [
         {
@@ -72,7 +71,7 @@ export default function StudentsDataTable({ students, handleUpdates, addModalSho
         }
     ];
     // Handle the "Edit" button click
-    const handleEdit = (student: StudentResult) => {
+    const handleEdit = (student: any) => {
         setCurrentStudent({
             _id: student._id,
             student_fname: student.student_fname,

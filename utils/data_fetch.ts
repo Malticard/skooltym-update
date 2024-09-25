@@ -52,9 +52,15 @@ export async function fetchSettings(): Promise<SettingsModel> {
     return (response.data[0]);
 }
 // function to update settings
-export async function createSettings(data: FormData): Promise<any> {
+export async function saveSettings(data: FormData): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.addSettings, data);
+        const plainObject = Object.fromEntries(data.entries());
+        // console.log(plainObject);
+        let response = await axios.post(AppUrls.addSettings, plainObject, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -206,7 +212,11 @@ export async function fetchStudents(page = 1, limit = 15): Promise<StudentsModel
 // function to post student data to server
 export async function postStudentData(data: FormData): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.addStudent, data);
+        let response = await axios.post(AppUrls.addStudent, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -216,7 +226,11 @@ export async function postStudentData(data: FormData): Promise<any> {
 export async function updateStudentData(data: FormData, id: any): Promise<any> {
 
     try {
-        let response = await axios.post(AppUrls.updateStudent + id, data);
+        let response = await axios.post(AppUrls.updateStudent + id, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        },);
         return response.data;
     } catch (error: any) {
         console.log(error);
@@ -234,13 +248,13 @@ export async function deleteStudentData(id: string): Promise<any> {
 }
 // ------------- end of student data -------------
 // --------------------- fetch classes
-export async function fetchClasses(page = 1, limit = 15): Promise<ClassPaginatedResult> {
+export async function fetchClasses(page = 1, limit = 20): Promise<ClassPaginatedResult> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     console.log("school id", data.school)
     try {
-        let response = await fetch(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}`);
         // console.log("class data", response);
-        return response.json();
+        return response.data;
 
     } catch (error: any) {
         throw new Error(error.toString());
@@ -253,6 +267,10 @@ export async function postClassData(data: FormData): Promise<any> {
             school: data.get('school'),
             class_name: data.get('class_name'),
             class_streams: data.get('class_streams'),
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         return response.data;
     } catch (error: any) {
@@ -295,6 +313,10 @@ export async function postStreamData(data: FormData): Promise<any> {
         let response = await axios.post(AppUrls.addStream, {
             school: data.get('school'),
             stream_name: data.get('stream_name')
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         return response.data;
     } catch (error: any) {
@@ -307,6 +329,10 @@ export async function updateStreamData(data: FormData, id: any): Promise<any> {
     try {
         let response = await axios.patch(AppUrls.updateStream + id, {
             stream_name: data.get('stream_name')
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         return response.data;
     } catch (error: any) {
@@ -338,7 +364,11 @@ export async function fetchStaff(page = 1, limit = 15): Promise<StaffResponse> {
 // function to post staff data to server
 export async function postStaffData(data: FormData): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.addStaff, data);
+        let response = await axios.post(AppUrls.addStaff, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -347,7 +377,11 @@ export async function postStaffData(data: FormData): Promise<any> {
 // update staff data
 export async function updateStaffData(data: FormData, id: any): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.updateStaff + id, data);
+        let response = await axios.post(AppUrls.updateStaff + id, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
         return response.data;
     } catch (error: any) {
         console.dir(error);
@@ -389,7 +423,11 @@ export async function fetchGuardians(page = 1, limit = 15): Promise<GuardianResp
 // function to post guardian data to server
 export async function postGuardianData(data: FormData): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.addGuardian, data);
+        let response = await axios.post(AppUrls.addGuardian, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -398,7 +436,11 @@ export async function postGuardianData(data: FormData): Promise<any> {
 // update guardian data
 export async function updateGuardianData(data: FormData, id: any): Promise<any> {
     try {
-        let response = await axios.post(AppUrls.updateGuardian + id, data);
+        let response = await axios.post(AppUrls.updateGuardian + id, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());

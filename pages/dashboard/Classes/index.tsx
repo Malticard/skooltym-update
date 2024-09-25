@@ -1,62 +1,85 @@
+import React from 'react';
+import { useRouter } from 'next/router';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
 import { fetchClasses, fetchStream } from '@/utils/data_fetch';
-import React from 'react';
 import ClassDataTable from './ClassDataTable';
 import { ClassResponse } from '@/interfaces/ClassesModel';
 import { Stream } from '@/interfaces/StreamModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
+import useSWR from 'swr';
+
 const Classes = () => {
-    const [classes, setClasses] = React.useState({} as ClassResponse);
-    const [streams, setStreams] = React.useState<Stream[]>([]);
-    const [loadingData, setLoadingData] = React.useState(false);
     const [addModalShow, setAddModalShow] = React.useState(false);
+    const router = useRouter();
+    const page = Number(router.query.page) || 1;
+
+    const { data: classes, error: classError, mutate: mutateClasses, isValidating: isValidatingClasses } = useSWR(
+        ['fetchClasses', page],
+        () => fetchClasses(page),
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+            refreshInterval: 0,
+            dedupingInterval: 5000, // 5 seconds
+            onError: (err) => console.error('Error fetching classes:', err)
+        }
+    );
+
+    const { data: streams, error: streamError } = useSWR('streams', () => fetchStream(1, 100), {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0,
+        dedupingInterval: 5000, // 5 seconds
+        onError: (err) => console.error('Error fetching streams:', err)
+    });
+
     React.useEffect(() => {
-        setLoadingData(true);
-        fetchClasses().then((res) => {
-            setClasses(res)
-            setLoadingData(false)
-        }).catch((err) => {
-            setLoadingData(false);
-            console.log(err);
-        });
-        // streams
-        fetchStream(1, 100).then((res) => {
-            setStreams(res.results);
-            setLoadingData(false);
-        }).catch((err) => {
-            console.log(err);
-            setLoadingData(false);
-        });
-    }, []);
-    // methods for change of page
-    const onChangePage = (page: number) => {
-        fetchClasses(page).then((res) => {
-            setClasses(res);
-            setLoadingData(false);
-        }).catch((error) => {
-            setLoadingData(false);
-            // console.log(error);
-        })
+        if (!classes && !isValidatingClasses) {
+            mutateClasses();
+        }
+    }, [classes, isValidatingClasses, mutateClasses]);
+
+    const onChangePage = (newPage: number) => {
+        router.push({ query: { ...router.query, page: newPage } }, undefined, { shallow: true });
+    };
+
+    const handleUpdates = async () => {
+        const cls = await fetchClasses(page);
+        mutateClasses(cls, true);
+    };
+
+    if (classError || streamError) {
+        return <div>Error loading data: {classError?.message || streamError?.message}</div>;
     }
-    const onChangeRow = (page: number) => {
-        fetchClasses(page).then((res) => {
-            setClasses(res);
-            setLoadingData(false);
-        }).catch((error) => {
-            setLoadingData(false);
-            // console.log(error);
-        })
-    }
+
     return (
         <div>
             <Seo title='Classes' />
-            <PageHeader title='Classes' item='Skooltym' active_item='Classes' buttonText='Add Class' onTap={() => setAddModalShow(true)} />
-            {loadingData ? (<>
+            <PageHeader
+                title='Classes'
+                item='Skooltym'
+                active_item='Classes'
+                buttonText='Add Class'
+                onTap={() => setAddModalShow(true)}
+            />
+            {isValidatingClasses ? (
                 <LoaderComponent />
-            </>) : classes && streams && (<ClassDataTable streams={streams} addModalShow={addModalShow} setAddModalShow={setAddModalShow} loadingClasses={false} updatePage={onChangePage} classData={classes} updateRows={onChangePage} />)}
+            ) : (
+                <ClassDataTable
+                    loadingClasses={isValidatingClasses}
+                    streams={streams?.results ?? []}
+                    addModalShow={addModalShow}
+                    setAddModalShow={setAddModalShow}
+                    updatePage={onChangePage}
+                    classData={classes as ClassResponse}
+                    handleUpdates={handleUpdates}
+                    updateRows={onChangePage}
+                />
+            )}
         </div>
     );
 };
+
 Classes.layout = "Contentlayout";
 export default Classes;

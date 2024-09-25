@@ -3,36 +3,65 @@ import PageHeader from '@/shared/layout-components/page-header/page-header';
 import { Col, Row } from 'react-bootstrap';
 import Seo from '@/shared/layout-components/seo/seo';
 import StaffDataTable from './StaffDatatable';
-import { StaffResponse } from '@/interfaces/StaffModel';
 import { fetchRoles, fetchStaff } from '@/utils/data_fetch';
-import { Role } from '@/interfaces/RolesModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import useSWR from 'swr';
 
 const Checkout = () => {
   const [addModalShow, setAddModalShow] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(false);
 
   // Fetch staff and roles data using SWR
-  const { data: staff, error: staffError, isValidating: staffLoading, mutate: mutateStaff } = useSWR('fetchStaff', () => fetchStaff());
-  const { data: roles, error: rolesError, isValidating: rolesLoading } = useSWR(['fetchRoles'], fetchRoles);
-  // update data
+  const { data: staff, error: staffError, isValidating: staffLoading, mutate: mutateStaff } = useSWR(
+    'fetchStaff',
+    () => fetchStaff(),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+      dedupingInterval: 5000,
+      onError: (err) => console.error('Error fetching staff:', err)
+    }
+  );
+
+  const { data: roles, error: rolesError, isValidating: rolesLoading } = useSWR(
+    'fetchRoles',
+    fetchRoles,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+      dedupingInterval: 5000,
+      onError: (err) => console.error('Error fetching roles:', err)
+    }
+  );
+
+  // Update data
   const updates = async () => {
-    const newStaff = await fetchStaff();
-    mutateStaff(newStaff, false); // Optimistically update staff data
+    setIsUploading(true);
+    try {
+      const newStaff = await fetchStaff();
+      mutateStaff(newStaff, false);
+    } catch (error) {
+      console.error("Error updating staff data:", error);
+    } finally {
+      setIsUploading(false);
+    }
   }
+
   // Handle page change for pagination
   const onChangePage = async (page: number) => {
     try {
       const newStaff = await fetchStaff(page);
-      mutateStaff(newStaff, false); // Optimistically update staff data
+      mutateStaff(newStaff, false);
     } catch (error) {
       console.error("Error fetching new staff data:", error);
     }
   };
 
   // If loading or error, show loader or error message
-  if (staffLoading || rolesLoading) return <LoaderComponent />;
-  if (staffError || rolesError) return <div>Error loading data</div>;
+  // if ((staffLoading && !staff) || (rolesLoading && !roles)) return <LoaderComponent />;
+  if (staffError || rolesError) return <div>Error loading data: {staffError?.message || rolesError?.message}</div>;
 
   return (
     <>
@@ -47,16 +76,18 @@ const Checkout = () => {
       {/* Row */}
       <Row>
         <Col xl={12}>
-          {staff && (
+          {staffLoading === false ? staff && (
             <StaffDataTable
+              loadingClasses={isUploading}
               handleUpdates={updates}
               addModalShow={addModalShow}
               setAddModalShow={setAddModalShow}
               roles={roles || []}
-              loadingClasses={false}  // This can be removed as it's no longer needed
               updatePage={onChangePage}
               staff={staff}
             />
+          ) : (
+            <LoaderComponent />
           )}
         </Col>
       </Row>

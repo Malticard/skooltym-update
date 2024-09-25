@@ -13,7 +13,7 @@ import AddClass from './models/AddClass';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function ClassDataTable({ classData, addModalShow, streams, setAddModalShow, loadingClasses, updatePage, updateRows }: { streams: Stream[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; updateRows: (value: number) => void; classData: ClassResponse; }) {
+export default function ClassDataTable({ classData, handleUpdates, addModalShow, streams, setAddModalShow, loadingClasses, updatePage, updateRows }: { handleUpdates: () => void; streams: Stream[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; updateRows: (value: number) => void; classData: ClassResponse; }) {
     console.log(classData.results)
     const [data, setData] = React.useState<SchoolClass[]>(classData.results);
     // State to hold pagination details
@@ -41,7 +41,7 @@ export default function ClassDataTable({ classData, addModalShow, streams, setAd
                 </>
             ),
             ignoreRowClick: true,
-            button: true,
+            // button: true,
         }
     ];
     // Handle the "Edit" button click
@@ -59,11 +59,13 @@ export default function ClassDataTable({ classData, addModalShow, streams, setAd
         console.log("Save the changes for student", dat);
         setAddModalShow(false);
         setData([dat, ...data]);
+        handleUpdates();
     };
     // Handle saving the edited student (you can call an API here)
     const handleSaveEdit = () => {
         console.log("Save the changes for student", currentClass);
         setEditModalShow(false);
+        handleUpdates();
         // window.location.reload();
 
     }; // Handle saving the edited student (you can call an API here)
@@ -74,7 +76,8 @@ export default function ClassDataTable({ classData, addModalShow, streams, setAd
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
-            window.location.reload();
+            // window.location.reload();
+            handleUpdates();
         }).catch((err) => {
             setDeleting(false);
             console.log("error data", err);

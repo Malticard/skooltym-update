@@ -1,13 +1,16 @@
 import { IconAlarm } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import React, { useState } from 'react';
 
-const DropOffsComponent = ({ title, trailing, subTitle, onTap }: { title: string; subTitle: string; onTap: () => void, trailing: string | React.ReactNode }) => {
+const DropOffsComponent = ({ title, trailing, subTitle, onTap }: { title: string; subTitle: string; onTap?: () => void, trailing: string | React.ReactNode }) => {
     const [isZoomed, setIsZoomed] = useState(false);
 
     const handleClick = () => {
-        setIsZoomed(true);
-        onTap();
-        setTimeout(() => setIsZoomed(false), 100); // Duration of the animation
+        if (onTap) {
+            setIsZoomed(true);
+            onTap();
+            setTimeout(() => setIsZoomed(false), 100); // Duration of the animation
+        }
+
     };
 
     return (

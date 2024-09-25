@@ -3,12 +3,14 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import AddPayment from './modals/AddPayment';
 
 
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function PaymentDataTable({ clearedData, updatePage }: { updatePage: (value: number) => void; clearedData: OvertimeModel; }) {
+export default function PaymentDataTable({ clearedData, setOpenAddPayment, openPaymentModal, updatePage }: { openPaymentModal: boolean; setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>; updatePage: (value: number) => void; clearedData: OvertimeModel; }) {
     const [data, setData] = React.useState<Overtimes[]>(clearedData.results);
     // State to hold pagination details
     const [currentPage, setCurrentPage] = React.useState(clearedData.currentPage || 1);
@@ -61,6 +63,8 @@ export default function PaymentDataTable({ clearedData, updatePage }: { updatePa
                     onChangePage={handlePageChange}
                 />
             </DataTableExtensions>
+            {/* add payment modal */}
+            <AddPayment streams={[]} loadingClasses handleSave={() => { }} addModalShow={openPaymentModal} setAddModalShow={setOpenAddPayment} />
         </>
 
     );

@@ -22,7 +22,7 @@ export default function StaffDataTable({ staff, handleUpdates, addModalShow, rol
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
 
-    const [currentStaff, setCurrentStaff] = React.useState<Staff | null>({} as Staff);
+    const [currentStaff, setCurrentStaff] = React.useState<Staff>({} as Staff);
 
     // Update the data when the students prop changes
     const columns: any = [
@@ -80,7 +80,7 @@ export default function StaffDataTable({ staff, handleUpdates, addModalShow, rol
         // console.log("Save the changes for student", dat);
         setAddModalShow(false);
         setData([dat, ...data]);
-        handleUpdates();
+        // handleUpdates();
     };
     // Handle saving the edited student (you can call an API here)
     const handleSaveEdit = () => {

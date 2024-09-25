@@ -5,7 +5,7 @@ import { Stream } from '@/interfaces/StreamModel';
 import { updateStreamData } from '@/utils/data_fetch';
 import FormElement from '../../Staff/models/FormElement';
 import { toast } from 'react-toastify';
-const EditClass = ({ editModalShow, currentStream, setCurrentStream, setEditModalShow, handleSaveEdit }: { loadingClasses: boolean; editModalShow: boolean; currentStream: Stream | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStream: React.Dispatch<React.SetStateAction<Stream | null>>; handleSaveEdit: () => void }) => {
+const EditClass = ({ editModalShow, currentStream, setCurrentStream, setEditModalShow, handleSaveEdit }: { editModalShow: boolean; currentStream: Stream | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStream: React.Dispatch<React.SetStateAction<Stream | null>>; handleSaveEdit: () => void }) => {
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
     // function to handle submission

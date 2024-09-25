@@ -6,10 +6,11 @@ import DropOffDateModal from './models/dropOffDateModal';
 import SliderComponent from '@/pages/components/SliderComponent';
 import SwitchComponent from '@/pages/components/SwitchComponent';
 import { SettingsModel } from '@/interfaces/SettingsModel';
-import { update } from 'lodash';
-import { createSettings } from '@/utils/data_fetch';
+import { saveSettings } from '@/utils/data_fetch';
+import FormElement from '../Staff/models/FormElement';
+import { Snackbar } from '@mui/material';
 
-const SettingsData = ({ settings }: { settings: SettingsModel }) => {
+const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; handleUpdates: () => void }) => {
 
     // booleans
     const [open, setOpen] = React.useState(false)
@@ -17,33 +18,34 @@ const SettingsData = ({ settings }: { settings: SettingsModel }) => {
     const [openHalfDayAllowance, setOpenHalfDayAllowance] = React.useState(false);
     const [openFullDay, setOpenFullDay] = React.useState(false)
     const [openFullDayAllowance, setOpenFullDayAllowance] = React.useState(false)
-    const [openOvertime, setOpenOvertime] = React.useState(false)
-    const [openClockInOut, setOpenClockInOut] = React.useState(false)
     const [openOvertimeInterval, setOpenOvertimeInterval] = React.useState(false)
     const [openDropAllowance, setOpenDropAllowance] = React.useState(false)
     const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false)
     const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false)
     const [process, setProcess] = React.useState(false);
+
     // values
     const [updateSettings, setUpdateSettings] = React.useState<SettingsModel>(settings);
 
     // handle form 
     const handleForm = function (e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
-        // setProcess(true);
+        setProcess(true);
         const form = new FormData();
-        Object.entries(settings).forEach(([key, value]) => {
-            form.append(key, value as string);
-            console.log(key, value);
+        Object.entries(updateSettings).forEach(([key, value]) => {
+            form.append(key, value);
+            // console.log(key, value);
         });
         // save new changes
-        // createSettings(form).then((res) => {
-        //     setProcess(false);
-        //     console.log(res)
-        // }).catch((err) => {
-        //     console.log(err);
-        //     setProcess(false);
-        // })
+        saveSettings(form).then((res) => {
+            setProcess(false);
+            console.log(res)
+            handleUpdates();
+
+        }).catch((err) => {
+            console.log(err);
+            setProcess(false);
+        })
     }
 
     return (
@@ -59,14 +61,14 @@ const SettingsData = ({ settings }: { settings: SettingsModel }) => {
                 <SettingComponent onTap={() => setOpenFullDay(true)} title='Full Day Pickups' subTitle='Set the start and end time for full day pickups' trailing={`${updateSettings.pick_up_start_time} - ${updateSettings.pick_up_end_time}`} />
                 <SettingComponent onTap={() => setOpenFullDayAllowance(true)} title='PickUp allowance' subTitle='Set the allowance time for pickup.' trailing={`${updateSettings.pick_up_allowance} mins`} />
                 {/* clocking */}
-                <SettingComponent onTap={() => setOpenClockInOut(true)} title='Clock in / Clock out' subTitle='Clock in / Clock out' trailing={<SwitchComponent defaultChecked={updateSettings.clock_in_clock_out} onChange={(b) => setUpdateSettings({
+                <SettingComponent title='Clock in / Clock out' subTitle='Clock in / Clock out' trailing={<SwitchComponent defaultChecked={updateSettings.clock_in_clock_out} onChange={(b) => setUpdateSettings({
                     ...updateSettings,
                     clock_in_clock_out: b
                 })} />} />
 
                 {
                     !updateSettings.clock_in_clock_out ? (<>
-                        <SettingComponent onTap={() => setOpenOvertime(true)} title='Overtime' subTitle={updateSettings.allow_overtime ? 'enabled' : 'disabled'} trailing={<SwitchComponent defaultChecked={updateSettings.allow_overtime} onChange={(b) => setUpdateSettings({
+                        <SettingComponent title='Overtime' subTitle={updateSettings.allow_overtime ? 'enabled' : 'disabled'} trailing={<SwitchComponent defaultChecked={updateSettings.allow_overtime} onChange={(b) => setUpdateSettings({
                             ...updateSettings,
                             allow_overtime: b
                         })} />
@@ -197,6 +199,42 @@ const SettingsData = ({ settings }: { settings: SettingsModel }) => {
 
                 </div>
             </DropOffDateModal>
+            {/* set the ovetime rate */}
+            <DropOffDateModal onTap={() => {
+                setOpenOvertimeRate(false);
+            }} title='Setting Overtime rate' open={openOvertimeRate} setOpen={setOpenOvertimeRate}>
+                <div className='p-3 mx-5'>
+                    <div>
+                        <FormElement
+                            value={`${updateSettings.overtime_rate}`}
+                            onChange={(e) => setUpdateSettings({
+                                ...updateSettings,
+                                overtime_rate: parseInt(e.target.value)
+                            })}
+                            label='Overtime rate (UGX)'
+                        />
+                        {/* <b>UGX {updateSettings.overtime_rate}</b> */}
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* set overtime interval */}
+            <DropOffDateModal onTap={() => {
+                setOpenOvertimeInterval(false);
+            }} title='Setting Overtime interval' open={openOvertimeInterval} setOpen={setOpenOvertimeInterval}>
+                <div className='p-3 mx-5'>
+                    <div>
+                        <FormElement value={updateSettings.overtime_interval} onChange={(e) => setUpdateSettings(
+                            {
+                                ...updateSettings,
+                                overtime_interval: e.target.value
+                            }
+                        )} label='Overtime interval' />
+
+                        {/* <b>{updateSettings.overtime_interval} mins</b> */}
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* snack bar */}
 
         </div>
     );

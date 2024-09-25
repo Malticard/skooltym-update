@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function StreamDataTable({ streamData, addModalShow, setAddModalShow, loadingClasses, updatePage }: { addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; streamData: PaginatedStreamResult; }) {
+export default function StreamDataTable({ streamData, handleUpdates, addModalShow, setAddModalShow, updatePage }: { handleUpdates: () => void; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, updatePage: (value: number) => void; streamData: PaginatedStreamResult; }) {
     const navigate = useRouter();
     const [data, setData] = React.useState<Stream[]>(streamData.results);
     // State to hold pagination details
@@ -41,7 +41,7 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
                 </>
             ),
             ignoreRowClick: true,
-            button: true,
+            // button: true,
         }
     ];
     // Handle the "Edit" button click
@@ -53,6 +53,7 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
     const handleDelete = (data: Stream) => {
         setDeleteModalShow(true)
         setCurrentStream(data);
+
     };
     // handle saving
     const handleSave = (dat: Stream) => {
@@ -72,6 +73,7 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
     const handleSaveEdit = () => {
         console.log("Save the changes for student", currentStream);
         setEditModalShow(false);
+        handleUpdates();
         // window.location.reload();
 
     }; // Handle saving the edited student (you can call an API here)
@@ -82,12 +84,13 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
-            navigate.reload();
+            handleUpdates();
+            // navigate.reload();
         }).catch((err) => {
             setDeleting(false);
             console.log("error data", err);
             setDeleteModalShow(false);
-
+            handleUpdates();
         });
 
     };
@@ -115,7 +118,7 @@ export default function StreamDataTable({ streamData, addModalShow, setAddModalS
                 />
             </DataTableExtensions>
             {/* Modal for editing student */}
-            <EditStream loadingClasses={loadingClasses} editModalShow={editModalShow} currentStream={currentStream} setCurrentStream={setCurrentStream} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
+            <EditStream editModalShow={editModalShow} currentStream={currentStream} setCurrentStream={setCurrentStream} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
             {/* modal to handle deleting */}
             <DeleteStream deleteModalShow={deleteModalShow} deleting={deleting} currentStream={currentStream} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
             {/* Student data */}

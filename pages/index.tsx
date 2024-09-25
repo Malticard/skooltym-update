@@ -1,11 +1,10 @@
 import { Button, Col, Form, Row, Alert, Container, Card } from 'react-bootstrap';
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.scss'
 import { useState } from 'react';
 import Link from "next/link";
 import { ChangeEvent } from 'react';
 import Seo from '@/shared/layout-components/seo/seo';
-import { CircularProgress } from '@mui/material';
 import { loginUser } from '@/utils/data_fetch';
 import React from 'react';
 import { StaffLogin } from '@/interfaces/StaffLogin';
@@ -57,7 +56,7 @@ const Home = () => {
         setError("Failed to login");
       }
     }).catch((err) => {
-      setError("Invalid Email or password");
+      setError(err.message);
       setLoading(false);
     });
   }
@@ -69,47 +68,47 @@ const Home = () => {
         <Row className="signpages text-center" >
           <Col md={12}>
             <Card>
-              <Row className="row-sm">
+              <Row className="row-lg">
                 <Col
-                  lg={6}
+                  lg={12}
                   xl={5}
                   className="d-none d-lg-block text-center bg-primary details"
                 >
-                  <div className="mt-5 pt-4 p-2 position-absolute">
+                  <div className="pl-10 pt-5 my-auto p-2 position-absolute">
                     <img
                       src={`/imgs/login.png`}
-                      className="header-brand-img mb-4"
-                      width={150}
-                      height={150}
+                      className="pl-3 header-brand-img mb-4"
+                      width={250}
+                      height={250}
                       alt="logo-light"
                     />
                     <div className="clearfix"></div>
 
-                    <h5 className="mt-4 text-white">Skooltym</h5>
-                    <span className="text-white-6 fs-13 mb-5 mt-xl-0">
+                    <h5 className="mt-4 font-satoshi font-bold text-white">Skooltym</h5>
+                    <span className="text-white-6 text-md font-normal">
                       Monitor student drop offs and pickups
                     </span>
                   </div>
                 </Col>
-                <Col lg={6} xl={7} xs={12} sm={12} className="login_form ">
+                <Col lg={12} xl={7} xs={12} sm={12} className="login_form ">
                   <Container fluid>
                     <Row className="row-sm">
                       <Card.Body className="mt-2 mb-2">
                         <div className="clearfix"></div>
                         {err && <Alert variant="danger">{err}</Alert>}
                         <Form onSubmit={handleLogin}>
-                          <h5 className="text-start mb-2">
+                          <h5 className="text-start font-bold text-xl mb-2">
                             SignIn to Your Account
                           </h5>
                           <p className="mb-4 text-muted fs-13 ms-0 text-start">
-                            SignIn to create, discover and connect with the global
+                            Sign In to create, discover and connect with the global
                             community
                           </p>
                           <Form.Group className="text-start form-group" controlId="formEmail">
-                            <Form.Label>Email</Form.Label>
+                            <Form.Label>Phone Number</Form.Label>
                             <Form.Control
                               className="form-control"
-                              placeholder="Enter your email"
+                              placeholder="Enter your registered contact"
                               name="email"
                               type='text'
                               value={email}
