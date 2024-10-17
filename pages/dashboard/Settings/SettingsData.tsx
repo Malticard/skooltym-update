@@ -8,7 +8,6 @@ import SwitchComponent from '@/pages/components/SwitchComponent';
 import { SettingsModel } from '@/interfaces/SettingsModel';
 import { saveSettings } from '@/utils/data_fetch';
 import FormElement from '../Staff/models/FormElement';
-import { Snackbar } from '@mui/material';
 
 const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; handleUpdates: () => void }) => {
 
@@ -23,7 +22,8 @@ const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; ha
     const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false)
     const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false)
     const [process, setProcess] = React.useState(false);
-
+    const [staffClocking, setOpenStaffClocking] = React.useState(false);
+    const [staffClockingOut, setOpenStaffClockingOut] = React.useState(false);
     // values
     const [updateSettings, setUpdateSettings] = React.useState<SettingsModel>(settings);
 
@@ -60,12 +60,14 @@ const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; ha
                 {/* full day */}
                 <SettingComponent onTap={() => setOpenFullDay(true)} title='Full Day Pickups' subTitle='Set the start and end time for full day pickups' trailing={`${updateSettings.pick_up_start_time} - ${updateSettings.pick_up_end_time}`} />
                 <SettingComponent onTap={() => setOpenFullDayAllowance(true)} title='PickUp allowance' subTitle='Set the allowance time for pickup.' trailing={`${updateSettings.pick_up_allowance} mins`} />
+                {/* staff clock in / clock out */}
+                <SettingComponent onTap={() => setOpenStaffClocking(true)} title='Clock in Time' subTitle='Set the start and end time for  clocking in' trailing={`${updateSettings.clock_in_start_time} - ${updateSettings.clock_in_end_time}`} />
+                <SettingComponent onTap={() => setOpenStaffClockingOut(true)} title='Clock out Time' subTitle='Set the start and end time for staff clocking out' trailing={`${updateSettings.clock_out_start_time} - ${updateSettings.clock_out_end_time}`} />
                 {/* clocking */}
                 <SettingComponent title='Clock in / Clock out' subTitle='Clock in / Clock out' trailing={<SwitchComponent defaultChecked={updateSettings.clock_in_clock_out} onChange={(b) => setUpdateSettings({
                     ...updateSettings,
                     clock_in_clock_out: b
                 })} />} />
-
                 {
                     !updateSettings.clock_in_clock_out ? (<>
                         <SettingComponent title='Overtime' subTitle={updateSettings.allow_overtime ? 'enabled' : 'disabled'} trailing={<SwitchComponent defaultChecked={updateSettings.allow_overtime} onChange={(b) => setUpdateSettings({
@@ -109,6 +111,50 @@ const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; ha
                     </div>
                 </div>
             </DropOffDateModal>
+            {/* staff clocking settings */}
+            <DropOffDateModal onTap={() => {
+                setOpenStaffClocking(false);
+            }} title='Setting Staff Clocking' open={staffClocking} setOpen={setOpen}>
+                <div className='p-3 flex flex-row justify-between mx-5'>
+                    <div>
+                        <label htmlFor="pickUpDate" className='font-bold p-1'>Clock In Start Time.</label> <br />
+                        <input type="time" className='p-2 border' id="pickUpDate" value={updateSettings.clock_in_start_time} onChange={(e) => setUpdateSettings({
+                            ...updateSettings,
+                            clock_in_start_time: e.target.value
+                        })} name="staffClockIn" />
+                    </div>
+                    <div>
+                        <label htmlFor="pickUpTime" className='font-bold p-1'>Clock In End Time</label> <br />
+                        <input type="time" className='border p-2' value={updateSettings.clock_in_end_time} id="pickUpTime" onChange={(e) => setUpdateSettings({
+                            ...updateSettings,
+                            clock_in_end_time: e.target.value
+                        })} name="staffClockOut" />
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* end of staff clocking settings */}
+            {/* clocking out */}
+            <DropOffDateModal onTap={() => {
+                setOpenStaffClockingOut(false);
+            }} title='Setting Staff Clocking' open={staffClockingOut} setOpen={setOpenStaffClockingOut}>
+                <div className='p-3 flex flex-row justify-between mx-5'>
+                    <div>
+                        <label htmlFor="pickUpDate" className='font-bold p-1'>Clock Out Start Time.</label> <br />
+                        <input type="time" className='p-2 border' id="pickUpDate" value={updateSettings.clock_out_start_time} onChange={(e) => setUpdateSettings({
+                            ...updateSettings,
+                            clock_out_start_time: e.target.value
+                        })} name="staffClockIn" />
+                    </div>
+                    <div>
+                        <label htmlFor="pickUpTime" className='font-bold p-1'>Clock Out End Time</label> <br />
+                        <input type="time" className='border p-2' value={updateSettings.clock_out_end_time} id="pickUpTime" onChange={(e) => setUpdateSettings({
+                            ...updateSettings,
+                            clock_out_end_time: e.target.value
+                        })} name="staffClockOut" />
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* end of staff clocking settings */}
             {/* drop allowance */}
             <DropOffDateModal onTap={() => {
                 setOpenDropAllowance(false);

@@ -1,7 +1,7 @@
 import { IconAlarm } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import React, { useState } from 'react';
 
-const DropOffsComponent = ({ title, trailing, subTitle, onTap }: { title: string; subTitle: string; onTap?: () => void, trailing: string | React.ReactNode }) => {
+const DropOffsComponent = ({ title, trailing, leading, subTitle, onTap }: { leading?: React.ReactNode; title: string; subTitle: string; onTap?: () => void, trailing: string | React.ReactNode }) => {
     const [isZoomed, setIsZoomed] = useState(false);
 
     const handleClick = () => {
@@ -21,7 +21,7 @@ const DropOffsComponent = ({ title, trailing, subTitle, onTap }: { title: string
         >
             <div className="flex items-center">
                 <div className="bg-blue-500 p-2 rounded-lg mr-4">
-                    <IconAlarm className="text-black" size={24} />
+                    {leading ?? <IconAlarm className="text-black" size={24} />}
                 </div>
                 <div>
                     <h2 className="text-md font-semibold">{title}</h2>

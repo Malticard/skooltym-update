@@ -10,6 +10,11 @@ export interface SettingsModel {
     halfDay_pick_up_start_time: string;
     halfDay_pick_up_end_time: string;
     halfDay_pick_up_allowance: string;
+    // clock_in_start_time, clock_in_end_time, clock_out_start_time, clock_out_end_time 
+    clock_in_start_time: string;
+    clock_in_end_time: string;
+    clock_out_start_time: string;
+    clock_out_end_time: string;
     allow_overtime: boolean;
     overtime_rate: number;
     overtime_rate_currency: string;

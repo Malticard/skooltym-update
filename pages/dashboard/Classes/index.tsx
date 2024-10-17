@@ -16,12 +16,12 @@ const Classes = () => {
 
     const { data: classes, error: classError, mutate: mutateClasses, isValidating: isValidatingClasses } = useSWR(
         ['fetchClasses', page],
-        () => fetchClasses(page),
+        () => fetchClasses(),
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
             refreshInterval: 0,
-            dedupingInterval: 5000, // 5 seconds
+            dedupingInterval: 500, // 5 seconds
             onError: (err) => console.error('Error fetching classes:', err)
         }
     );

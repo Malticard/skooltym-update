@@ -94,6 +94,20 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         title: "Cleared Overtime",
       },
       {
+        path: "/dashboard/staffClocking",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Staff Clocking",
+      }, {
+        path: "/dashboard/studentClocking",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Student Clocking",
+      }, {
         path: "/dashboard/PickUps",
         icon: "ti-arrow-up",
         type: "link",

@@ -93,6 +93,9 @@ class AppUrls {
     static pendingOvertime: string = `${AppUrls.devURL}overtime/pending/`;
     static clearedOvertime: string = `${AppUrls.devURL}overtime/cleared/`;
     static studentsNotPaginated: string = `${AppUrls.devURL}get/not-paginated-students/`;
+    // get clocking staff
+    static clockingStaff: string = `${AppUrls.devURL}clocking/staff`;
+    static clockingStudent: string = `${AppUrls.devURL}clocking/student`;
 }
 
 export default AppUrls;
