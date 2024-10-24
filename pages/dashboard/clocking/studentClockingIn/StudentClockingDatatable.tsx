@@ -6,12 +6,12 @@ import { StudentClockingResult } from '@/interfaces/StudentClockingModel';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentClockingDataTable({ clockingData, updatePage }: { updatePage: (value: number) => void; clockingData: any; }) {
-    const [data, setData] = React.useState<any[]>(clockingData.results);
+    const [data, setData] = React.useState<any[]>(clockingData?.results ?? []);
 
     // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(clockingData.page || 1);
-    const [pageSize] = React.useState(clockingData.limit || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(clockingData.total || 0);
+    const [currentPage, setCurrentPage] = React.useState(clockingData?.page || 1);
+    const [pageSize] = React.useState(clockingData?.limit || 10);
+    const [totalDocuments, setTotalDocuments] = React.useState(clockingData?.total || 0);
 
     // Update the data when the clockingData prop changes
     React.useEffect(() => {
@@ -42,11 +42,11 @@ export default function StudentClockingDataTable({ clockingData, updatePage }: {
             selector: (row: StudentClockingResult) => row.clock_in,
             sortable: true
         },
-        {
-            name: "Clock Out".toLocaleUpperCase(),
-            selector: (row: StudentClockingResult) => row.clock_out || 'N/A',
-            sortable: true
-        },
+        // {
+        //     name: "Clock Out".toLocaleUpperCase(),
+        //     selector: (row: StudentClockingResult) => row.clock_out || 'N/A',
+        //     sortable: true
+        // },
     ];
 
     // Function to handle page change

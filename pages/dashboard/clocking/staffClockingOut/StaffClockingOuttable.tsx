@@ -5,8 +5,8 @@ import { StaffClockingResult } from '@/interfaces/StaffClockingModel';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function StaffClockingDataTable({ clockingData, updatePage }: { updatePage: (value: number) => void; clockingData: any; }) {
-    const [data, setData] = React.useState<any[]>(clockingData.results);
+export default function StaffClockingOutDataTable({ clockingData, updatePage }: { updatePage: (value: number) => void; clockingData: any; }) {
+    const [data, setData] = React.useState<any[]>(clockingData?.results ?? []);
     // State to hold pagination details
     const [currentPage, setCurrentPage] = React.useState(clockingData.currentPage || 1);
     const [pageSize] = React.useState(clockingData.pageSize || 10);
@@ -34,10 +34,6 @@ export default function StaffClockingDataTable({ clockingData, updatePage }: { u
             sortable: true
         },
         {
-            name: "Clock In".toLocaleUpperCase(),
-            selector: (row: StaffClockingResult) => [`${row.clock_in}`],
-            sortable: true
-        }, {
             name: "Clock Out".toLocaleUpperCase(),
             selector: (row: StaffClockingResult) => [`${row.clock_out}` || 'N/A'],
             sortable: true

@@ -3,10 +3,10 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { staffClockingIn } from '@/utils/clocking';
 import useSWR from 'swr';
 import React from 'react';
-import StaffClockingDataTable from './StaffClockingtable';
 import { StaffClockingResponse } from '@/interfaces/StaffClockingModel';
 import { Row, Col } from 'react-bootstrap';
 import LoaderComponent from '@/pages/components/LoaderComponent';
+import StaffClockingInDataTable from './StaffClockingIntable';
 
 // Fetcher function to get staff clocking data
 const fetchStaffClocking = () => staffClockingIn().then(res => res);
@@ -17,15 +17,15 @@ const StaffClockingPage = () => {
         'fetchStaffClocking',
         fetchStaffClocking,
         {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            refreshInterval: 0,
-            dedupingInterval: 500, // 5 
+            // revalidateOnFocus: false,
+            // revalidateOnReconnect: false,
+            // refreshInterval: 0,
+            // dedupingInterval: 500, // 5 
             onError: (err) => console.error('Error fetching staff clocking data:', err)
         }
     );
     if (isClockingLoading) {
-        console.log('Clocking Loading')
+        return <LoaderComponent />;
     }
 
     // Handle error state
@@ -34,8 +34,8 @@ const StaffClockingPage = () => {
     }
     // function to handle mutating staff clocking
     const handleChange = async (page: number) => {
-        const clock = await staffClockingIn(page)
-        mutateClockingData(clock)
+        // const clock = await staffClockingIn(page)
+        // mutateClockingData(clock)
     }
 
     return (
@@ -50,7 +50,7 @@ const StaffClockingPage = () => {
                 <Col xl={12}>
                     {
                         clockingData && (
-                            <StaffClockingDataTable
+                            <StaffClockingInDataTable
                                 updatePage={handleChange}
                                 clockingData={clockingData}
                             />

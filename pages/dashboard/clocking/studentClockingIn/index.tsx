@@ -16,22 +16,22 @@ const StudentClockingPage = () => {
         'fetchStudentClocking',
         fetchStudentClocking,
         {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            refreshInterval: 0,
-            dedupingInterval: 500, // 5 
+            // revalidateOnFocus: false,
+            // revalidateOnReconnect: false,
+            // refreshInterval: 0,
+            // dedupingInterval: 500, // 5 
             onError: (err) => console.error('Error fetching student clocking data:', err)
         }
     );
 
-    // Handle loading state
-    if (isClockingLoading) {
-        return (
-            <div>
-                <LoaderComponent />
-            </div>
-        );
-    }
+    // // Handle loading state
+    // if (isClockingLoading) {
+    //     return (
+    //         <div>
+    //             <LoaderComponent />
+    //         </div>
+    //     );
+    // }
 
     // Handle error state
     if (clockingError) {

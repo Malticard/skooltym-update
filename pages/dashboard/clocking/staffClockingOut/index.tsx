@@ -3,7 +3,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { staffClockingOut } from '@/utils/clocking';
 import useSWR from 'swr';
 import React from 'react';
-import StaffClockingDataTable from './StaffClockingtable';
+import StaffClockingOutDataTable from './StaffClockingOuttable';
 import { StaffClockingResponse } from '@/interfaces/StaffClockingModel';
 import { Row, Col } from 'react-bootstrap';
 import LoaderComponent from '@/pages/components/LoaderComponent';
@@ -50,7 +50,7 @@ const StaffClockingPage = () => {
                 <Col xl={12}>
                     {
                         clockingData && (
-                            <StaffClockingDataTable
+                            <StaffClockingOutDataTable
                                 updatePage={handleChange}
                                 clockingData={clockingData}
                             />
