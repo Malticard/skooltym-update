@@ -4,8 +4,9 @@ import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import FormElement from './FormElement';
 import { postGuardianData } from '@/utils/data_fetch';
 import { Guardian } from '@/interfaces/GuardiansModel';
-import SelectComponent, { Option } from './SelectComponent';
+
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
+import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 
 const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
 
@@ -67,7 +68,7 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
             setMessage('Staff added successfully');
             handleSave(res);
             // setPosting(false)
-            // window.location.reload();
+            window.location.reload();
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
@@ -146,7 +147,7 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
                                 ...guardianData,
                                 type: selected,
                             })
-                        }} /><br /> <SelectComponent options={studentsOptions} label='Students' onSelect={(selected) => {
+                        }} /><br /> <SelectComponent multiSelect options={studentsOptions} label='Students' onSelect={(selected) => {
                             setGuardianData({
                                 ...guardianData,
                                 students: selected,
