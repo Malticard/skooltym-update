@@ -7,8 +7,8 @@ import { Guardian } from '@/interfaces/GuardiansModel';
 import SelectComponent, { Option } from './SelectComponent';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 
-const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
-    const options = [] as Option[];
+const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
+
     const [guardianData, setGuardianData] = React.useState({} as any);
     const [imageFile, setImageFile] = React.useState<File | null>(null);
     const [message, setMessage] = React.useState<string>('');
@@ -45,11 +45,11 @@ const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalS
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        if (!imageFile) {
-            setPosting(false)
-            setMessage('Please select an image file');
-            return;
-        }
+        // if (!imageFile) {
+        //     setPosting(false)
+        //     setMessage('Please select an image file');
+        //     return;
+        // }
         const formData = new FormData();
         // capturing school
         formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -66,18 +66,19 @@ const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalS
         postGuardianData(formData).then((res) => {
             setMessage('Staff added successfully');
             handleSave(res);
-            setPosting(false)
+            // setPosting(false)
+            // window.location.reload();
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
-            setPosting(false)
+            // setPosting(false)
         })
     }
     return (
         <>
             <Modal show={addModalShow} onHide={() => setAddModalShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Staff</Modal.Title>
+                    <Modal.Title>Add Guardian</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmitData}>
                     <Modal.Body>
@@ -95,13 +96,13 @@ const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalS
                                 ...guardianData,
                                 guardian_lname: e.target.value
                             })} />
-                        <br />
+                        {/* <br />
                         <FormElement label='Email'
                             value={guardianData.guardian_email}
                             onChange={(e) => setGuardianData({
                                 ...guardianData,
                                 guardian_email: e.target.value
-                            })} />
+                            })} /> */}
                         <br />
                         <FormElement label='Phone Number'
                             value={guardianData?.guardian_contact}
@@ -153,7 +154,7 @@ const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalS
                         }} /><br /> <SelectComponent options={relationship} label='Relationship' onSelect={(selected) => {
                             setGuardianData({
                                 ...guardianData,
-                                type: selected,
+                                relationship: selected,
                             })
                         }} />
                     </Modal.Body>
@@ -172,4 +173,4 @@ const AddStaff = ({ addModalShow, students, loadingClasses = false, setAddModalS
     );
 };
 
-export default AddStaff;
+export default AddGuardian;

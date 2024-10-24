@@ -1,6 +1,6 @@
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
-import { studentClocking } from '@/utils/clocking';
+import { studentClockingOut } from '@/utils/clocking';
 import useSWR from 'swr';
 import React from 'react';
 import StudentClockingDataTable from './StudentClockingDatatable';
@@ -8,10 +8,10 @@ import { StudentClockingResponse } from '@/interfaces/StudentClockingModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 
 // Fetcher function to get student clocking data
-const fetchStudentClocking = () => studentClocking().then(res => res);
+const fetchStudentClocking = () => studentClockingOut().then(res => res);
 
 const StudentClockingPage = () => {
-    // Using SWR with additional configuration for student clocking data
+    // Using SWR with automatic revalidation for student clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
         'fetchStudentClocking',
         fetchStudentClocking,
@@ -19,23 +19,29 @@ const StudentClockingPage = () => {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
             refreshInterval: 0,
-            dedupingInterval: 5000, // Avoid re-fetching within 5 seconds
+            dedupingInterval: 500, // 5 
             onError: (err) => console.error('Error fetching student clocking data:', err)
         }
     );
 
     // Handle loading state
-    if (isClockingLoading && !clockingData) {
-        return <div>
-            <LoaderComponent />
-        </div>;
+    if (isClockingLoading) {
+        return (
+            <div>
+                {/* <LoaderComponent /> */}
+            </div>
+        );
     }
 
     // Handle error state
     if (clockingError) {
         return <div>Error loading student clocking data</div>;
     }
-
+    // function to handle mutating staff clocking
+    const handleChange = async (page: number) => {
+        const clock = await studentClockingOut(page)
+        mutateClockingData(clock)
+    }
     return (
         <>
             <Seo title="Student Clocking" />
@@ -45,9 +51,7 @@ const StudentClockingPage = () => {
                 active_item="Student Clocking"
             />
             <StudentClockingDataTable
-                updatePage={(value: number): void => {
-                    // Implement update page logic
-                }}
+                updatePage={handleChange}
                 clockingData={clockingData}
             />
         </>

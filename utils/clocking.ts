@@ -3,10 +3,20 @@ import AppUrls from "./apis";
 import { StaffClockingResponse } from "@/interfaces/StaffClockingModel";
 import { StudentClockingResponse } from "@/interfaces/StudentClockingModel";
 
-export const staffClocking = async (): Promise<StaffClockingResponse> => {
+export const staffClockingIn = async (page = 1, limit = 10): Promise<StaffClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(AppUrls.clockingStaff + "/" + school);
+        const response = await axios.get(`${AppUrls.clockingStaffIn}/${school}?page=${page}&limit=${limit}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// clocking out
+export const staffClockingOut = async (page = 1, limit = 10): Promise<StaffClockingResponse> => {
+    try {
+        const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
+        const response = await axios.get(`${AppUrls.clockingStaffOut}/${school}?page=${page}&limit=${limit}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -14,10 +24,21 @@ export const staffClocking = async (): Promise<StaffClockingResponse> => {
 }
 
 // student clocking
-export const studentClocking = async (): Promise<StudentClockingResponse> => {
+export const studentClockingIn = async (page = 1, limit = 10): Promise<StudentClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(AppUrls.clockingStudent + "/" + school);
+        const response = await axios.get(`${AppUrls.clockingStudentIn}/${school}?page=${page}&limit=${limit}`);
+        return response.data;
+    } catch (err: any) {
+        throw new Error(err.toString());
+    }
+}
+
+// student clocking
+export const studentClockingOut = async (page = 1, limit = 10): Promise<StudentClockingResponse> => {
+    try {
+        const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
+        const response = await axios.get(`${AppUrls.clockingStudentOut}/${school}?page=${page}&limit=${limit}`);
         return response.data;
     } catch (err: any) {
         throw new Error(err.toString());

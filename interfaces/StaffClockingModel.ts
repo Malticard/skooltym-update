@@ -29,6 +29,7 @@ export interface StaffClockingResult {
     staff: Staff;
     clock_in: string;
     clock_out: string;
+    late: boolean;
     createdAt: string;
     updatedAt: string;
     __v: number;

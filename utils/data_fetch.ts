@@ -428,9 +428,15 @@ export async function postGuardianData(data: FormData): Promise<any> {
                 'Content-Type': 'multipart/form-data'
             },
         });
-        return response.data;
+        if (response.status == 200) {
+            return response.data;
+        } else {
+            alert('Error: ' + response.data)
+            throw new Error(response.data);
+        }
+
     } catch (error: any) {
-        throw new Error(error.toString());
+        return (error.toString());
     }
 }
 // update guardian data

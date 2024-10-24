@@ -11,15 +11,15 @@ const Checkout = () => {
   const [addModalShow, setAddModalShow] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
 
-  // Fetch staff and roles data using SWR
+  // Fetch staff and roles data using SWR with automatic revalidation
   const { data: staff, error: staffError, isValidating: staffLoading, mutate: mutateStaff } = useSWR(
     'fetchStaff',
     () => fetchStaff(),
     {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      dedupingInterval: 5000,
+      revalidateOnFocus: true, // Revalidate when window gets focus
+      revalidateOnReconnect: true, // Revalidate when reconnecting
+      refreshInterval: 10000, // Poll every 10 seconds
+      dedupingInterval: 5000, // Deduplicate requests for 5 seconds
       onError: (err) => console.error('Error fetching staff:', err)
     }
   );
@@ -28,15 +28,15 @@ const Checkout = () => {
     'fetchRoles',
     fetchRoles,
     {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      dedupingInterval: 5000,
+      revalidateOnFocus: true, // Revalidate when window gets focus
+      revalidateOnReconnect: true, // Revalidate when reconnecting
+      refreshInterval: 10000, // Poll every 10 seconds
+      dedupingInterval: 5000, // Deduplicate requests for 5 seconds
       onError: (err) => console.error('Error fetching roles:', err)
     }
   );
 
-  // Update data
+  // Update data manually
   const updates = async () => {
     setIsUploading(true);
     try {
@@ -47,7 +47,7 @@ const Checkout = () => {
     } finally {
       setIsUploading(false);
     }
-  }
+  };
 
   // Handle page change for pagination
   const onChangePage = async (page: number) => {
@@ -60,7 +60,6 @@ const Checkout = () => {
   };
 
   // If loading or error, show loader or error message
-  // if ((staffLoading && !staff) || (rolesLoading && !roles)) return <LoaderComponent />;
   if (staffError || rolesError) return <div>Error loading data: {staffError?.message || rolesError?.message}</div>;
 
   return (

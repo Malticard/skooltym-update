@@ -3,15 +3,12 @@ import DataTable from 'react-data-table-component';
 import { Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
-import EditStaff from './models/EditGuardian';
 import DeleteStudent from './models/DeleteGuardian';
-import { deleteStaffData } from '@/utils/data_fetch';
-import { Staff, StaffResponse } from '@/interfaces/StaffModel';
-import { Role } from '@/interfaces/RolesModel';
-import AddStaff from './models/AddGuardian';
+import { deleteGuardianData } from '@/utils/data_fetch';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import { Guardian, GuardianResponse } from '@/interfaces/GuardiansModel';
 import EditGuardian from './models/EditGuardian';
+import AddGuardian from './models/AddGuardian';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -32,7 +29,7 @@ export default function GuardianDataTable({ guardians, addModalShow, students, s
             name: "Guardian Profile".toLocaleUpperCase(),
             cell: (row: Guardian) => (<img className='m-2 rounded-full w-[3em] h-[3em]' src={row.guardian_profile_pic} width={50} height={50} alt='' />),
             ignoreRowClick: true,
-            allowOverflow: true,
+            allowoverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),
@@ -62,7 +59,7 @@ export default function GuardianDataTable({ guardians, addModalShow, students, s
                 </>
             ),
             ignoreRowClick: true,
-            button: true,
+            button: "true",
         }
     ];
     // Handle the "Edit" button click
@@ -91,7 +88,7 @@ export default function GuardianDataTable({ guardians, addModalShow, students, s
     const handleSaveDelete = () => {
         setDeleting(true);
         // console.log("Save the changes for student", currentStudent);
-        deleteStaffData(currentGuardian?._id as string).then((res) => {
+        deleteGuardianData(currentGuardian?._id as string).then((res) => {
             // Remove the student from the list
             setDeleteModalShow(false);
             setDeleting(false);
@@ -132,7 +129,7 @@ export default function GuardianDataTable({ guardians, addModalShow, students, s
             {/* modal to handle deleting */}
             <DeleteStudent deleteModalShow={deleteModalShow} deleting={deleting} currentGuardian={currentGuardian} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
             {/* Student data */}
-            <AddStaff loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} handleSave={handleSave} students={students} />
+            <AddGuardian loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} handleSave={handleSave} students={students} />
         </>
 
     );

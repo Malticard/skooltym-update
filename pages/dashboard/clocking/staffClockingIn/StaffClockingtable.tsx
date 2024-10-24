@@ -29,6 +29,11 @@ export default function StaffClockingDataTable({ clockingData, updatePage }: { u
             sortable: true
         },
         {
+            name: "LATE".toLocaleUpperCase(),
+            selector: (row: StaffClockingResult) => [`${row.late}`],
+            sortable: true
+        },
+        {
             name: "Clock In".toLocaleUpperCase(),
             selector: (row: StaffClockingResult) => [`${row.clock_in}`],
             sortable: true

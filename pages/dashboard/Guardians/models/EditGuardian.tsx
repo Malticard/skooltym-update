@@ -106,12 +106,12 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
                                     guardian_lname: e.target.value
                                 })} />
                             <br />
-                            <FormElement label='Email'
+                            {/* <FormElement label='Email'
                                 value={currentGuardian.guardian_email}
                                 onChange={(e) => setCurrentGuardian({
                                     ...currentGuardian,
                                     guardian_email: e.target.value
-                                })} />
+                                })} /> */}
                             <br /> <FormElement label='Contact'
                                 value={currentGuardian.guardian_contact.toString()}
                                 onChange={(e) => setCurrentGuardian({

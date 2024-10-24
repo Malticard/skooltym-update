@@ -1,6 +1,6 @@
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
-import { staffClocking } from '@/utils/clocking';
+import { staffClockingIn } from '@/utils/clocking';
 import useSWR from 'swr';
 import React from 'react';
 import StaffClockingDataTable from './StaffClockingtable';
@@ -9,10 +9,10 @@ import { Row, Col } from 'react-bootstrap';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 
 // Fetcher function to get staff clocking data
-const fetchStaffClocking = () => staffClocking().then(res => res);
+const fetchStaffClocking = () => staffClockingIn().then(res => res);
 
 const StaffClockingPage = () => {
-    // Using SWR with additional configuration for staff clocking data
+    // Using SWR with automatic revalidation for staff clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StaffClockingResponse>(
         'fetchStaffClocking',
         fetchStaffClocking,
@@ -20,19 +20,22 @@ const StaffClockingPage = () => {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
             refreshInterval: 0,
-            dedupingInterval: 5000, // Avoid re-fetching within 5 seconds
+            dedupingInterval: 500, // 5 
             onError: (err) => console.error('Error fetching staff clocking data:', err)
         }
     );
-
-    // // Handle loading state
-    // if (isClockingLoading && !clockingData) {
-    //     return <div>Loading...</div>;
-    // }
+    if (isClockingLoading) {
+        console.log('Clocking Loading')
+    }
 
     // Handle error state
     if (clockingError) {
         return <div>Error loading staff clocking data</div>;
+    }
+    // function to handle mutating staff clocking
+    const handleChange = async (page: number) => {
+        const clock = await staffClockingIn(page)
+        mutateClockingData(clock)
     }
 
     return (
@@ -41,17 +44,17 @@ const StaffClockingPage = () => {
             <PageHeader
                 title="Staff"
                 item="Skooltym"
-                active_item="Staff Clocking"
+                active_item="Staff Clocking In"
             />
             <Row>
                 <Col xl={12}>
                     {
-                        isClockingLoading ? <LoaderComponent /> : <StaffClockingDataTable
-                            updatePage={(value: number): void => {
-                                // Implement update page logic
-                            }}
-                            clockingData={clockingData}
-                        />
+                        clockingData && (
+                            <StaffClockingDataTable
+                                updatePage={handleChange}
+                                clockingData={clockingData}
+                            />
+                        )
                     }
                 </Col>
             </Row>

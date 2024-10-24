@@ -1,5 +1,3 @@
-import { StaffLogin } from "@/interfaces/StaffLogin";
-
 export interface MenuItem {
   path?: string;
   icon?: string;
@@ -71,9 +69,7 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         title: "Streams",
       },
 
-    ]
-
-    ,
+    ],
   },
   {
     menutitle: "MONITORING SECTION",
@@ -96,17 +92,48 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
       {
         path: "/dashboard/staffClocking",
         icon: "ti-timer",
-        type: "link",
+        type: "sub",
         active: false,
         selected: false,
         title: "Staff Clocking",
+        children: [
+          {
+            path: "/dashboard/clocking/staffClockingIn",
+            type: "link",
+            active: false,
+            selected: false,
+            title: "Clocking In",
+          }, {
+            path: "/dashboard/clocking/staffClockingOut",
+            type: "link",
+            active: false,
+            selected: false,
+            title: "Clocking Out",
+          }
+        ],
       }, {
-        path: "/dashboard/studentClocking",
+        title: "Student Clocking",
         icon: "ti-timer",
-        type: "link",
+        type: "sub",
         active: false,
         selected: false,
-        title: "Student Clocking",
+        children: [
+          {
+            path: "/dashboard/clocking/studentClockingIn",
+            // icon: "ti-timer",
+            type: "link",
+            active: false,
+            selected: false,
+            title: "Clocking In",
+          }, {
+            path: "/dashboard/clocking/studentClockingOut",
+            // icon: "ti-timer",
+            type: "link",
+            active: false,
+            selected: false,
+            title: "Clocking Out",
+          }
+        ]
       }, {
         path: "/dashboard/PickUps",
         icon: "ti-arrow-up",

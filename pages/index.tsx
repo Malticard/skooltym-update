@@ -21,11 +21,6 @@ const Home = () => {
   let navigate = useRouter();
   React.useEffect(() => {
     // const user = localStorage.getItem("skooltym_user");
-    // if (user) {
-    //   navigate.replace("/dashboard");
-    // } else {
-    //   navigate.replace("/");
-    // }
   }, [])
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value })
@@ -56,7 +51,7 @@ const Home = () => {
         setError("Failed to login");
       }
     }).catch((err) => {
-      setError(err.message);
+      setError("Server Offline");
       setLoading(false);
     });
   }
