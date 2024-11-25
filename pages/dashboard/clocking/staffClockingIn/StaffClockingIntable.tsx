@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StaffClockingResult } from '@/interfaces/StaffClockingModel';
+import moment from 'moment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -35,7 +36,7 @@ export default function StaffClockingInDataTable({ clockingData, updatePage }: {
         },
         {
             name: "Clock In".toLocaleUpperCase(),
-            selector: (row: StaffClockingResult) => [`${row.clock_in}`],
+            selector: (row: StaffClockingResult) => [moment(`${row.clock_in}`).format("hh:mm:ss a")],
             sortable: true
         },
 

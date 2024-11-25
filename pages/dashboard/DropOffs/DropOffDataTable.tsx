@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { DropoffRecord, DropoffRecordsResponse } from '@/interfaces/DropOff';
+import moment from 'moment';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function DropOffDataTable({ dropOffData, updatePage }: { updatePage: (value: number) => void; dropOffData: DropoffRecordsResponse; }) {
@@ -38,7 +39,7 @@ export default function DropOffDataTable({ dropOffData, updatePage }: { updatePa
         },
         {
             name: "DropOff time".toLocaleUpperCase(),
-            selector: (row: DropoffRecord) => [`${row.drop_off_time}`],
+            selector: (row: DropoffRecord) => [moment(`${row.drop_off_time}`).format("hh:mm:ss a")],
             sortable: true
         },
     ];

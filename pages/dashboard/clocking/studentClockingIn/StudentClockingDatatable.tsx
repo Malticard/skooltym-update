@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StudentClockingResult } from '@/interfaces/StudentClockingModel';
+import moment from 'moment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -15,7 +16,7 @@ export default function StudentClockingDataTable({ clockingData, updatePage }: {
 
     // Update the data when the clockingData prop changes
     React.useEffect(() => {
-        if (clockingData.results) {
+        if (clockingData) {
             setData(clockingData.results);
             setTotalDocuments(clockingData.total);
         }
@@ -39,14 +40,10 @@ export default function StudentClockingDataTable({ clockingData, updatePage }: {
         },
         {
             name: "Clock In".toLocaleUpperCase(),
-            selector: (row: StudentClockingResult) => row.clock_in,
+            selector: (row: StudentClockingResult) => moment(row.clock_in).format("hh:mm:ss a"),
             sortable: true
         },
-        // {
-        //     name: "Clock Out".toLocaleUpperCase(),
-        //     selector: (row: StudentClockingResult) => row.clock_out || 'N/A',
-        //     sortable: true
-        // },
+
     ];
 
     // Function to handle page change
