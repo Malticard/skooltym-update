@@ -11,7 +11,7 @@ type SelectComponentProps = {
     onSelect: (selectedValue: string) => void;
 };
 
-const SelectComponent = ({ options, label, onSelect }: SelectComponentProps) => {
+const SelectComponent = ({ options = [], label, onSelect }: SelectComponentProps) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOption, setSelectedOption] = useState<Option | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);

@@ -2,57 +2,102 @@ import React from 'react';
 import SettingComponent from './SettingComponent';
 import { Button, Form } from 'react-bootstrap';
 import DropOffDateModal from './models/dropOffDateModal';
-// import { Input, Slider } from '@mui/material';
 import SliderComponent from '@/pages/components/SliderComponent';
 import SwitchComponent from '@/pages/components/SwitchComponent';
 import { SettingsModel } from '@/interfaces/SettingsModel';
 import { saveSettings } from '@/utils/data_fetch';
 import FormElement from '../Staff/models/FormElement';
 
-const SettingsData = ({ settings, handleUpdates }: { settings: SettingsModel; handleUpdates: () => void }) => {
+// Default settings to use when props.settings is undefined
+const defaultSettings: SettingsModel = {
+    drop_off_start_time: '08:00',
+    drop_off_end_time: '09:00',
+    drop_off_allowance: '15',
+    halfDay_pick_up_start_time: '12:00',
+    halfDay_pick_up_end_time: '13:00',
+    halfDay_pick_up_allowance: '15',
+    pick_up_start_time: '16:00',
+    pick_up_end_time: '17:00',
+    pick_up_allowance: '15',
+    clock_in_start_time: '07:30',
+    clock_in_end_time: '08:30',
+    clock_out_start_time: '17:00',
+    clock_out_end_time: '18:00',
+    clock_in_clock_out: false,
+    allow_overtime: false,
+    overtime_rate_currency: 'UGX',
+    overtime_interval: '30',
+    overtime_rate: 0,
+    _id: '',
+    school_id: '',
+    settings_key: [],
+    isComplete: false,
+    isDeleted: false,
+    createdAt: '',
+    updatedAt: '',
+    __v: 0
+};
+
+interface SettingsDataProps {
+    settings?: SettingsModel;
+    handleUpdates: () => void;
+}
+
+const SettingsData: React.FC<SettingsDataProps> = ({ settings, handleUpdates }) => {
+    // Initialize with either provided settings or default values
+    const initialSettings = settings || defaultSettings;
 
     // booleans
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
     const [openHalfDay, setOpenHalfDay] = React.useState(false);
     const [openHalfDayAllowance, setOpenHalfDayAllowance] = React.useState(false);
-    const [openFullDay, setOpenFullDay] = React.useState(false)
-    const [openFullDayAllowance, setOpenFullDayAllowance] = React.useState(false)
-    const [openOvertimeInterval, setOpenOvertimeInterval] = React.useState(false)
-    const [openDropAllowance, setOpenDropAllowance] = React.useState(false)
-    const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false)
-    const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false)
+    const [openFullDay, setOpenFullDay] = React.useState(false);
+    const [openFullDayAllowance, setOpenFullDayAllowance] = React.useState(false);
+    const [openOvertimeInterval, setOpenOvertimeInterval] = React.useState(false);
+    const [openDropAllowance, setOpenDropAllowance] = React.useState(false);
+    const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false);
+    const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false);
     const [process, setProcess] = React.useState(false);
     const [staffClocking, setOpenStaffClocking] = React.useState(false);
     const [staffClockingOut, setOpenStaffClockingOut] = React.useState(false);
+
     // values
-    const [updateSettings, setUpdateSettings] = React.useState<SettingsModel>(settings);
+    const [updateSettings, setUpdateSettings] = React.useState<SettingsModel>(initialSettings);
 
     // handle form 
-    const handleForm = function (e: React.FormEvent<HTMLFormElement>): void {
+    const handleForm = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setProcess(true);
-        const form = new FormData();
-        Object.entries(updateSettings).forEach(([key, value]) => {
-            form.append(key, value);
-            // console.log(key, value);
-        });
-        // save new changes
-        saveSettings(form).then((res) => {
-            setProcess(false);
-            console.log(res)
+
+        try {
+            const form = new FormData();
+            Object.entries(updateSettings).forEach(([key, value]) => {
+                form.append(key, String(value)); // Ensure value is converted to string
+            });
+
+            await saveSettings(form);
             handleUpdates();
-
-        }).catch((err) => {
-            console.log(err);
+        } catch (err) {
+            console.error('Error saving settings:', err);
+        } finally {
             setProcess(false);
-        })
-    }
+        }
+    };
 
+    // Safely get setting value with fallback
+    const getSettingValue = (value: string | undefined, fallback: string): string => {
+        return value || fallback;
+    };
     return (
         <div className='sm:mx-25 xsm:mx-2'>
             <Form method='POST' onSubmit={handleForm}>
                 {/* drop offs */}
-                <SettingComponent onTap={() => setOpen(true)} title='Drop Off Time' subTitle='Set the start time  and end time for drop offs' trailing={`${updateSettings.drop_off_start_time} - ${updateSettings.drop_off_end_time}`} />
+                <SettingComponent
+                    onTap={() => setOpen(true)}
+                    title='Drop Off Time'
+                    subTitle='Set the start time  and end time for drop offs'
+                    trailing={`${getSettingValue(updateSettings.drop_off_start_time, '00:00')} - ${getSettingValue(updateSettings.drop_off_end_time, '00:00')}`}
+                />
                 <SettingComponent onTap={() => setOpenDropAllowance(true)} title='Drop off time allowance' subTitle='Set the allowance time student drop offs' trailing={`${updateSettings.drop_off_allowance} mins`} />
                 {/* half day */}
                 <SettingComponent onTap={() => setOpenHalfDay(true)} title='Half Day PickUps' subTitle='Set the start and end time for half day pickups.' trailing={`${updateSettings.halfDay_pick_up_start_time} - ${updateSettings.halfDay_pick_up_end_time}`} />

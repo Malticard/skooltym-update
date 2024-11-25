@@ -38,7 +38,9 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
     ]
     // streams
     const studentsOptions: Option[] = [];
-    students.map((r) => studentsOptions.push({ name: `${r.student_fname} ${r.student_lname}`, value: r._id }));
+    if (students) {
+        students.map((r) => studentsOptions.push({ name: `${r.student_fname} ${r.student_lname}`, value: r._id }));
+    }
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
         e.preventDefault();

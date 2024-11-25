@@ -25,7 +25,9 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
     ]
     // streams
     const rolesOptions: Option[] = [];
-    roles.map((stream) => rolesOptions.push({ name: stream.role_type, value: stream._id }));
+    if (roles) {
+        roles.map((stream) => rolesOptions.push({ name: stream.role_type, value: stream._id }));
+    }
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {

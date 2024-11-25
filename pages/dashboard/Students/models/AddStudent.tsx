@@ -16,7 +16,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
     const [message, setMessage] = React.useState<string>('');
     const [posting, setPosting] = React.useState(false);
     // function to fetch available classes
-    if (loadingClasses == false) {
+    if (classes) {
         classes.map((cls) => options.push({ name: cls.class_name, value: cls.class_name }));
     }
     // gender options
@@ -31,7 +31,9 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
     ]
     // streams
     const streamOptions: Option[] = [];
-    streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
+    if (streams) {
+        streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
+    }
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {

@@ -14,7 +14,7 @@ type SelectComponentProps = {
 };
 
 const SelectComponent = ({
-    options,
+    options = [],
     label,
     onSelect,
     multiSelect = false, // defaults to single select if not provided

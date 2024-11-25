@@ -11,101 +11,161 @@ import { PaginatedStreamResult, Stream } from '@/interfaces/StreamModel';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 
+interface DataTableExtensionsProps {
+    columns: any[];
+    data: any[];
+    exportHeaders?: boolean;
+    filter?: boolean;
+    print?: boolean;
+    export?: boolean;
+    children?: React.ReactNode;
+}
 
-const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
+interface StreamDataTableProps {
+    streamData: PaginatedStreamResult;
+    addModalShow: boolean;
+    setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+    updatePage: (value: number) => void;
+    handleUpdates: () => void;
+}
 
-export default function StreamDataTable({ streamData, handleUpdates, addModalShow, setAddModalShow, updatePage }: { handleUpdates: () => void; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, updatePage: (value: number) => void; streamData: PaginatedStreamResult; }) {
-    const navigate = useRouter();
-    const [data, setData] = React.useState<Stream[]>(streamData.results);
-    // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(streamData.currentPage || 1);
-    const [pageSize] = React.useState(streamData.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(streamData.totalDocuments || 0);
+const DataTableExtensions = dynamic<DataTableExtensionsProps>(
+    () => import('react-data-table-component-extensions'),
+    { ssr: false }
+);
+
+export default function StreamDataTable({
+    streamData,
+    addModalShow,
+    setAddModalShow,
+    updatePage,
+    handleUpdates
+}: StreamDataTableProps) {
+    const router = useRouter();
+
+    const [data, setData] = React.useState<Stream[]>([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
+    const [totalDocuments, setTotalDocuments] = React.useState(0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentStream, setCurrentStream] = React.useState<Stream | null>(null);
-    // Update the data when the students prop changes
-    const columns: any = [
-        {
-            name: "Stream".toLocaleUpperCase(),
-            selector: (row: Stream) => [row.stream_name],
-            sortable: true
-        },
-        {
-            name: "Actions".toLocaleUpperCase(),
-            cell: (row: Stream) => (
-                <>
-                    <Button variant="primary" className='mx-1' size="sm" onClick={() => handleEdit(row)}><IconEdit className='text-sm w-5 h-5' /></Button>{' '}
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(row)}><IconTrash className='text-sm w-5 h-5' /></Button>
-                </>
-            ),
-            ignoreRowClick: true,
-            // button: true,
-        }
-    ];
-    // Handle the "Edit" button click
-    const handleEdit = (student: Stream) => {
-        setCurrentStream(student);
-        setEditModalShow(true);  // Show the edit modal
-    };
-    // Handle the "Delete" button click
-    const handleDelete = (data: Stream) => {
-        setDeleteModalShow(true)
-        setCurrentStream(data);
 
+    React.useEffect(() => {
+        if (streamData) {
+            setData(streamData.results || []);
+            setCurrentPage(streamData.currentPage || 1);
+            setPageSize(streamData.pageSize || 10);
+            setTotalDocuments(streamData.totalDocuments || 0);
+        }
+    }, [streamData]);
+
+    const handleEdit = (stream: Stream) => {
+        setCurrentStream(stream);
+        setEditModalShow(true);
     };
-    // handle saving
-    const handleSave = (dat: Stream) => {
-        toast.info("Save the changes for stream", {
+
+    const handleDelete = (stream: Stream) => {
+        setCurrentStream(stream);
+        setDeleteModalShow(true);
+    };
+
+    const handleSave = (newStream: Stream) => {
+        setData(prevData => [newStream, ...prevData]);
+        setAddModalShow(false);
+        toast.success("Stream added successfully", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
-
         });
-        setAddModalShow(false);
-        setData([dat, ...data]);
     };
-    // Handle saving the edited student (you can call an API here)
+
     const handleSaveEdit = () => {
-        console.log("Save the changes for student", currentStream);
         setEditModalShow(false);
         handleUpdates();
-        // window.location.reload();
-
-    }; // Handle saving the edited student (you can call an API here)
-    const handleSaveDelete = () => {
-        setDeleting(true);
-        // console.log("Save the changes for student", currentStudent);
-        deleteStreamData(currentStream?._id as string).then((res) => {
-            // Remove the student from the list
-            setDeleteModalShow(false);
-            setDeleting(false);
-            handleUpdates();
-            // navigate.reload();
-        }).catch((err) => {
-            setDeleting(false);
-            console.log("error data", err);
-            setDeleteModalShow(false);
-            handleUpdates();
+        toast.success("Stream updated successfully", {
+            position: "top-right",
+            autoClose: 3000,
         });
-
     };
-    // Function to handle page change
+
+    const handleSaveDelete = async () => {
+        if (!currentStream?._id) return;
+
+        setDeleting(true);
+        try {
+            await deleteStreamData(currentStream._id);
+            setDeleteModalShow(false);
+            handleUpdates();
+            toast.success("Stream deleted successfully", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        } catch (error) {
+            console.error("Error deleting stream:", error);
+            toast.error("Failed to delete stream", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         updatePage(page);
     };
-    const tableDatas = {
+
+    const columns = [
+        {
+            name: "Stream".toLocaleUpperCase(),
+            selector: (row: Stream) => row.stream_name,
+            sortable: true
+        },
+        {
+            name: "Actions".toLocaleUpperCase(),
+            cell: (row: Stream) => (
+                <div className="flex space-x-2">
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => handleEdit(row)}
+                        className="flex items-center"
+                    >
+                        <IconEdit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(row)}
+                        className="flex items-center"
+                    >
+                        <IconTrash className="w-4 h-4" />
+                    </Button>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+        }
+    ];
+
+    const tableData: DataTableExtensionsProps = {
         columns,
         data,
+        filter: true,
+        export: true,
+        print: true,
+        exportHeaders: true
     };
+
     return (
-        <>
-            <DataTableExtensions {...tableDatas} >
+        <div className="space-y-4">
+            <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
                     data={data}
@@ -115,15 +175,45 @@ export default function StreamDataTable({ streamData, handleUpdates, addModalSho
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
                     onChangePage={handlePageChange}
+                    responsive
+                    striped
+                    highlightOnHover
+                    noDataComponent={
+                        <div className="p-4 text-center text-gray-500">
+                            No streams found
+                        </div>
+                    }
+                    progressPending={!data.length}
+                    progressComponent={
+                        <div className="p-4 text-center text-gray-500">
+                            Loading streams...
+                        </div>
+                    }
                 />
             </DataTableExtensions>
-            {/* Modal for editing student */}
-            <EditStream editModalShow={editModalShow} currentStream={currentStream} setCurrentStream={setCurrentStream} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
-            {/* modal to handle deleting */}
-            <DeleteStream deleteModalShow={deleteModalShow} deleting={deleting} currentStream={currentStream} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
-            {/* Student data */}
-            <AddStream loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} handleSave={handleSave} />
-        </>
 
+            <EditStream
+                editModalShow={editModalShow}
+                currentStream={currentStream}
+                setCurrentStream={setCurrentStream}
+                setEditModalShow={setEditModalShow}
+                handleSaveEdit={handleSaveEdit}
+            />
+
+            <DeleteStream
+                deleteModalShow={deleteModalShow}
+                deleting={deleting}
+                currentStream={currentStream}
+                setDeleteModalShow={setDeleteModalShow}
+                handleSaveDelete={handleSaveDelete}
+            />
+
+            <AddStream
+                loadingClasses={false}
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                handleSave={handleSave}
+            />
+        </div>
     );
 }

@@ -1,57 +1,90 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
-// import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
-// import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import AddPayment from './modals/AddPayment';
 
+const DataTableExtensions: any = dynamic(() =>
+    import('react-data-table-component-extensions'),
+    { ssr: false }
+);
 
+interface PaymentDataTableProps {
+    clearedData: OvertimeModel;
+    openPaymentModal: boolean;
+    setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
+    updatePage: (value: number) => void;
+}
 
-const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
+export default function PaymentDataTable({
+    clearedData,
+    openPaymentModal,
+    setOpenAddPayment,
+    updatePage
+}: PaymentDataTableProps) {
+    const [data, setData] = React.useState<Overtimes[]>([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
+    const [totalDocuments, setTotalDocuments] = React.useState(0);
 
-export default function PaymentDataTable({ clearedData, setOpenAddPayment, openPaymentModal, updatePage }: { openPaymentModal: boolean; setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>; updatePage: (value: number) => void; clearedData: OvertimeModel; }) {
-    const [data, setData] = React.useState<Overtimes[]>(clearedData.results);
-    // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(clearedData.currentPage || 1);
-    const [pageSize] = React.useState(clearedData.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(clearedData.totalDocuments || 0);
-    // Update the data when the students prop changes
-    const columns: any = [
+    // Update state when clearedData changes
+    React.useEffect(() => {
+        if (clearedData) {
+            setData(clearedData.results || []);
+            setCurrentPage(clearedData.currentPage || 1);
+            setPageSize(clearedData.pageSize || 10);
+            setTotalDocuments(clearedData.totalDocuments || 0);
+        }
+    }, [clearedData]);
+
+    const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [row.student.studentProfilePic],
-            sortable: true
+            cell: (row: Overtimes) => (
+                <img
+                    className="rounded-full w-12 h-12 object-cover"
+                    src={row.student.studentProfilePic}
+                    alt={`${row.student.studentFname}'s picture`}
+                    width={48}
+                    height={48}
+                />
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
         },
         {
             name: "Student".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`${row.student.studentFname} ${row.student.studentLname}`],
-            sortable: true
+            selector: (row: Overtimes) =>
+                `${row.student.studentFname} ${row.student.studentLname}`,
+            sortable: true,
         },
         {
             name: "Guardian".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`${row.guardian.guardianFname} ${row.guardian.guardianLname}`],
-            sortable: true
+            selector: (row: Overtimes) =>
+                `${row.guardian.guardianFname} ${row.guardian.guardianLname}`,
+            sortable: true,
         },
         {
             name: "Overtime Charge".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`UGX ${row.overtimeCharge}`],
-            sortable: true
+            selector: (row: Overtimes) => `UGX ${row.overtimeCharge.toLocaleString()}`,
+            sortable: true,
+            right: true,
         },
     ];
 
-    // Function to handle page change
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         updatePage(page);
     };
-    const tableDatas = {
+
+    const tableData = {
         columns,
         data,
     };
+
     return (
-        <>
-            <DataTableExtensions {...tableDatas} >
+        <div className="space-y-4">
+            <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
                     data={data}
@@ -61,11 +94,24 @@ export default function PaymentDataTable({ clearedData, setOpenAddPayment, openP
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
                     onChangePage={handlePageChange}
+                    responsive
+                    striped
+                    highlightOnHover
+                    noDataComponent={
+                        <div className="p-4 text-center text-gray-500">
+                            No payment records found
+                        </div>
+                    }
                 />
             </DataTableExtensions>
-            {/* add payment modal */}
-            <AddPayment streams={[]} loadingClasses handleSave={() => { }} addModalShow={openPaymentModal} setAddModalShow={setOpenAddPayment} />
-        </>
 
+            <AddPayment
+                streams={[]}
+                loadingClasses={false}
+                handleSave={() => { }}
+                addModalShow={openPaymentModal}
+                setAddModalShow={setOpenAddPayment}
+            />
+        </div>
     );
 }

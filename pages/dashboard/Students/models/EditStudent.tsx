@@ -16,7 +16,7 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
     const [imageFile, setImageFile] = React.useState<File | null>(null);
     // const [studentData, setStudentData] = React.useState({} as any);
     // function to fetch available classes
-    if (loadingClasses == false) {
+    if (classes) {
         classes.map((cls) => options.push({ name: cls.class_name, value: cls.class_name }));
     }
     let selectedImage = null;
@@ -32,7 +32,9 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
     ]
     // streams
     const streamOptions: Option[] = [];
-    streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
+    if (streams) {
+        streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
+    }
     // pickup subtitle
     const enabled = studentData?.isHalfDay;
     const picked = studentData?.isVanStudent;

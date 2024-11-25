@@ -39,7 +39,9 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
     ]
     // streams
     const studentsOptions: Option[] = [];
-    students.map((st) => studentsOptions.push({ name: `${st.student_fname} ${st.student_lname}`, value: st._id }));
+    if (students) {
+        students.map((st) => studentsOptions.push({ name: `${st.student_fname} ${st.student_lname}`, value: st._id }));
+    }
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {

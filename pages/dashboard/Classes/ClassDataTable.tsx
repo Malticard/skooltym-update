@@ -10,122 +10,190 @@ import { ClassResponse, SchoolClass } from '@/interfaces/ClassesModel';
 import { Stream } from '@/interfaces/StreamModel';
 import AddClass from './models/AddClass';
 
-
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function ClassDataTable({ classData, handleUpdates, addModalShow, streams, setAddModalShow, loadingClasses, updatePage, updateRows }: { handleUpdates: () => void; streams: Stream[], addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, loadingClasses: boolean; updatePage: (value: number) => void; updateRows: (value: number) => void; classData: ClassResponse; }) {
-    console.log(classData.results)
-    const [data, setData] = React.useState<SchoolClass[]>(classData.results);
-    // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(classData.currentPage || 1);
-    const [pageSize] = React.useState(classData.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(classData.totalDocuments || 0);
+interface ClassDataTableProps {
+    classData: ClassResponse;
+    handleUpdates: () => void;
+    streams: Stream[];
+    addModalShow: boolean;
+    setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+    loadingClasses: boolean;
+    updatePage: (value: number) => void;
+    updateRows: (value: number) => void;
+}
+
+export default function ClassDataTable({
+    classData,
+    handleUpdates,
+    addModalShow,
+    streams,
+    setAddModalShow,
+    loadingClasses,
+    updatePage,
+    updateRows
+}: ClassDataTableProps) {
+    // Provide default values when classData is undefined
+    const defaultData: ClassResponse = {
+        results: [],
+        currentPage: 1,
+        pageSize: 10,
+        totalDocuments: 0,
+        totalPages: 0
+    };
+
+    // Use nullish coalescing to handle undefined classData
+    const safeData = classData ?? defaultData;
+
+    const [data, setData] = React.useState<SchoolClass[]>(safeData.results);
+    const [currentPage, setCurrentPage] = React.useState(safeData.currentPage);
+    const [pageSize] = React.useState(safeData.pageSize);
+    const [totalDocuments, setTotalDocuments] = React.useState(safeData.totalDocuments);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentClass, setCurrentClass] = React.useState<SchoolClass | null>(null);
-    // Update the data when the students prop changes
-    const columns: any = [
+
+    // Update state when classData changes
+    React.useEffect(() => {
+        if (classData) {
+            setData(classData.results);
+            setCurrentPage(classData.currentPage);
+            setTotalDocuments(classData.totalDocuments);
+        }
+    }, [classData]);
+
+    const columns = [
         {
             name: "Class".toLocaleUpperCase(),
-            selector: (row: SchoolClass) => [row.class_name],
+            selector: (row: SchoolClass) => row.class_name ?? '',
             sortable: true
         },
-
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: SchoolClass) => (
-                <>
-                    <Button variant="primary" className='mx-1' size="sm" onClick={() => handleEdit(row)}><IconEdit className='text-sm w-5 h-5' /></Button>{' '}
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(row)}><IconTrash className='text-sm w-5 h-5' /></Button>
-                </>
+                <div className="flex gap-1">
+                    <Button
+                        variant="primary"
+                        className="mx-1"
+                        size="sm"
+                        onClick={() => handleEdit(row)}
+                    >
+                        <IconEdit className="text-sm w-5 h-5" />
+                    </Button>
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(row)}
+                    >
+                        <IconTrash className="text-sm w-5 h-5" />
+                    </Button>
+                </div>
             ),
             ignoreRowClick: true,
-            // button: true,
         }
     ];
-    // Handle the "Edit" button click
-    const handleEdit = (student: SchoolClass) => {
-        setCurrentClass(student);
-        setEditModalShow(true);  // Show the edit modal
+
+    const handleEdit = (classItem: SchoolClass) => {
+        setCurrentClass(classItem);
+        setEditModalShow(true);
     };
-    // Handle the "Delete" button click
-    const handleDelete = (data: SchoolClass) => {
-        setDeleteModalShow(true)
-        setCurrentClass(data);
+
+    const handleDelete = (classItem: SchoolClass) => {
+        setDeleteModalShow(true);
+        setCurrentClass(classItem);
     };
-    // handle saving
-    const handleSave = (dat: SchoolClass) => {
-        console.log("Save the changes for student", dat);
+
+    const handleSave = (newClass: SchoolClass) => {
         setAddModalShow(false);
-        setData([dat, ...data]);
+        setData(prevData => [newClass, ...prevData]);
         handleUpdates();
     };
-    // Handle saving the edited student (you can call an API here)
+
     const handleSaveEdit = () => {
-        console.log("Save the changes for student", currentClass);
         setEditModalShow(false);
         handleUpdates();
-        // window.location.reload();
-
-    }; // Handle saving the edited student (you can call an API here)
-    const handleSaveDelete = () => {
-        setDeleting(true);
-        // console.log("Save the changes for student", currentStudent);
-        deleteClassData(currentClass?._id as string).then((res) => {
-            // Remove the student from the list
-            setDeleteModalShow(false);
-            setDeleting(false);
-            // window.location.reload();
-            handleUpdates();
-        }).catch((err) => {
-            setDeleting(false);
-            console.log("error data", err);
-            setDeleteModalShow(false);
-
-        });
-
     };
-    // Function to handle page change
+
+    const handleSaveDelete = async () => {
+        if (!currentClass?._id) return;
+
+        setDeleting(true);
+        try {
+            await deleteClassData(currentClass._id);
+            setDeleteModalShow(false);
+            handleUpdates();
+        } catch (error) {
+            console.error("Error deleting class:", error);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         updatePage(page);
     };
-    const tableDatas = {
+
+    const tableData = {
         columns,
         data,
     };
+
+    if (loadingClasses) {
+        return <div className="p-4 text-center">Loading...</div>;
+    }
+
     return (
-        <>
-            <DataTableExtensions {...tableDatas} >
+        <div className="w-full">
+            <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments} // total records in the dataset
-                    paginationDefaultPage={currentPage} // current page being viewed
-                    paginationPerPage={pageSize} // number of records per page
-                    onChangePage={handlePageChange} // handler to change pages
-                    onChangeRowsPerPage={updateRows} // handler for changing rows per page
-                    paginationRowsPerPageOptions={[10, 25, 50, 100]} // options for rows per page
+                    paginationTotalRows={totalDocuments}
+                    paginationDefaultPage={currentPage}
+                    paginationPerPage={pageSize}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={updateRows}
+                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
                     paginationComponentOptions={{
-                        noRowsPerPage: false, // to show rows per page selector
-                        rowsPerPageText: 'Rows per page:', // customize label
-                        rangeSeparatorText: 'of', // customize range text
-                        selectAllRowsItem: true, // include "All" option
-                        selectAllRowsItemText: 'All', // label for the "All" option
+                        noRowsPerPage: false,
+                        rowsPerPageText: 'Rows per page:',
+                        rangeSeparatorText: 'of',
+                        selectAllRowsItem: true,
+                        selectAllRowsItemText: 'All',
                     }}
+                    noDataComponent={<div className="p-4">No classes found</div>}
                 />
-
             </DataTableExtensions>
-            {/* Modal for editing student */}
-            <EditClass streams={streams} loadingClasses={loadingClasses} editModalShow={editModalShow} currentClass={currentClass} setCurrentClass={setCurrentClass} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
-            {/* modal to handle deleting */}
-            <DeleteClass deleteModalShow={deleteModalShow} deleting={deleting} currentClass={currentClass} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
-            {/* Student data */}
-            <AddClass loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} handleSave={handleSave} streams={streams} />
-        </>
 
+            <EditClass
+                streams={streams}
+                loadingClasses={loadingClasses}
+                editModalShow={editModalShow}
+                currentClass={currentClass}
+                setCurrentClass={setCurrentClass}
+                setEditModalShow={setEditModalShow}
+                handleSaveEdit={handleSaveEdit}
+            />
+
+            <DeleteClass
+                deleteModalShow={deleteModalShow}
+                deleting={deleting}
+                currentClass={currentClass}
+                setDeleteModalShow={setDeleteModalShow}
+                handleSaveDelete={handleSaveDelete}
+            />
+
+            <AddClass
+                loadingClasses={false}
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                handleSave={handleSave}
+                streams={streams}
+            />
+        </div>
     );
 }

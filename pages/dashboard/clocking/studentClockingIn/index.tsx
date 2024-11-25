@@ -52,11 +52,10 @@ const StudentClockingPage = () => {
             />
             <StudentClockingDataTable
                 updatePage={handleChange}
-                clockingData={clockingData}
+                clockingData={clockingData || { results: [], limit: 0, page: 0, total: 0 }}
             />
         </>
     );
 };
-
 StudentClockingPage.layout = "Contentlayout";
 export default StudentClockingPage;

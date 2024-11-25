@@ -11,7 +11,9 @@ const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setE
     const [message, setMessage] = React.useState<string>('');
     // streams
     const streamsOptions: Option[] = [];
-    streams.map((r) => streamsOptions.push({ name: r.stream_name, value: r._id }));
+    if (streams) {
+        streams.map((r) => streamsOptions.push({ name: r.stream_name, value: r._id }));
+    }
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
         e.preventDefault();

@@ -6,64 +6,91 @@ import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/ico
 import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 
+const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
+    ssr: false
+});
 
+export default function PendingDataTable({
+    pendingData,
+    updatePage
+}: {
+    updatePage: (value: number) => void;
+    pendingData: OvertimeModel;
+}) {
+    // Initialize states with safe default values
+    const [data, setData] = React.useState<Overtimes[]>([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
+    const [totalDocuments, setTotalDocuments] = React.useState(0);
 
-const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
+    // Update state when pendingData changes
+    React.useEffect(() => {
+        if (pendingData) {
+            setData(pendingData.results || []);
+            setCurrentPage(pendingData.currentPage || 1);
+            setPageSize(pendingData.pageSize || 10);
+            setTotalDocuments(pendingData.totalDocuments || 0);
+        }
+    }, [pendingData]);
 
-export default function PendingDataTable({ pendingData, updatePage }: { updatePage: (value: number) => void; pendingData: OvertimeModel; }) {
-    const [data, setData] = React.useState<Overtimes[]>(pendingData.results);
-    // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(pendingData.currentPage || 1);
-    const [pageSize] = React.useState(pendingData.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(pendingData.totalDocuments || 0);
-    // Update the data when the students prop changes
-    const columns: any = [
+    const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [row.student.studentProfilePic],
-            sortable: true
+            cell: (row: Overtimes) => (
+                <img
+                    className="rounded-full w-12 h-12 object-cover"
+                    src={row.student.studentProfilePic}
+                    alt={`${row.student.studentFname}'s picture`}
+                    width={48}
+                    height={48}
+                />
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
         },
         {
             name: "Student".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`${row.student.studentFname} ${row.student.studentLname}`],
+            selector: (row: Overtimes) => `${row.student.studentFname} ${row.student.studentLname}`,
             sortable: true
         },
         {
             name: "Guardian".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`${row.guardian.guardianFname} ${row.guardian.guardianLname}`],
+            selector: (row: Overtimes) => `${row.guardian.guardianFname} ${row.guardian.guardianLname}`,
             sortable: true
         },
         {
             name: "Overtime Charge".toLocaleUpperCase(),
-            selector: (row: Overtimes) => [`UGX ${row.overtimeCharge}`],
-            sortable: true
+            selector: (row: Overtimes) => `UGX ${row.overtimeCharge.toLocaleString()}`,
+            sortable: true,
+            right: true
         },
     ];
 
-    // Function to handle page change
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         updatePage(page);
     };
-    const tableDatas = {
+
+    const tableData = {
         columns,
         data,
     };
-    return (
-        <>
-            <DataTableExtensions {...tableDatas} >
-                <DataTable
-                    columns={columns}
-                    data={data}
-                    pagination
-                    paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
-                />
-            </DataTableExtensions>
-        </>
 
+    return (
+        <DataTableExtensions {...tableData}>
+            <DataTable
+                columns={columns}
+                data={data}
+                pagination
+                paginationServer
+                paginationTotalRows={totalDocuments}
+                paginationDefaultPage={currentPage}
+                paginationPerPage={pageSize}
+                onChangePage={handlePageChange}
+                responsive
+                striped
+                highlightOnHover
+            />
+        </DataTableExtensions>
     );
 }

@@ -12,23 +12,59 @@ import AddStudent from './models/AddStudent';
 import { deleteStudentData } from '@/utils/data_fetch';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-export default function StudentsDataTable({ students, handleUpdates, addModalShow, setAddModalShow, streams, loadingClasses, updatePage, classes }: { addModalShow: boolean; handleUpdates: () => void; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; updatePage: (value: number) => void; students: StudentsModel; }) {
-
-    const [data, setData] = React.useState<StudentResult[]>(students.results);
-    // State to hold pagination details
-    const [currentPage, setCurrentPage] = React.useState(students.currentPage || 1);
-    const [pageSize] = React.useState(students.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(students.totalDocuments || 0);
+export default function StudentsDataTable({
+    students = { results: [], currentPage: 1, pageSize: 10, totalDocuments: 0, totalPages: 0 }, // Add default value
+    handleUpdates,
+    addModalShow,
+    setAddModalShow,
+    streams = [], // Add default value
+    loadingClasses = false, // Add default value
+    updatePage,
+    classes = [] // Add default value
+}: {
+    students?: StudentsModel; // Make optional
+    handleUpdates: () => void;
+    addModalShow: boolean;
+    setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+    streams: Stream[];
+    loadingClasses: boolean;
+    classes: SchoolClass[];
+    updatePage: (value: number) => void;
+}) {
+    const [data, setData] = React.useState<StudentResult[]>(students?.results || []);
+    const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
+    const [pageSize] = React.useState(students?.pageSize || 10);
+    const [totalDocuments, setTotalDocuments] = React.useState(students?.totalDocuments || 0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
-
+    const [error, setError] = React.useState<string | null>(null);
     const [currentStudent, setCurrentStudent] = React.useState<any>({});
-    // Update the data when the students prop changes
+
+    // Update state when students prop changes
+    React.useEffect(() => {
+        if (students) {
+            setData(students.results || []);
+            setCurrentPage(students.currentPage || 1);
+            setTotalDocuments(students.totalDocuments || 0);
+        }
+    }, [students]);
+
     const columns: any = [
         {
             name: "Student Profile".toLocaleUpperCase(),
-            cell: (row: StudentResult) => (<img className='m-2 rounded-full w-[3em] h-[3em]' src={row.student_profile_pic} width={50} height={50} alt='' />),
+            cell: (row: StudentResult) => (
+                <img
+                    className='m-2 rounded-full w-[3em] h-[3em]'
+                    src={row.student_profile_pic}
+                    width={50}
+                    height={50}
+                    alt={`${row.student_fname}'s profile`}
+                    onError={(e: any) => {
+                        e.target.src = '/default-profile.png'; // Add a default profile image
+                    }}
+                />
+            ),
             ignoreRowClick: true,
             allowOverflow: true,
         },
@@ -41,37 +77,51 @@ export default function StudentsDataTable({ students, handleUpdates, addModalSho
             name: "Last Name".toLocaleUpperCase(),
             selector: (row: StudentResult) => [row.student_lname],
             sortable: true
-        }, {
+        },
+        {
             name: "Class".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row._class.class_name],
+            selector: (row: StudentResult) => [row._class?.class_name || 'N/A'],
             sortable: true
         },
-
         {
             name: "is HalfDay".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isHalfDay ? ' Yes' : 'No'],
+            selector: (row: StudentResult) => [row.isHalfDay ? 'Yes' : 'No'],
             sortable: true,
         },
         {
             name: "is Dropped".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isDropped ? ' Yes' : ' No'],
+            selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
             sortable: true
         },
-
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
                 <>
-                    <Button variant="primary" className='mx-1' size="sm" onClick={() => handleEdit(row)}><IconEdit className='text-sm w-5 h-5' /></Button>{' '}
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(row)}><IconTrash className='text-sm w-5 h-5' /></Button>
+                    <Button
+                        variant="primary"
+                        className='mx-1'
+                        size="sm"
+                        onClick={() => handleEdit(row)}
+                        disabled={deleting}
+                    >
+                        <IconEdit className='text-sm w-5 h-5' />
+                    </Button>
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(row)}
+                        disabled={deleting}
+                    >
+                        <IconTrash className='text-sm w-5 h-5' />
+                    </Button>
                 </>
             ),
             ignoreRowClick: true,
             button: true,
         }
     ];
-    // Handle the "Edit" button click
-    const handleEdit = (student: any) => {
+
+    const handleEdit = (student: StudentResult) => {
         setCurrentStudent({
             _id: student._id,
             student_fname: student.student_fname,
@@ -79,60 +129,74 @@ export default function StudentsDataTable({ students, handleUpdates, addModalSho
             other_name: student.other_name,
             student_gender: student.student_gender,
             student_profile_pic: student.student_profile_pic,
-            _class: student._class.class_name,
-            stream: student.stream.stream_name,
+            _class: student._class?.class_name,
+            stream: student.stream?.stream_name,
             isVanStudent: student.isVanStudent,
             isHalfDay: student.isHalfDay,
         });
-        setEditModalShow(true);  // Show the edit modal
+        setEditModalShow(true);
     };
-    // Handle the "Delete" button click
+
     const handleDelete = (data: StudentResult) => {
-        setDeleteModalShow(true)
+        setDeleteModalShow(true);
         setCurrentStudent(data);
     };
-    // handle saving
+
     const handleSave = (dat: StudentResult) => {
-        console.log("Save the changes for student", dat);
         setAddModalShow(false);
         setData([dat, ...data]);
+        handleUpdates();
     };
-    // Handle saving the edited student (you can call an API here)
+
     const handleSaveEdit = () => {
-        console.log("Save the changes for student", currentStudent);
         setEditModalShow(false);
         handleUpdates();
-        // window.location.reload();
-
-    }; // Handle saving the edited student (you can call an API here)
-    const handleSaveDelete = () => {
-        setDeleting(true);
-        // console.log("Save the changes for student", currentStudent);
-        deleteStudentData(currentStudent?._id as string).then((res) => {
-            // Remove the student from the list
-            setDeleteModalShow(false);
-            setDeleting(false);
-            handleUpdates();
-        }).catch((err) => {
-            setDeleting(false);
-            console.log("error data", err);
-            setDeleteModalShow(false);
-
-        });
-
     };
-    // Function to handle page change
+
+    const handleSaveDelete = async () => {
+        setDeleting(true);
+        setError(null);
+
+        try {
+            await deleteStudentData(currentStudent?._id as string);
+            setDeleteModalShow(false);
+            handleUpdates();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred while deleting the student');
+            console.error("Error deleting student:", err);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         updatePage(page);
     };
+
+    if (error) {
+        return (
+            <div className="text-red-500 p-4 text-center">
+                Error: {error}
+                <Button
+                    variant="link"
+                    className="ml-2"
+                    onClick={() => setError(null)}
+                >
+                    Dismiss
+                </Button>
+            </div>
+        );
+    }
+
     const tableDatas = {
         columns,
         data,
     };
+
     return (
         <>
-            <DataTableExtensions {...tableDatas} >
+            <DataTableExtensions {...tableDatas}>
                 <DataTable
                     columns={columns}
                     data={data}
@@ -142,14 +206,37 @@ export default function StudentsDataTable({ students, handleUpdates, addModalSho
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
                     onChangePage={handlePageChange}
+                    progressPending={deleting}
                 />
             </DataTableExtensions>
-            {/* Modal for editing student */}
-            <EditStudent classes={classes} streams={streams} loadingClasses={loadingClasses} editModalShow={editModalShow} studentData={currentStudent} setStudentData={setCurrentStudent} setEditModalShow={setEditModalShow} handleSaveEdit={handleSaveEdit} />
-            {/* modal to handle deleting */}
-            <DeleteStudent deleteModalShow={deleteModalShow} deleting={deleting} currentStudent={currentStudent} setDeleteModalShow={setDeleteModalShow} handleSaveDelete={handleSaveDelete} />
-            {/* Student data */}
-            <AddStudent loadingClasses={false} addModalShow={addModalShow} setAddModalShow={setAddModalShow} streams={streams} classes={classes} handleSave={handleSave} />
+
+            <EditStudent
+                classes={classes}
+                streams={streams}
+                loadingClasses={loadingClasses}
+                editModalShow={editModalShow}
+                studentData={currentStudent}
+                setStudentData={setCurrentStudent}
+                setEditModalShow={setEditModalShow}
+                handleSaveEdit={handleSaveEdit}
+            />
+
+            <DeleteStudent
+                deleteModalShow={deleteModalShow}
+                deleting={deleting}
+                currentStudent={currentStudent}
+                setDeleteModalShow={setDeleteModalShow}
+                handleSaveDelete={handleSaveDelete}
+            />
+
+            <AddStudent
+                loadingClasses={loadingClasses}
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                streams={streams}
+                classes={classes}
+                handleSave={handleSave}
+            />
         </>
     );
 }
