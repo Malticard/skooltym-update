@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --f
 
 # Build stage
 FROM base AS builder
