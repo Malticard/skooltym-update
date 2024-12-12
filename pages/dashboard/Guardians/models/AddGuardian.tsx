@@ -87,13 +87,13 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
                     <Modal.Body>
                         <FormElement
                             value={guardianData.guardian_fname}
-                            label='FirstName'
+                            label='First Name'
                             onChange={(e) => setGuardianData({
                                 ...guardianData,
                                 guardian_fname: e.target.value
                             })} />
                         <br />
-                        <FormElement label='LastName'
+                        <FormElement label='Last Name'
                             value={guardianData.guardian_lname}
                             onChange={(e) => setGuardianData({
                                 ...guardianData,

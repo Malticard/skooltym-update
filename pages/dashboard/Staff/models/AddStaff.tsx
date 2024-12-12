@@ -72,26 +72,26 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
                     <Modal.Body>
                         <FormElement
                             value={staffData.staff_fname}
-                            label='FirstName'
+                            label='First Name'
                             onChange={(e) => setStaffData({
                                 ...staffData,
                                 staff_fname: e.target.value
                             })} />
                         <br />
-                        <FormElement label='LastName'
+                        <FormElement label='Last Name'
                             value={staffData.staff_lname}
                             onChange={(e) => setStaffData({
                                 ...staffData,
                                 staff_lname: e.target.value
                             })} />
                         <br />
-                        <FormElement label='Email'
+                        {/* <FormElement label='Email'
                             value={staffData.staff_email}
                             onChange={(e) => setStaffData({
                                 ...staffData,
                                 staff_email: e.target.value
-                            })} />
-                        <br />
+                            })} /> */}
+                        {/* <br /> */}
                         <FormElement label='Phone Number'
                             value={staffData?.staff_contact}
                             onChange={(e) => setStaffData({
@@ -102,10 +102,10 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
                         {/* student profile pic */}
                         <Row className='my-0'>
                             <Col className='text-center my-auto'>
-                                <span>Student Profile</span>
+                                <span>Staff Profile</span>
                             </Col>
                             <Col className='mx-20'>
-                                <img className='rounded-full w-20 h-20' src={imageFile == null ? "https://via.placeholder.com/500" : URL.createObjectURL(imageFile as Blob)} alt="student profile" />
+                                <img className='rounded-full w-20 h-20' src={imageFile == null ? "https://via.placeholder.com/500" : URL.createObjectURL(imageFile as Blob)} alt="staff profile" />
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {

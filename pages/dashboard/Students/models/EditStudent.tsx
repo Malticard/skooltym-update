@@ -86,13 +86,13 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                             {/* {currentStudent._id} */}
                             <FormElement
                                 value={studentData.student_fname}
-                                label='FirstName'
+                                label='First Name'
                                 onChange={(e) => setStudentData({
                                     ...studentData,
                                     student_fname: e.target.value
                                 })} />
                             <br />
-                            <FormElement label='LastName'
+                            <FormElement label='Last Name'
                                 value={studentData.student_lname}
                                 onChange={(e) => setStudentData({
                                     ...studentData,

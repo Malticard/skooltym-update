@@ -103,13 +103,14 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     staff_lname: e.target.value
                                 })} />
                             <br />
-                            <FormElement label='Email'
+                            {/* <FormElement label='Email'
                                 value={currentStaff.staff_email}
                                 onChange={(e) => setCurrentStaff({
                                     ...currentStaff,
                                     staff_email: e.target.value
-                                })} />
-                            <br /> <FormElement label='Contact'
+                                })} /> */}
+                            {/* <br />  */}
+                            <FormElement label='Contact'
                                 value={currentStaff.staff_contact || ''}
                                 onChange={(e) => setCurrentStaff({
                                     ...currentStaff,
@@ -119,10 +120,10 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                             {/* student profile pic */}
                             <Row className='my-0'>
                                 <Col className='text-center my-auto'>
-                                    <span>Student Profile</span>
+                                    <span>Staff Profile</span>
                                 </Col>
                                 <Col className='mx-10'>
-                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentStaff.staff_profilePic : selectedImage} alt="student profile" />
+                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentStaff.staff_profilePic : selectedImage} alt="staff profile" />
                                 </Col>
                                 <Col className='my-auto'>
                                     <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {

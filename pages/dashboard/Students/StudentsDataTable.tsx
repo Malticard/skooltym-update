@@ -201,6 +201,8 @@ export default function StudentsDataTable({
                     columns={columns}
                     data={data}
                     pagination
+                    pointerOnHover
+                    highlightOnHover
                     paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
