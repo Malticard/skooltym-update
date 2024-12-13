@@ -507,7 +507,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
                           <span className="shape1"></span>
                           <span className="shape2"></span>
                           <i
-                            className={`${menuItem.icon} ${menuIcontype} side-menu__icon`}
+                            className={`${menuItem.icon} side-menu__icon`}
                           ></i>             <span className="side-menu__label">{menuItem.title}</span></Link>
                       </li>
                       : menuItem.type === "sub" ?
@@ -517,7 +517,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
                             <span className="shape1"></span>
                             <span className="shape2"></span>
                             <i
-                              className={`${menuItem.icon} ${menuIcontype}  side-menu__icon`}
+                              className={`${menuItem.icon}  side-menu__icon`}
                             ></i>              <span className="side-menu__label">{menuItem.title}</span>
                             {menuItem.badge ? (
                               <label className={menuItem.badge}>
