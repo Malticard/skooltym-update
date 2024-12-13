@@ -4,12 +4,6 @@ import Seo from '../../../shared/layout-components/seo/seo'
 import Link from "next/link"
 import { Row, Col, Card, Container, Form } from "react-bootstrap";
 
-
-
-
-
-
-
 const ResetPassword = () => {
   interface DemoChangerElement extends HTMLElement {
     style: CSSStyleDeclaration;
@@ -25,8 +19,6 @@ const ResetPassword = () => {
   return (
     <div>
       <Seo title="Reset Password" />
-
-
       {/* <!-- Row --> */}
       <Fragment>
         <div className="page main-signin-wrapper">
@@ -45,16 +37,16 @@ const ResetPassword = () => {
                   >
                     <div className="mt-5 pt-5 p-2 position-absolute">
                       <Link href="/components/dashboard/dashboard">
-                        <img
+                        {/* <img
                           src={"../../../assets/images/brand-logos/desktop-white.png"}
                           className="header-brand-img mb-4"
                           alt="logo"
-                        />
+                        /> */}
                       </Link>
                       <div className="clearfix"></div>
                       <img
                         src={"../../../assets/images/svgs/user.svg"}
-                        className="ht-100 mb-0"
+                        className="mx-auto h-50 mb-0"
                         alt="user"
                       />
                       <h5 className="mt-4 text-fixed-white">Reset Your Password</h5>
@@ -68,16 +60,16 @@ const ResetPassword = () => {
                     <Container fluid>
                       <Row className=" row-sm">
                         <Card.Body className="mt-2 mb-2">
-                          <img
+                          {/* <img
                             src={"../../../assets/images/brand-logos/desktop-logo.png"}
                             className=" d-lg-none header-brand-img text-start float-start mb-4 error-logo"
                             alt="logo"
-                          />
-                          <img
+                          /> */}
+                          {/* <img
                             src={"../../../assets/images/brand-logos/desktop-white.png"}
                             className=" d-lg-none header-brand-img text-start float-start mb-4 error-logo-light"
                             alt="logo"
-                          />
+                          /> */}
                           <div className="clearfix"></div>
                           <h5 className="text-start mb-2">Reset Your Password</h5>
                           <p className="mb-4 text-muted fs-13 ms-0 text-start">

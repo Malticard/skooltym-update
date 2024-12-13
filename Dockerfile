@@ -36,7 +36,7 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copy built artifacts from builder stage
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# COPY --from=builder --chown=nextjs:nodejs ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Use the non-root user

@@ -40,7 +40,7 @@ const ForgotPassword = () => {
                                             <Link href="/components/dashboard/dashboard">
                                                 <img
                                                     src={"/imgs/forgot.svg"}
-                                                    className="header-brand-img mb-4"
+                                                    className="header-brand-img mx-auto"
                                                     alt="logo"
                                                     width={150}
                                                     height={150}
@@ -68,11 +68,14 @@ const ForgotPassword = () => {
                                                     </p>
                                                     <Form>
                                                         <div className="form-group text-start">
-                                                            <label className="form-label">Email</label>
-                                                            <input className="form-control" placeholder="Enter your email" type="text" />
+                                                            <label className="form-label">Phone number</label>
+                                                            <input className="form-control" placeholder="2567-xxx-xxx" type="text" />
                                                         </div>
                                                         <div className="d-grid">
-                                                            <button className="btn btn-primary">Request reset link</button>
+
+                                                            <a className="btn btn-primary" href="/components/authentication/reset-password">Request password</a>
+
+
                                                         </div>
 
                                                     </Form>
