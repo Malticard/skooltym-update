@@ -15,6 +15,7 @@ import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import { GuardianResponse } from '@/interfaces/GuardiansModel';
 import { DropoffRecordsResponse } from '@/interfaces/DropOff';
 import { PickupResponse } from '@/interfaces/pickUp';
+import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -51,6 +52,16 @@ export async function fetchSettings(): Promise<SettingsModel> {
     const response = await axios.get(`${AppUrls.settings}${data.school}`);
     return (response.data[0]);
 }
+export async function fetchStaffSettings(): Promise<IStaffSettings> {
+    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    console.log(data);
+    try {
+        const response = await axios.get(`${AppUrls.get_staff_settings}${data.school}/get`);
+        return (response.data);
+    } catch (error: any) {
+        throw new Error(error.response.data.toString());
+    }
+}
 // function to update settings
 export async function saveSettings(data: FormData): Promise<any> {
     try {
@@ -63,7 +74,24 @@ export async function saveSettings(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.toString());
+        throw new Error(error.response.data.toString());
+    }
+}
+
+// function to update settings
+export async function saveStaffSettings(data: FormData): Promise<any> {
+    let scl = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        const plainObject = Object.fromEntries(data.entries());
+        // console.log(plainObject);
+        let response = await axios.post(AppUrls.addStaffSettings + scl.school + '/update', plainObject, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.toString());
     }
 }
 

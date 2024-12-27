@@ -2,6 +2,8 @@ import React, { Fragment } from 'react'
 import Seo from '@/shared/layout-components/seo/seo'
 import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import Link from "next/link"
+import { forgotPassword } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -10,7 +12,30 @@ const ForgotPassword = () => {
     interface DemoChangerElement extends HTMLElement {
         style: CSSStyleDeclaration;
     }
+    const [phone, setPhone] = React.useState("");
+    const [errorText, setErrorText] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+    // function to handle triggering forgot password
+    const handleForgotPassword = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData();
+        if (phone.length > 0) {
+            setLoading(true);
+            formData.append('scontact', `${parseInt(phone)}`);
+            forgotPassword(formData).then((res) => {
+                useRouter().replace('/reset-password');
+                setLoading(false);
+            }).catch((err) => {
+                setErrorText(err.toString())
+                console.log(err)
+                setLoading(false);
+            })
+        } else {
+            setErrorText("Phone number is required");
+            setLoading(false);
+        }
 
+    }
     function remove() {
         let demoChanger: DemoChangerElement | null = document.querySelector(".demo_changer")
         if (demoChanger) {
@@ -66,16 +91,14 @@ const ForgotPassword = () => {
                                                     <p className="mb-4 text-muted fs-13 ms-0 text-start">
                                                         {`It's`} free to signup and only takes a minute.
                                                     </p>
-                                                    <Form>
+                                                    <Form onSubmit={handleForgotPassword}>
                                                         <div className="form-group text-start">
                                                             <label className="form-label">Phone number</label>
-                                                            <input className="form-control" placeholder="2567-xxx-xxx" type="text" />
+                                                            <input className={`form-control ${errorText ? "is-invalid" : ""}`} placeholder="2567-xxx-xxx" type="phone" onChange={(e) => setPhone(e.target.value)} value={phone} />
+                                                            {errorText && <div className="invalid-feedback">{errorText}</div>}
                                                         </div>
                                                         <div className="d-grid">
-
-                                                            <a className="btn btn-primary" href="/components/authentication/reset-password">Request password</a>
-
-
+                                                            <button disabled={loading} type="submit" className="btn btn-primary"> {loading ? `Requesting...` : `Request password`}</button>
                                                         </div>
 
                                                     </Form>
@@ -108,3 +131,4 @@ const ForgotPassword = () => {
 ForgotPassword.layout = "Authenticationlayout"
 
 export default ForgotPassword
+

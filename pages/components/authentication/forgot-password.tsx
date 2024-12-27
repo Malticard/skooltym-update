@@ -94,7 +94,7 @@ const ForgotPassword = () => {
                             <p className="mb-0">
                               Try to
                               <Link
-                                href={`/components/authentication/signin`}> Signin
+                                href={`/`}> Signin
                               </Link>
                             </p>
                           </div>

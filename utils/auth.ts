@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sign, verify } from 'jsonwebtoken';
 import { serialize, parse } from 'cookie';
+import axios from 'axios';
+import AppUrls from './apis';
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY || '02_5k001tym_3202';
 const JWT_EXPIRES_IN = '1h';
@@ -70,4 +72,22 @@ export function withAuth(handler: (req: NextApiRequest, res: NextApiResponse, us
 
         return handler(req, res, user);
     };
+}
+
+export async function forgotPassword(data: FormData) {
+    try {
+        const response = await axios.post(AppUrls.forgotPassword, data);
+        return response.data
+    } catch (error: any) {
+        throw new Error(error.response.data.toString());
+    }
+}
+// reset password
+export async function resetPassword(data: FormData) {
+    try {
+        const response = await axios.post(AppUrls.setPassword, data);
+        return response.data
+    } catch (error: any) {
+        throw new Error(error.response.data.toString());
+    }
 }

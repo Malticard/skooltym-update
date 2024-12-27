@@ -1,20 +1,57 @@
 import React, { Fragment } from 'react'
-import Seo from '../../../shared/layout-components/seo/seo'
+import Seo from '../shared/layout-components/seo/seo'
 
 import Link from "next/link"
-import { Row, Col, Card, Container, Form } from "react-bootstrap";
+import { Row, Col, Card, Container, Form, Button } from "react-bootstrap";
+import { resetPassword } from '@/utils/auth';
 
 const ResetPassword = () => {
   interface DemoChangerElement extends HTMLElement {
     style: CSSStyleDeclaration;
   }
-
+  // state management
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [errorPassword, setErrorPassword] = React.useState("");
+  const [errorConfirmPassword, setErrorConfirmPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   function remove() {
     let demoChanger: DemoChangerElement | null = document.querySelector(".demo_changer")
     if (demoChanger) {
       demoChanger.style.right = "-270px";
     }
     document.querySelector(".demo_changer")?.classList.remove("active");
+  }
+  // helper functions
+  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password.length == 0 && confirmPassword.length == 0) {
+      setErrorPassword("Password is required");
+      setErrorConfirmPassword("Confirm Password is required");
+    } else if (password !== confirmPassword) {
+      setErrorPassword("");
+      setErrorConfirmPassword("Passwords do not match");
+    } else {
+      setErrorPassword("");
+      setErrorConfirmPassword("");
+      // start loader
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("new_password", password);
+      formData.append("confirm_password", confirmPassword),
+
+        resetPassword(formData).then((res) => {
+          // stop loader
+          setLoading(false);
+          // redirect to login page
+          window.location.href = "/";
+        }).catch((err) => {
+          // stop loader
+          setLoading(false);
+          // show error message
+          setErrorPassword(err.toString());
+        })
+    }
   }
   return (
     <div>
@@ -23,10 +60,7 @@ const ResetPassword = () => {
       <Fragment>
         <div className="page main-signin-wrapper">
 
-          <Row className="signpages text-center"
-            onClick={() => remove()}
-          >
-
+          <Row className="signpages text-center" onClick={() => remove()} >
             <Col md={12}>
               <Card>
                 <Row className="row-sm">
@@ -37,16 +71,12 @@ const ResetPassword = () => {
                   >
                     <div className="mt-5 pt-5 p-2 position-absolute">
                       <Link href="/components/dashboard/dashboard">
-                        {/* <img
-                          src={"../../../assets/images/brand-logos/desktop-white.png"}
-                          className="header-brand-img mb-4"
-                          alt="logo"
-                        /> */}
+
                       </Link>
                       <div className="clearfix"></div>
                       <img
                         src={"../../../assets/images/svgs/user.svg"}
-                        className="mx-auto h-50 mb-0"
+                        className="mx-auto h-40 mb-0"
                         alt="user"
                       />
                       <h5 className="mt-4 text-fixed-white">Reset Your Password</h5>
@@ -60,38 +90,31 @@ const ResetPassword = () => {
                     <Container fluid>
                       <Row className=" row-sm">
                         <Card.Body className="mt-2 mb-2">
-                          {/* <img
-                            src={"../../../assets/images/brand-logos/desktop-logo.png"}
-                            className=" d-lg-none header-brand-img text-start float-start mb-4 error-logo"
-                            alt="logo"
-                          /> */}
-                          {/* <img
-                            src={"../../../assets/images/brand-logos/desktop-white.png"}
-                            className=" d-lg-none header-brand-img text-start float-start mb-4 error-logo-light"
-                            alt="logo"
-                          /> */}
+
                           <div className="clearfix"></div>
                           <h5 className="text-start mb-2">Reset Your Password</h5>
                           <p className="mb-4 text-muted fs-13 ms-0 text-start">
                             {` It's`} free to signup and only takes a minute.
                           </p>
-                          <Form>
-                            <Form.Group className="text-start form-group" controlId="fromEmail">
-                              <Form.Label>Email</Form.Label>
-                              <Form.Control
-                                placeholder="Enter your mail"
-                                type="text"
-                              />
-                            </Form.Group>
+                          <Form onSubmit={handleResetPassword}>
+
                             <Form.Group
                               className="text-start form-group"
                               controlId="formNewPassword"
                             >
                               <Form.Label>New Password</Form.Label>
                               <Form.Control
-                                placeholder="Enter your password"
-                                type="email"
+                                placeholder="***********"
+                                type="password"
+                                isInvalid={!!errorPassword}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                               />
+                              {errorPassword && (
+                                <Form.Control.Feedback type="invalid">
+                                  {errorPassword}
+                                </Form.Control.Feedback>
+                              )}
                             </Form.Group>
                             <Form.Group
                               className="text-start form-group"
@@ -99,13 +122,23 @@ const ResetPassword = () => {
                             >
                               <Form.Label>Confirm Password</Form.Label>
                               <Form.Control
-                                placeholder="Enter your password"
+                                placeholder="**********"
+                                isInvalid={!!errorConfirmPassword}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 type="password"
                               />
+                              {errorConfirmPassword && (
+                                <Form.Control.Feedback type="invalid">
+                                  {errorConfirmPassword}
+                                </Form.Control.Feedback>
+                              )}
                             </Form.Group>
 
                             <div className="d-grid">
-                              <Link href={`/components/authentication/signin`} className="btn btn-primary">Create</Link>
+                              <Button variant="primary" disabled={loading} type="submit">
+                                {loading ? "Resetting..." : "Reset Password"}
+                              </Button>
                             </div>
 
                           </Form>
@@ -113,7 +146,7 @@ const ResetPassword = () => {
                             <p className="mb-0">
                               Already have an account?
                               <Link className='ms-2'
-                                href={`/components/authentication/signin`}>
+                                href={`/`}>
                                 Sign In
                               </Link>
                             </p>

@@ -171,6 +171,32 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         title: "Settings",
       },
     ],
+  }, {
+    menutitle: "STAFF HUMAN RESOURCE",
+    Items: [
+      {
+        path: "/dashboard/StaffHR/ClockIn",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Staff Clock In",
+      }, {
+        path: "/dashboard/StaffHR/ClockOut",
+        icon: "ti-time",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Staff Clock Out",
+      }, {
+        path: "/dashboard/StaffHR/Settings",
+        icon: "ti-settings",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Settings",
+      }
+    ]
   }
 ];
 
