@@ -4,7 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import DropOffDateModal from '../../Settings/models/dropOffDateModal';
 import SliderComponent from '@/pages/components/SliderComponent';
 import SwitchComponent from '@/pages/components/SwitchComponent';
-import { saveSettings } from '@/utils/data_fetch';
+import { saveSettings, saveStaffSettings } from '@/utils/data_fetch';
 import FormElement from '../../Staff/models/FormElement';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 
@@ -36,15 +36,15 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
     const [open, setOpen] = React.useState(false);
     const [openHalfDay, setOpenHalfDay] = React.useState(false);
     const [openHalfDayAllowance, setOpenHalfDayAllowance] = React.useState(false);
-    const [openFullDay, setOpenFullDay] = React.useState(false);
-    const [openFullDayAllowance, setOpenFullDayAllowance] = React.useState(false);
+    // const [openFullDay, setOpenFullDay] = React.useState(false);
+    // const [openFullDayAllowance, setOpenFullDayAllowance] = React.useState(false);
     const [openOvertimeInterval, setOpenOvertimeInterval] = React.useState(false);
     const [openDropAllowance, setOpenDropAllowance] = React.useState(false);
     const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false);
     const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false);
     const [process, setProcess] = React.useState(false);
-    const [staffClocking, setOpenStaffClocking] = React.useState(false);
-    const [staffClockingOut, setOpenStaffClockingOut] = React.useState(false);
+    // const [staffClocking, setOpenStaffClocking] = React.useState(false);
+    // const [staffClockingOut, setOpenStaffClockingOut] = React.useState(false);
 
     // values
     const [updateSettings, setUpdateSettings] = React.useState<IStaffSettings>(initialSettings);
@@ -53,14 +53,14 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
     const handleForm = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setProcess(true);
-
         try {
             const form = new FormData();
             Object.entries(updateSettings).forEach(([key, value]) => {
+                console.log(key, value);
                 form.append(key, String(value)); // Ensure value is converted to string
             });
 
-            await saveSettings(form);
+            await saveStaffSettings(form);
             handleUpdates();
         } catch (err) {
             console.error('Error saving settings:', err);
@@ -136,7 +136,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
             {/* Half day pickups */}
             <DropOffDateModal onTap={() => {
                 setOpenHalfDay(false);
-            }} title='Setting Half day Time' open={openHalfDay} setOpen={setOpenHalfDay}>
+            }} title='Setting Clock out Time' open={openHalfDay} setOpen={setOpenHalfDay}>
                 <div className='p-3 flex flex-row justify-between mx-5'>
                     <div>
                         <label htmlFor="pickUpDate" className='font-bold p-1'>Staff clock out start time.</label> <br />
@@ -157,7 +157,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
             {/* half day allowance */}
             <DropOffDateModal onTap={() => {
                 setOpenHalfDayAllowance(false);
-            }} title='Setting Half day allowance time' open={openHalfDayAllowance} setOpen={setOpenHalfDayAllowance}>
+            }} title='Setting clock out allowance time' open={openHalfDayAllowance} setOpen={setOpenHalfDayAllowance}>
                 <div className='p-3 mx-5'>
                     <div>
                         <SliderComponent min={0} max={100} step={1} defaultValue={updateSettings.staff_clock_out_allowance} onChange={(value) => setUpdateSettings({

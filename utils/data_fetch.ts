@@ -54,12 +54,12 @@ export async function fetchSettings(): Promise<SettingsModel> {
 }
 export async function fetchStaffSettings(): Promise<IStaffSettings> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
-    console.log(data);
     try {
-        const response = await axios.get(`${AppUrls.get_staff_settings}${data.school}/get`);
+        const response = await axios.get(`${AppUrls.get_staff_settings}/${data.school}/get`);
         return (response.data);
     } catch (error: any) {
-        throw new Error(error.response.data.toString());
+        console.log(error);
+        throw new Error(error);
     }
 }
 // function to update settings
@@ -74,7 +74,8 @@ export async function saveSettings(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response.data.toString());
+        console.log(error.response.data);
+        throw new Error(error.response.data);
     }
 }
 
@@ -83,7 +84,7 @@ export async function saveStaffSettings(data: FormData): Promise<any> {
     let scl = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         const plainObject = Object.fromEntries(data.entries());
-        // console.log(plainObject);
+        console.log(plainObject);
         let response = await axios.post(AppUrls.addStaffSettings + scl.school + '/update', plainObject, {
             headers: {
                 'Content-Type': 'application/json'
@@ -91,7 +92,7 @@ export async function saveStaffSettings(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response.data.toString());
+        throw new Error(error.response.data.message);
     }
 }
 
@@ -219,6 +220,7 @@ export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.dashboard + data.school);
+        console.log(response.data);
         return ClassDataModelConvert.toClassDataModel(JSON.stringify(response.data));
     } catch (error: any) {
         throw new Error(error.toString());

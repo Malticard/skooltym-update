@@ -4,6 +4,9 @@ class AppUrls {
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "http://13.127.169.59:5050/image/images/";
 
+    // get students in a particular stream
+    static studentsInStream: string = `${AppUrls.devURL}get/stream-students`;
+
     // post urls
     static login: string = `${AppUrls.devURL}post/staff-login`;
     static addClass: string = `${AppUrls.devURL}post/class/create`;
@@ -12,7 +15,7 @@ class AppUrls {
     static addStudent: string = `${AppUrls.devURL}post/students/create`;
     static addGuardian: string = `${AppUrls.devURL}post/guardians/create`;
     static addSettings: string = `${AppUrls.devURL}post/settings/create`;
-    static addStaffSettings: string = `${AppUrls.devURL}/staff/`;
+    static addStaffSettings: string = `${AppUrls.devURL}staff/`;
     static addPickUp: string = `${AppUrls.devURL}post/pickup/create`;
     static addDropOff: string = `${AppUrls.devURL}post/dropoff/create`;
     static registerOvertime: string = `${AppUrls.devURL}post/overtime/create`;
@@ -26,7 +29,7 @@ class AppUrls {
     static overtime: string = `${AppUrls.devURL}get/overtime/`;
     static staff: string = `${AppUrls.devURL}get/staff/`;
     static settings: string = `${AppUrls.devURL}get/settings/`;
-    static get_staff_settings: string = `${AppUrls.devURL}/staff/`;
+    static get_staff_settings: string = `${AppUrls.devURL}staff`;
     static years: string = `${AppUrls.devURL}get/years/`;
     static getStudents: string = `${AppUrls.devURL}get/students/`;
     static getGuardians: string = `${AppUrls.devURL}get/guardians/`;

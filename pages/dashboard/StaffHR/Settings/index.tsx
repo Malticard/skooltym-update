@@ -13,7 +13,7 @@ const Settings = () => {
     const [isSnackbarVisible, setIsSnackbarVisible] = React.useState(false);
 
     // Use SWR to fetch settings
-    const { data: settings, error, isValidating, mutate } = useSWR('settings', fetchStaffSettings, {
+    const { data: settings, error, isValidating, mutate } = useSWR('staffSettings', fetchStaffSettings, {
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         refreshInterval: 0,
@@ -23,7 +23,7 @@ const Settings = () => {
 
     React.useEffect(() => {
         // if (error) {
-        console.log(settings);
+        console.log("staff settings");
         // }
     }, []);
     function update() {
@@ -37,8 +37,8 @@ const Settings = () => {
         <>
             <PageHeader title="Staff Clocking Settings" item="Skooltym" active_item="Staff Settings" />
             <Seo title="Staff Settings" />
-            {/* {isValidating ? <LoaderComponent /> : null} */}
-            {!isValidating ? settings && (<SettingsSection handleUpdates={update} settings={settings} />) : <LoaderComponent />}
+            {isValidating ? <LoaderComponent /> : settings && (<SettingsSection handleUpdates={update} settings={settings} />)}
+
             <Snackbar
                 message="Settings saved successfully!"
                 isVisible={isSnackbarVisible}

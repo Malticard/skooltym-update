@@ -1,14 +1,23 @@
 import React from 'react'
 
-const PageHeader = (props: { title: string; item: string; active_item: string, buttonText?: string; onTap?: () => void }) => {
+const PageHeader = (props: { title: string; children?: React.ReactNode; link?: boolean; item?: string; active_item?: string, buttonText?: string; onTap?: () => void }) => {
   return (
     <div className="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
       <div>
         <h2 className="main-content-title fs-24 mb-1">{props.title}</h2>
-        <ol className="breadcrumb mb-0">
-          <li className="breadcrumb-item"><a>{props.item}</a></li>
-          <li className="breadcrumb-item active" aria-current="page">{props.active_item}</li>
-        </ol>
+        {
+          props.link ? (
+            <ol className="breadcrumb mb-0">
+              {props.children}
+            </ol>
+          ) : (
+            <ol className="breadcrumb mb-0">
+              <li className="breadcrumb-item"><a>{props.item}</a></li>
+              <li className="breadcrumb-item active" aria-current="page">{props.active_item}</li>
+            </ol>
+          )
+        }
+
       </div>
       <div className="d-flex">
         <div className="justify-content-center">

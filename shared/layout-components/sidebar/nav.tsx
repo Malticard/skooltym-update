@@ -89,52 +89,8 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         selected: false,
         title: "Cleared Overtime",
       },
+
       {
-        path: "/dashboard/staffClocking",
-        icon: "ti-timer",
-        type: "sub",
-        active: false,
-        selected: false,
-        title: "Staff Clocking",
-        children: [
-          {
-            path: "/dashboard/clocking/staffClockingIn",
-            type: "link",
-            active: false,
-            selected: false,
-            title: "Clocking In",
-          }, {
-            path: "/dashboard/clocking/staffClockingOut",
-            type: "link",
-            active: false,
-            selected: false,
-            title: "Clocking Out",
-          }
-        ],
-      }, {
-        title: "Student Clocking",
-        icon: "ti-timer",
-        type: "sub",
-        active: false,
-        selected: false,
-        children: [
-          {
-            path: "/dashboard/clocking/studentClockingIn",
-            // icon: "ti-timer",
-            type: "link",
-            active: false,
-            selected: false,
-            title: "Clocking In",
-          }, {
-            path: "/dashboard/clocking/studentClockingOut",
-            // icon: "ti-timer",
-            type: "link",
-            active: false,
-            selected: false,
-            title: "Clocking Out",
-          }
-        ]
-      }, {
         path: "/dashboard/PickUps",
         icon: "ti-arrow-up",
         type: "link",
@@ -149,8 +105,26 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         selected: false,
         title: "Drop Offs",
       },
-
     ],
+  }, {
+    menutitle: "STUDENT CLOCKING",
+    Items: [
+      {
+        path: "/dashboard/clocking/studentClockingIn",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Clocking In",
+      }, {
+        path: "/dashboard/clocking/studentClockingOut",
+        icon: "ti-timer",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Clocking Out",
+      }
+    ]
   },
   {
     menutitle: "SETTINGS SECTION",

@@ -78,6 +78,7 @@ const Dashboardecommerce = () => {
               classLoading ? Array.from({ length: 10 }).map((x, index) => (<Skeleton key={index} width={200} height={150} variant="rounded" />)) : classData.map((x, index) => (<ClassComponent key={index} title={x.class_name} streams={x.class_streams.length} students={x.class_students.length} />))
             }
           </Row>
+
         </>
       ) : (<></>)}
 

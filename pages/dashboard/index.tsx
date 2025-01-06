@@ -11,7 +11,6 @@ const Dashboard = () => {
       <Seo title="Dashboard" />
       <PageHeader title="Dashboard" item="Skooltym" active_item="Dashboard" />
       <Dashboardecommerce />
-
     </>
   )
 }
