@@ -187,7 +187,6 @@ export default function StaffDataTable({
                     onChangePage={handlePageChange}
                     responsive
                     striped
-                    highlightOnHover
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No staff records found

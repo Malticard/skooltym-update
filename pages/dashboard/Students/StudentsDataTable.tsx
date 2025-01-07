@@ -84,15 +84,15 @@ export default function StudentsDataTable({
             sortable: true
         },
         {
-            name: "is HalfDay".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isHalfDay ? 'Yes' : 'No'],
+            name: "Nature".toLocaleUpperCase(),
+            selector: (row: StudentResult) => [row.isHalfDay ? 'Half Day Student' : 'Full Day Student'],
             sortable: true,
         },
-        {
-            name: "is Dropped".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
-            sortable: true
-        },
+        // {
+        //     name: "is Dropped".toLocaleUpperCase(),
+        //     selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
+        //     sortable: true
+        // },
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
@@ -201,8 +201,7 @@ export default function StudentsDataTable({
                     columns={columns}
                     data={data}
                     pagination
-                    pointerOnHover
-                    highlightOnHover
+                    noHeader={false}
                     paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}

@@ -73,13 +73,13 @@ export default function StaffClockingInDataTable({
             sortable: true
         },
         {
-            name: "LATE".toLocaleUpperCase(),
+            name: "STATUS".toLocaleUpperCase(),
             selector: (row: StaffClockingResult) => row.late?.toString() ?? 'N/A',
             sortable: true,
             cell: (row: StaffClockingResult) => (
                 <span className={`px-2 py-1 rounded-full text-sm ${row.late ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                     }`}>
-                    {row.late ? 'Yes' : 'No'}
+                    {row.late ? 'LATE' : 'ON TIME'}
                 </span>
             )
         },
@@ -88,7 +88,7 @@ export default function StaffClockingInDataTable({
             selector: (row: StaffClockingResult) => {
                 if (!row.clock_in) return 'N/A';
                 try {
-                    return moment(row.clock_in).format("hh:mm:ss a");
+                    return moment(row.clock_in).format("hh:mm a");
                 } catch (error) {
                     console.error('Error formatting date:', error);
                     return 'Invalid Date';

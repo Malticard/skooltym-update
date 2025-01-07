@@ -113,7 +113,6 @@ export default function DropOffDataTable({
                     onChangePage={handlePageChange}
                     responsive
                     striped
-                    highlightOnHover
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No drop-off records found

@@ -178,14 +178,13 @@ export default function GuardianDataTable({
                     columns={columns}
                     data={data}
                     pagination
-                    paginationServer
+                    paginationServer={false}
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
                     onChangePage={handlePageChange}
                     responsive
                     striped
-                    highlightOnHover
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No guardians found

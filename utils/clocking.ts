@@ -30,7 +30,7 @@ export const studentClockingIn = async (page = 1, limit = 10): Promise<StudentCl
         const response = await axios.get(`${AppUrls.clockingStudentIn}/${school}?page=${page}&limit=${limit}`);
         return response.data;
     } catch (err: any) {
-        throw new Error(err.response.data);
+        throw new Error(err.response.data.toString());
     }
 }
 

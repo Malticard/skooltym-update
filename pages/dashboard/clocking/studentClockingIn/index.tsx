@@ -15,13 +15,13 @@ const StudentClockingPage = () => {
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
         'fetchStudentClocking',
         fetchStudentClocking,
-        {
-            // revalidateOnFocus: false,
-            // revalidateOnReconnect: false,
-            // refreshInterval: 0,
-            // dedupingInterval: 500, // 5 
-            onError: (err) => console.error('Error fetching student clocking data:', err)
-        }
+        // {
+        //     // revalidateOnFocus: false,
+        //     // revalidateOnReconnect: false,
+        //     // refreshInterval: 0,
+        //     // dedupingInterval: 500, // 5 
+        //     onError: (err) => console.error('Error fetching student clocking data:', err)
+        // }
     );
 
     // // Handle loading state

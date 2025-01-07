@@ -50,7 +50,7 @@ export default function StaffClockingOutDataTable({
     const formatTime = (time: string | Date | null | undefined): string => {
         if (!time) return 'N/A';
         try {
-            return moment(time).format('hh:mm:ss a');
+            return moment(time).format('hh:mm a');
         } catch (error) {
             console.error('Error formatting time:', error);
             return 'Invalid Time';
@@ -93,7 +93,7 @@ export default function StaffClockingOutDataTable({
             cell: (row: StaffClockingResult) => (
                 <span className={`px-2 py-1 rounded-full text-sm ${row.late ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                     }`}>
-                    {row.late ? 'Yes' : 'No'}
+                    {row.late ? 'LATE' : 'ON TIME'}
                 </span>
             )
         },
