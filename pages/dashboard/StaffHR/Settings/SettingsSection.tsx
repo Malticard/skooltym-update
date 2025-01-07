@@ -13,6 +13,10 @@ const defaultSettings: IStaffSettings = {
     school: '', // Required field
     staff_clock_in_start: '', // Matches default in interface
     staff_clock_in_end: '', // Matches default in interface
+    late_clocking: false, // Optional, default is false
+    late_interval: 0, // Optional, default is 0
+    late_charge_currency: 'UGX', // Optional, default is 0
+    late_charge: 0, // Optional, default is 0
     staff_clock_out_start: '', // Matches default in interface
     staff_clock_out_end: '', // Matches default in interface
     staff_currency: 'UGX', // Matches default in interface
@@ -43,8 +47,8 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
     const [openOvertimeRate, setOpenOvertimeRate] = React.useState(false);
     const [openOvertimeCurrency, setOpenOvertimeCurrency] = React.useState(false);
     const [process, setProcess] = React.useState(false);
-    // const [staffClocking, setOpenStaffClocking] = React.useState(false);
-    // const [staffClockingOut, setOpenStaffClockingOut] = React.useState(false);
+    const [lateInterval, setOpenLateInterval] = React.useState(false);
+    const [lateCharge, setOpenLateCharge] = React.useState(false);
 
     // values
     const [updateSettings, setUpdateSettings] = React.useState<IStaffSettings>(initialSettings);
@@ -86,6 +90,23 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                 {/* clocking in allowance */}
                 <SettingComponent onTap={() => setOpenDropAllowance(true)} title='Staff Clocking In allowance time' subTitle='Set extra time for staff clock in' trailing={`${getSettingValue(`${updateSettings.staff_clock_in_allowance}`, '0')} mins`} />
                 {/* half day */}
+                {
+                    (<>
+                        <SettingComponent title='Late Clocking' subTitle={updateSettings.late_clocking ? 'enabled' : 'disabled'} trailing={<SwitchComponent defaultChecked={updateSettings.late_clocking} onChange={(b) => setUpdateSettings({
+                            ...updateSettings,
+                            late_clocking: b
+                        })} />
+                        } />
+                        {
+                            updateSettings.late_clocking ? (
+                                <>
+                                    <SettingComponent onTap={() => setOpenOvertimeCurrency(true)} title='Late Fee Currency' subTitle='Select overtime currency' trailing={updateSettings.late_charge_currency} />
+                                    <SettingComponent onTap={() => setOpenLateInterval(true)} title='Late Fee interval' subTitle='Set the amount of time after which an overtime will be charged. e.g every after 10mins.' trailing={`${updateSettings.late_interval} mins`} />
+                                    <SettingComponent onTap={() => setOpenLateCharge(true)} title='Late Fee Rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.late_charge}`} />
+                                </>
+                            ) : (<></>)
+                        }</>)
+                }
                 <SettingComponent onTap={() => setOpenHalfDay(true)} title='Staff Clocking Out Time ' subTitle='Set the start and end time for staff clock out.' trailing={`${getSettingValue(updateSettings.staff_clock_out_start, '00:00')} - ${getSettingValue(updateSettings.staff_clock_out_end, '00:00')}`} />
                 <SettingComponent onTap={() => setOpenHalfDayAllowance(true)} title='Staff Clocking Out allowance time' subTitle='Set the extra time for staff clock out.' trailing={`${getSettingValue(`${updateSettings.staff_clock_out_allowance}`, '0')} mins`} />
 
@@ -220,8 +241,45 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                     </div>
                 </div>
             </DropOffDateModal>
-            {/* snack bar */}
 
+
+            {/* handle late input settings */}
+
+            <DropOffDateModal onTap={() => {
+                setOpenLateCharge(false);
+            }} title='Setting Late charge' open={lateCharge} setOpen={setOpenLateCharge}>
+                <div className='p-3 mx-5'>
+                    <div>
+                        <FormElement
+                            value={`${updateSettings.late_charge}`}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings({
+                                ...updateSettings,
+                                late_charge: parseInt(e.target.value)
+                            })}
+                            label='Late Charge (UGX)'
+                        />
+                        {/* <b>UGX {updateSettings.overtime_rate}</b> */}
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* set overtime interval */}
+            <DropOffDateModal onTap={() => {
+                setOpenLateInterval(false);
+            }} title='Setting Late interval' open={lateInterval} setOpen={setOpenLateInterval}>
+                <div className='p-3 mx-5'>
+                    <div>
+                        <FormElement value={`${updateSettings.late_interval}`} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings(
+                            {
+                                ...updateSettings,
+                                late_interval: parseInt(e.target.value)
+                            }
+                        )} label='Late interval' />
+
+                        {/* <b>{updateSettings.overtime_interval} mins</b> */}
+                    </div>
+                </div>
+            </DropOffDateModal>
+            {/* snack bar */}
         </div>
     );
 };

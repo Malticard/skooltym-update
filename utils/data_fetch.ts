@@ -24,7 +24,8 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
         },);
         return response;
     } catch (err: any) {
-        throw new Error(err);
+        // console.log(err);
+        throw new Error(err.response.data.message);
     }
 }
 

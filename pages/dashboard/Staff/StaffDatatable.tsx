@@ -134,7 +134,7 @@ export default function StaffDataTable({
         },
         {
             name: "Contact".toLocaleUpperCase(),
-            selector: (row: Staff) => row.staff_contact,
+            selector: (row: Staff) => "0" + row.staff_contact,
             sortable: true
         },
         {

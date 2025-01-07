@@ -2,6 +2,10 @@ export interface IStaffSettings {
     school: string; // ObjectId as a string, referenced from "schools"
     staff_clock_in_start?: string; // Optional, default is an empty string
     staff_clock_in_end?: string; // Optional, default is an empty string
+    late_clocking: boolean; // Optional, default is false
+    late_interval?: number; // Optional, default is 0
+    late_charge_currency?: string; // Optional, default is 0
+    late_charge?: number; // Optional, default is 0
     staff_clock_out_start?: string; // Optional, default is an empty string
     staff_clock_out_end?: string; // Optional, default is an empty string
     staff_currency?: string; // Optional, default is "UGX"

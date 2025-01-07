@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "http://94.72.116.178:5050/"; //"http://13.127.169.59:5050/";// "http://127.0.0.1:5050/";//
+    static devURL: string = "http://94.72.116.178:5050/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "http://13.127.169.59:5050/image/images/";
@@ -103,6 +103,9 @@ class AppUrls {
     static clockingStaffOut: string = `${AppUrls.devURL}clocking/staff_out`;
     static clockingStudentIn: string = `${AppUrls.devURL}clocking/student_in`;
     static clockingStudentOut: string = `${AppUrls.devURL}clocking/student_out`;
+    // extra functionality for staff
+    static getStaffOvertime: string = `${AppUrls.devURL}clocking/staff_overtime`;
+    static getStaffLateRecords: string = `${AppUrls.devURL}clocking/staff_late`;
 }
 
 export default AppUrls;

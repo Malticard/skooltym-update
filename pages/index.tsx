@@ -51,7 +51,8 @@ const Home = () => {
         setError("Failed to login");
       }
     }).catch((err) => {
-      setError("Server Offline");
+      console.log(err.toString());
+      setError(err.toString());
       setLoading(false);
     });
   }

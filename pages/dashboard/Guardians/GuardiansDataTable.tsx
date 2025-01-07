@@ -132,7 +132,7 @@ export default function GuardianDataTable({
         },
         {
             name: "Contact".toLocaleUpperCase(),
-            selector: (row: Guardian) => row.guardian_contact,
+            selector: (row: Guardian) => "0" + row.guardian_contact,
             sortable: true
         },
         {

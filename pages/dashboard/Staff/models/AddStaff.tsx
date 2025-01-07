@@ -34,11 +34,11 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        if (!imageFile) {
-            setPosting(false)
-            setMessage('Please select an image file');
-            return;
-        }
+        // if (!imageFile) {
+        //     setPosting(false)
+        //     setMessage('Please select an image file');
+        //     return;
+        // }
         const formData = new FormData();
         // capturing school
         formData.append('staff_school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -56,6 +56,7 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
             setMessage('Staff added successfully');
             handleSave(res);
             setPosting(false)
+            window.location.reload();
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());

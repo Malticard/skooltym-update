@@ -16,10 +16,10 @@ const Checkout = () => {
     'fetchStaff',
     () => fetchStaff(),
     {
-      revalidateOnFocus: true, // Revalidate when window gets focus
-      revalidateOnReconnect: true, // Revalidate when reconnecting
-      refreshInterval: 10000, // Poll every 10 seconds
-      dedupingInterval: 5000, // Deduplicate requests for 5 seconds
+      // revalidateOnFocus: true, // Revalidate when window gets focus
+      // revalidateOnReconnect: true, // Revalidate when reconnecting
+      // refreshInterval: 0, // Poll every 10 seconds
+      // dedupingInterval: 5000, // Deduplicate requests for 5 seconds
       onError: (err) => console.error('Error fetching staff:', err)
     }
   );
@@ -28,10 +28,10 @@ const Checkout = () => {
     'fetchRoles',
     fetchRoles,
     {
-      revalidateOnFocus: true, // Revalidate when window gets focus
-      revalidateOnReconnect: true, // Revalidate when reconnecting
-      refreshInterval: 10000, // Poll every 10 seconds
-      dedupingInterval: 5000, // Deduplicate requests for 5 seconds
+      // revalidateOnFocus: true, // Revalidate when window gets focus
+      // revalidateOnReconnect: true, // Revalidate when reconnecting
+      // refreshInterval: 10000, // Poll every 10 seconds
+      // dedupingInterval: 5000, // Deduplicate requests for 5 seconds
       onError: (err) => console.error('Error fetching roles:', err)
     }
   );

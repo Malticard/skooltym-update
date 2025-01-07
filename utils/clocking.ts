@@ -44,3 +44,26 @@ export const studentClockingOut = async (page = 1, limit = 10): Promise<StudentC
         throw new Error(err.toString());
     }
 }
+
+// get staff overtimes
+export const getStaffOvertimes = async (page = 1, limit = 10): Promise<any> => {
+    try {
+        const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
+        const response = await axios.get(`${AppUrls.getStaffOvertime}/${school}?page=${page}&limit=${limit}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
+    }
+}
+
+// get staff late records
+export const getStaffLateRecords = async (page = 1, limit = 10): Promise<any> => {
+    try {
+        const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
+        const response = await axios.get(`${AppUrls.getStaffLateRecords}/${school}?page=${page}&limit=${limit}`);
+        return response.data;
+    }
+    catch (error: any) {
+        throw new Error(error.response.data.message);
+    }
+}
