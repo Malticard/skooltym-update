@@ -34,7 +34,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
         if (Object.entries(currentStaff).length > 0) {
 
-            defaultRole = rolesOptions.filter((pred) => pred.name === currentStaff.staff_role.role_type);
+            defaultRole = rolesOptions.filter((pred) => pred.name === currentStaff.staff_role?.role_type || '');
             console.log(defaultRole);
             if (defaultRole.length > 0) {
                 setCurrentStaff({

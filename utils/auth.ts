@@ -85,7 +85,6 @@ export async function forgotPassword(data: FormData) {
 export async function resetPassword(data: FormData) {
     const user = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        console.log(data.get("new_password"));
         const response = await axios.post(AppUrls.setPassword + user.id, {
             new_password: data.get("new_password"),
             confirm_password: data.get("confirm_password")

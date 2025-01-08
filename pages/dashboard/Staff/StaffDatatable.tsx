@@ -129,7 +129,7 @@ export default function StaffDataTable({
         },
         {
             name: "Role".toLocaleUpperCase(),
-            selector: (row: Staff) => row.staff_role.role_type,
+            selector: (row: Staff) => row.staff_role?.role_type || '',
             sortable: true
         },
         {
