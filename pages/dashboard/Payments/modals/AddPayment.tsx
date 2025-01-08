@@ -17,7 +17,6 @@ const AddPayment = ({ addModalShow, streams, setAddModalShow, handleSave }: { st
     if (streams) {
         streams.map((st) => streamsOptions.push({ name: st.stream_name, value: st._id }));
     }
-    // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,7 +46,7 @@ const AddPayment = ({ addModalShow, streams, setAddModalShow, handleSave }: { st
         <>
             <Modal show={addModalShow} onHide={() => setAddModalShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Class</Modal.Title>
+                    <Modal.Title>Add Payment</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmitData}>
                     <Modal.Body>

@@ -403,7 +403,7 @@ export async function postStaffData(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.toString());
+        throw new Error(error.response.data.message);
     }
 }
 // update staff data
@@ -513,6 +513,8 @@ export async function fetchSpecificOvertime(page = 1, limit = 20): Promise<Overt
         return (response.data);
     } catch (error: any) {
         throw new Error(error.toString());
+
+
     }
 }
 // cleared overtime

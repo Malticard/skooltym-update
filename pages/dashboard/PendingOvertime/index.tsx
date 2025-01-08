@@ -10,6 +10,9 @@ const PendingOvertime = () => {
     const [pending, setPending] = React.useState({} as OvertimeModel);
     const [loading, setLoading] = React.useState(false);
     // load data
+    // payment modal
+    const [openAddPayment, setOpenAddPayment] = React.useState(false);
+    // s
     React.useEffect(() => {
         setLoading(true);
         fetchSpecificOvertime().then((res) => {
@@ -33,12 +36,23 @@ const PendingOvertime = () => {
     return (
         <>
             <Seo title="Pending Overtime" />
-            <PageHeader title="Pending Overtime" item="Skooltym" active_item="Pending Overtime" />
+            <PageHeader
+                title="Pending Overtime"
+                item="Skooltym"
+                active_item="Pending Overtime"
+                buttonText='Add Payment'
+                onTap={() => setOpenAddPayment(true)}
+            />
             {
                 loading ? (
                     <LoaderComponent />
                 ) : pending && (
-                    <PendingDataTable pendingData={pending} updatePage={onChangePage} />
+                    <PendingDataTable
+                        pendingData={pending}
+                        openAddPayment={openAddPayment}
+                        setAddPayment={setOpenAddPayment}
+                        updatePage={onChangePage}
+                    />
                 )
             }
         </>

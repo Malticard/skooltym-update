@@ -11,15 +11,15 @@ const DataTableExtensions: any = dynamic(() =>
 
 interface PaymentDataTableProps {
     clearedData: OvertimeModel;
-    openPaymentModal: boolean;
-    setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
+    // openPaymentModal: boolean;
+    // setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
     updatePage: (value: number) => void;
 }
 
 export default function PaymentDataTable({
     clearedData,
-    openPaymentModal,
-    setOpenAddPayment,
+    // openPaymentModal,
+    // setOpenAddPayment,
     updatePage
 }: PaymentDataTableProps) {
     const [data, setData] = React.useState<Overtimes[]>([]);
@@ -104,14 +104,6 @@ export default function PaymentDataTable({
                     }
                 />
             </DataTableExtensions>
-
-            <AddPayment
-                streams={[]}
-                loadingClasses={false}
-                handleSave={() => { }}
-                addModalShow={openPaymentModal}
-                setAddModalShow={setOpenAddPayment}
-            />
         </div>
     );
 }

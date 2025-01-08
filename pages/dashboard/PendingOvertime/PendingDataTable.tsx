@@ -5,18 +5,23 @@ import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+import AddPayment from '../Payments/modals/AddPayment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
 });
-
+interface PendingOvertimeIF {
+    pendingData: OvertimeModel;
+    openAddPayment: boolean;
+    setAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
+    updatePage: (value: number) => void;
+}
 export default function PendingDataTable({
     pendingData,
+    openAddPayment,
+    setAddPayment,
     updatePage
-}: {
-    updatePage: (value: number) => void;
-    pendingData: OvertimeModel;
-}) {
+}: PendingOvertimeIF) {
     // Initialize states with safe default values
     const [data, setData] = React.useState<Overtimes[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -77,20 +82,33 @@ export default function PendingDataTable({
     };
 
     return (
-        <DataTableExtensions {...tableData}>
-            <DataTable
-                columns={columns}
-                data={data}
-                pagination
-                paginationServer
-                paginationTotalRows={totalDocuments}
-                paginationDefaultPage={currentPage}
-                paginationPerPage={pageSize}
-                onChangePage={handlePageChange}
-                responsive
-                striped
-                highlightOnHover
+        <>
+            <DataTableExtensions {...tableData}>
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalDocuments}
+                    paginationDefaultPage={currentPage}
+                    paginationPerPage={pageSize}
+                    onChangePage={handlePageChange}
+                    responsive
+                    striped
+                    highlightOnHover
+                />
+
+            </DataTableExtensions>
+            {/* modal for add a payment */}
+            <AddPayment
+                streams={[]}
+                loadingClasses={false}
+                handleSave={() => { }}
+                addModalShow={openAddPayment}
+                setAddModalShow={setAddPayment}
             />
-        </DataTableExtensions>
+        </>
+
+
     );
 }

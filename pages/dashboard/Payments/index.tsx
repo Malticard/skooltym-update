@@ -8,8 +8,7 @@ import useSWR from 'swr';
 
 const Payments = () => {
     const [page, setPage] = React.useState(1);
-    // payment modal
-    const [openAddPayment, setOpenAddPayment] = React.useState(false);
+
     // Using SWR to handle data fetching
     const { data: cleared, error, isValidating } = useSWR([page], () => fetchPayments(page), {
         revalidateOnFocus: false,
@@ -30,10 +29,10 @@ const Payments = () => {
     return (
         <div>
             <Seo title="Payments" />
-            <PageHeader title="Payments" item="Skooltym" active_item="Payments" buttonText='Add Payment' onTap={() => setOpenAddPayment(true)} />
+            <PageHeader title="Payments" item="Skooltym" active_item="Payments" />
 
             {cleared && (
-                <PaymentDataTable clearedData={cleared} setOpenAddPayment={setOpenAddPayment} openPaymentModal={openAddPayment} updatePage={onChangePage} />
+                <PaymentDataTable clearedData={cleared} updatePage={onChangePage} />
             )}
         </div>
     );
