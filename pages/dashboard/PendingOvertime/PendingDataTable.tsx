@@ -101,12 +101,13 @@ export default function PendingDataTable({
             </DataTableExtensions>
             {/* modal for add a payment */}
             <AddPayment
-                streams={[]}
-                loadingClasses={false}
-                handleSave={() => { }}
-                addModalShow={openAddPayment}
-                setAddModalShow={setAddPayment}
-            />
+                show={openAddPayment}
+                handleClose={() => setAddPayment(false)}
+                amount={''}
+                guardian={''}
+                student={''}
+                studentId={''}
+                guardianId={''} />
         </>
 
 

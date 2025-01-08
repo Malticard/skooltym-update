@@ -1,83 +1,149 @@
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Modal, Form, Button, Spinner } from 'react-bootstrap';
 
-import React from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
-import { postClassData } from '@/utils/data_fetch';
-import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
-import { Stream } from '@/interfaces/StreamModel';
-import { SchoolClass } from '@/interfaces/ClassModel';
-import FormElement from '../../Staff/models/FormElement';
+interface AddPaymentProps {
+    show: boolean;
+    handleClose: () => void;
+    amount: string;
+    guardian: string;
+    student: string;
+    studentId: string;
+    guardianId: string;
+}
 
-const AddPayment = ({ addModalShow, streams, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: SchoolClass) => void }) => {
+const AddPayment: React.FC<AddPaymentProps> = ({
+    show,
+    handleClose,
+    amount,
+    guardian,
+    student,
+    studentId,
+    guardianId,
+}) => {
+    const [isAddingPayment, setIsAddingPayment] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState("Cash");
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        // school: "", // Replace with actual school ID
+        // guardian: guardianId,
+        // student: studentId,
+        // payment_method: paymentMethod,
+        // staff: "staff_id_placeholder", // Replace with actual staff ID
+        // comment: "",
+        // paid_amount: 0,
+        // date_of_payment: new Date().toISOString().split("T")[0],
+        // "payment_key[0]": "0",
+    });
 
-    const [classData, setClassData] = React.useState({} as any);
-    const [message, setMessage] = React.useState<string>('');
-    const [posting, setPosting] = React.useState(false);
-    // streams
-    const streamsOptions: Option[] = [];
-    if (streams) {
-        streams.map((st) => streamsOptions.push({ name: st.stream_name, value: st._id }));
-    }
-    // function to handle submission
-    const handleSubmitData = (e: React.FormEvent) => {
-        e.preventDefault();
-        setMessage('')
-        setPosting(true);
+    const handlePayment = async (data: any) => {
+        setIsAddingPayment(true);
+        try {
+            // const response = await axios.post('/api/addPayment', {
+            //     school: "school_id_placeholder", // Replace with actual school ID
+            //     guardian: guardianId,
+            //     student: studentId,
+            //     payment_method: paymentMethod,
+            //     staff: "staff_id_placeholder", // Replace with actual staff ID
+            //     comment: data.comment,
+            //     paid_amount: data.paidAmount,
+            //     date_of_payment: new Date().toISOString().split("T")[0],
+            //     "payment_key[0]": "0",
+            // });
 
-        const formData = new FormData();
-        // capturing school
-        formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
+            // if (response.status === 200 || response.status === 201) {
+            //     alert("Added new payment successfully");
+            //     handleClose();
+            // } else {
+            //     alert("Failed to add payment");
+            // }
+        } catch (error) {
+            console.error("Error adding payment:", error);
+            alert("An error occurred while adding the payment.");
+        } finally {
+            setIsAddingPayment(false);
+        }
+    };
 
-        Object.entries(classData).forEach(([key, value]) => {
-            formData.append(key, value as string);
-        });
-
-        // posting data
-        postClassData(formData).then((res) => {
-            setMessage('Class added successfully');
-            handleSave(res);
-            setPosting(false)
-        }).catch((err) => {
-            console.warn(err);
-            setMessage(err.toString());
-            setPosting(false)
-        })
-    }
     return (
-        <>
-            <Modal show={addModalShow} onHide={() => setAddModalShow(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add Payment</Modal.Title>
-                </Modal.Header>
-                <Form onSubmit={handleSubmitData}>
-                    <Modal.Body>
-                        <FormElement
-                            value={classData.class_name}
-                            label='Class Name'
-                            onChange={(e) => setClassData({
-                                ...classData,
-                                staff_fname: e.target.value
-                            })} />
-                        <br />
+        <Modal show={show} onHide={handleClose} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Add Payment</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form onSubmit={handleSubmit(handlePayment)}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Amount Owed</Form.Label>
+                        <Form.Control type="text" value={`UGX ${amount}`} readOnly />
+                    </Form.Group>
 
-                        <SelectComponent multiSelect options={streamsOptions} label='Streams' onSelect={(selected) => {
-                            setClassData({
-                                ...classData,
-                                class_streams: selected,
-                            })
-                        }} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" disabled={posting} onClick={() => setAddModalShow(false)}>
-                            Close
-                        </Button>
-                        <Button disabled={posting} type='submit' variant="primary">
-                            {posting == false ? `Add Class` : `Saving...`}
-                        </Button>
-                    </Modal.Footer>
-                    {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>}
+                    <Form.Group className="mb-3">
+                        <Form.Label>Amount Paid</Form.Label>
+                        <Form.Control
+                            type="number"
+                            placeholder="Enter amount paid"
+                            {...register('paidAmount', { required: "Amount Paid is required" })}
+                            isInvalid={!!errors.paidAmount}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {/*  errors.paidAmount.message */}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Payment Method</Form.Label>
+                        <Form.Select
+                            value={paymentMethod}
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+                            <option value="Cash">Cash</option>
+                            <option value="Comment">Comment</option>
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Comment</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="e.g school activities"
+                            {...register('comment')}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Student</Form.Label>
+                        <Form.Control type="text" value={student} readOnly />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Guardian</Form.Label>
+                        <Form.Control type="text" value={guardian} readOnly />
+                    </Form.Group>
+
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={isAddingPayment}
+                        className="w-100"
+                    >
+                        {isAddingPayment ? (
+                            <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />
+                        ) : (
+                            "Add Payment"
+                        )}
+                    </Button>
                 </Form>
-            </Modal>
-        </>
+            </Modal.Body>
+        </Modal>
     );
 };
 
