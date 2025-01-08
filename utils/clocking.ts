@@ -2,6 +2,8 @@ import axios from "axios";
 import AppUrls from "./apis";
 import { StaffClockingResponse } from "@/interfaces/StaffClockingModel";
 import { StudentClockingResponse } from "@/interfaces/StudentClockingModel";
+import { StaffLatePaginatedResponse } from "@/interfaces/StaffLateInterface";
+import { StaffOvertimePaginatedResponse } from "@/interfaces/StaffOvertimeModel";
 
 export const staffClockingIn = async (page = 1, limit = 10): Promise<StaffClockingResponse> => {
     try {
@@ -46,7 +48,7 @@ export const studentClockingOut = async (page = 1, limit = 10): Promise<StudentC
 }
 
 // get staff overtimes
-export const getStaffOvertimes = async (page = 1, limit = 10): Promise<any> => {
+export const getStaffOvertimes = async (page = 1, limit = 10): Promise<StaffOvertimePaginatedResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
         const response = await axios.get(`${AppUrls.getStaffOvertime}/${school}?page=${page}&limit=${limit}`);
@@ -57,10 +59,11 @@ export const getStaffOvertimes = async (page = 1, limit = 10): Promise<any> => {
 }
 
 // get staff late records
-export const getStaffLateRecords = async (page = 1, limit = 10): Promise<any> => {
+export const getStaffLateRecords = async (page = 1, limit = 10): Promise<StaffLatePaginatedResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
         const response = await axios.get(`${AppUrls.getStaffLateRecords}/${school}?page=${page}&limit=${limit}`);
+        console.log(response.data);
         return response.data;
     }
     catch (error: any) {

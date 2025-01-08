@@ -1,24 +1,64 @@
+import SuccessMessage from '@/pages/components/pages/success-message';
+import { Toastbasic } from '@/shared/data/elements/toasts/Toastbasic';
+import { Toastright } from '@/shared/data/elements/toasts/Toastright';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
+import { resetPassword } from '@/utils/auth';
+import { Snackbar } from '@mui/material';
 import React from 'react';
 import { Row, Col, Card, Container, Form, Button } from 'react-bootstrap';
 
 const ChangePassword = () => {
-    interface DemoChangerElement extends HTMLElement {
-        style: CSSStyleDeclaration;
-    }
-
+    const [loading, setLoading] = React.useState(false);
+    const [success, setSuccess] = React.useState(false);
+    // handle change password
+    const [passwordData, setPasswordData] = React.useState({
+        newPassword: "",
+        confirmPassword: ""
+    });
+    const [error, setError] = React.useState("");
     const handleChangePassword = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
+        // ensure all fields are filled
+        if (!passwordData.newPassword || !passwordData.confirmPassword) {
+            setLoading(false);
+            setError("All fields are required");
+        }
+        // ensure password and confirm password match
+        else if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setLoading(false);
+            setError("Password and Confirm Password do not match");
+        }
+        else {
+            setError("");
+            // send data to backend
+            const formData = new FormData();
+            console.log("data", passwordData);
+            formData.append("new_password", passwordData.newPassword);
+            formData.append("confirm_password", passwordData.confirmPassword);
 
+            // handle success and error
+            resetPassword(formData).then((res) => {
+                setLoading(false);
+                setError("");
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                }, 3000);
+            }).catch((error) => {
+                setLoading(false);
+                setError(error.message);
+            });
+        }
     }
     return (
         <div>
             <Seo title="Change Password" />
-            <PageHeader title="Change Password" item="Ecommerce" active_item="Add Product" />
+            <PageHeader title="Change Password" item="Dashboard" active_item="Change Password" />
             {/* ui for change password */}
-            <Row className="text-center">
-                <Col lg={12}>
+            <Row className="text-center d-flex justify-content-center align-items-center mt-10">
+                <Col lg={12} className="w-4/5 mt-10">
                     <Card>
                         <Row>
                             <Col
@@ -26,21 +66,21 @@ const ChangePassword = () => {
                                 xl={5}
                                 className="d-none d-lg-block text-center bg-primary details"
                             >
-                                <div className="mt-5 pt-2 p-2 position-absolute">
+                                <div className="p-2 flex flex-col justify-center items-center">
 
                                     <img
                                         src={"/imgs/change_pass.svg"}
-                                        className="header-brand-img mb-4"
-                                        width={150}
-                                        height={150}
+                                        className="header-brand-img object-cover mb-0"
+                                        width={350}
+                                        height={350}
                                         alt="logo"
                                     />
 
                                     {/* <div className="clearfix"></div> */}
 
-                                    <h5 className="mt-4 text-center text-fixed-white">Reset Your Password</h5>
-                                    <span className="text-white-6 fs-13 mb-5 mt-xl-0">
-                                        SignUp to create, discover and connect with the global
+                                    <h5 className="mt-0 text-center text-fixed-white">Reset Your Password</h5>
+                                    <span className="text-white-6 fs-13 text-center mb-5 mt-xl-0">
+                                        SignUp to create, discover and  connect with the  <br />global
                                         community
                                     </span>
                                 </div>
@@ -48,7 +88,7 @@ const ChangePassword = () => {
                             <Col lg={6} xl={7} xs={12} sm={12} className=" login_form ">
                                 <Container>
                                     <Row className=" row-md">
-                                        <Card.Body className="mt-2 mb-2">
+                                        <Card.Body className="my-auto mb-0">
                                             {/* <img src='/imgs/change_pass.svg' /> */}
                                             <div className="clearfix"></div>
                                             <h5 className="text-start mb-2">Reset Your Password</h5>
@@ -65,7 +105,9 @@ const ChangePassword = () => {
                                                     <Form.Control
                                                         placeholder="Enter your password"
                                                         type="password"
-                                                        onChange={(e) => { }}
+                                                        value={passwordData.newPassword}
+                                                        isInvalid={error.length > 0 ? true : false}
+                                                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                                                     />
                                                 </Form.Group>
                                                 <Form.Group
@@ -76,12 +118,21 @@ const ChangePassword = () => {
                                                     <Form.Control
                                                         placeholder="Enter your password"
                                                         type="password"
-                                                        onChange={(e) => { }}
+                                                        isInvalid={error.length > 0 ? true : false}
+                                                        value={passwordData.confirmPassword}
+                                                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                                                     />
                                                 </Form.Group>
-
+                                                {/* handle errors due to no form data */}
+                                                {error && (
+                                                    <div className="alert alert-danger">
+                                                        {error}
+                                                    </div>
+                                                )}
                                                 <div className="d-grid">
-                                                    <Button type='submit' className="btn btn-primary">Update Password</Button>
+                                                    <Button type='submit' disabled={loading} className="btn btn-primary">
+                                                        {loading ? 'Updating password...' : 'Update Password'}
+                                                    </Button>
                                                 </div>
                                             </Form>
                                         </Card.Body>
@@ -92,8 +143,17 @@ const ChangePassword = () => {
                     </Card>
                 </Col>
             </Row>
-
             {/* end of ui for change password */}
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={success}
+                autoHideDuration={6000}
+                message="Password changed."
+                onClose={() => setError("")}
+            />
         </div>
     );
 };

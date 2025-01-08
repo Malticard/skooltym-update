@@ -15,7 +15,7 @@ const StaffOvertime = () => {
     return (
         <div>
             <Seo title="Staff Overtime" />
-            <PageHeader title="Staff Overtime" item="Dashboard" active_item='Skooltym' />
+            <PageHeader title="Staff Overtime" item="Dashboard" active_item='Staff Overtime' />
             <StaffOvertimeDataTable pendingData={data} updatePage={handlePageChange} />
         </div>
     );

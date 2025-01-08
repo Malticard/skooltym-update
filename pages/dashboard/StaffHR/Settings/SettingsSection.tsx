@@ -102,7 +102,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                                 <>
                                     <SettingComponent onTap={() => setOpenOvertimeCurrency(true)} title='Late Fee Currency' subTitle='Select overtime currency' trailing={updateSettings.late_charge_currency} />
                                     <SettingComponent onTap={() => setOpenLateInterval(true)} title='Late Fee interval' subTitle='Set the amount of time after which an overtime will be charged. e.g every after 10mins.' trailing={`${updateSettings.late_interval} mins`} />
-                                    <SettingComponent onTap={() => setOpenLateCharge(true)} title='Late Fee Rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.late_charge}`} />
+                                    <SettingComponent onTap={() => setOpenLateCharge(true)} title='Late Fee Rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.late_charge?.toLocaleString()}`} />
                                 </>
                             ) : (<></>)
                         }</>)
@@ -122,7 +122,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                                 <>
                                     <SettingComponent onTap={() => setOpenOvertimeCurrency(true)} title='Overtime Currency' subTitle='Select overtime currency' trailing={updateSettings.staff_currency} />
                                     <SettingComponent onTap={() => setOpenOvertimeInterval(true)} title='Overtime interval' subTitle='Set the amount of time after which an overtime will be charged. e.g every after 10mins.' trailing={`${updateSettings.staff_interval} mins`} />
-                                    <SettingComponent onTap={() => setOpenOvertimeRate(true)} title='Overtime rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.staff_overtime_rate}`} />
+                                    <SettingComponent onTap={() => setOpenOvertimeRate(true)} title='Overtime rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.staff_overtime_rate?.toLocaleString()}`} />
                                 </>
                             ) : (<></>)
                         }</>)

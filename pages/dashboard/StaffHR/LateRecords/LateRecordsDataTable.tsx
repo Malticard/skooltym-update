@@ -5,17 +5,18 @@ import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+import { StaffLatePaginatedResponse, StaffLateResult } from '@/interfaces/StaffLateInterface';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
 });
 interface LateRecordsIR {
-    pendingData: OvertimeModel;
+    pendingData: StaffLatePaginatedResponse | undefined;
     updatePage: (value: number) => void;
 }
 const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage }) => {
     // Initialize states with safe default values
-    const [data, setData] = React.useState<Overtimes[]>([]);
+    const [data, setData] = React.useState<StaffLateResult[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [pageSize, setPageSize] = React.useState(10);
     const [totalDocuments, setTotalDocuments] = React.useState(0);
@@ -24,20 +25,20 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
     React.useEffect(() => {
         if (pendingData) {
             setData(pendingData.results || []);
-            setCurrentPage(pendingData.currentPage || 1);
-            setPageSize(pendingData.pageSize || 10);
-            setTotalDocuments(pendingData.totalDocuments || 0);
+            setCurrentPage(pendingData.page || 1);
+            setPageSize(pendingData.limit || 10);
+            setTotalDocuments(pendingData.total || 0);
         }
     }, [pendingData]);
 
     const columns = [
         {
             name: "Staff Picture".toLocaleUpperCase(),
-            cell: (row: Overtimes) => (
+            cell: (row: StaffLateResult) => (
                 <img
                     className="rounded-full w-12 h-12 object-cover"
-                    src={row.student.studentProfilePic}
-                    alt={`${row.student.studentFname}'s picture`}
+                    src={row.staff.staff_profilePic}
+                    alt={`${row.staff.staff_fname}'s picture`}
                     width={48}
                     height={48}
                 />
@@ -46,21 +47,40 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
             allowOverflow: true,
         },
         {
-            name: "Student".toLocaleUpperCase(),
-            selector: (row: Overtimes) => `${row.student.studentFname} ${row.student.studentLname}`,
+            name: "Staff Name".toLocaleUpperCase(),
+            selector: (row: StaffLateResult) => `${row.staff.staff_fname} ${row.staff.staff_lname}`,
             sortable: true
         },
         {
-            name: "Guardian".toLocaleUpperCase(),
-            selector: (row: Overtimes) => `${row.guardian.guardianFname} ${row.guardian.guardianLname}`,
+            name: "Time".toLocaleUpperCase(),
+            selector: (row: StaffLateResult) => `${row.time_in}`,
             sortable: true
         },
         {
-            name: "Overtime Charge".toLocaleUpperCase(),
-            selector: (row: Overtimes) => `UGX ${row.overtimeCharge.toLocaleString()}`,
+            name: "Late Charge".toLocaleUpperCase(),
+            selector: (row: StaffLateResult) => `UGX ${row.late_charge.toLocaleString()}`,
             sortable: true,
             right: true
         },
+        {
+            name: "Status".toLocaleUpperCase(),
+            selector: (row: StaffLateResult) => `${row.status === 1 ? 'Paid' : 'Unpaid'}`,
+            sortable: true,
+        }, {
+            name: "Actions".toLocaleUpperCase(),
+            cell: (row: StaffLateResult) => (
+                <div className="flex items-center space-x-2">
+                    <Button variant="outline-primary" size="sm">
+                        <IconEdit className="w-5 h-5" />
+                    </Button>
+                    <Button variant="outline-danger" size="sm">
+                        <IconTrash className="w-5 h-5" />
+                    </Button>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+        }
     ];
 
     const handlePageChange = (page: number) => {
@@ -86,7 +106,6 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
                 onChangePage={handlePageChange}
                 responsive
                 striped
-                highlightOnHover
             />
         </DataTableExtensions>
     );

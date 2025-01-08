@@ -69,7 +69,6 @@ export function withAuth(handler: (req: NextApiRequest, res: NextApiResponse, us
         if (!user) {
             return res.status(401).json({ message: 'Invalid or expired token' });
         }
-
         return handler(req, res, user);
     };
 }
@@ -84,10 +83,16 @@ export async function forgotPassword(data: FormData) {
 }
 // reset password
 export async function resetPassword(data: FormData) {
+    const user = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        const response = await axios.post(AppUrls.setPassword, data);
+        console.log(data.get("new_password"));
+        const response = await axios.post(AppUrls.setPassword + user.id, {
+            new_password: data.get("new_password"),
+            confirm_password: data.get("confirm_password")
+        });
         return response.data
     } catch (error: any) {
+        console.log(error)
         throw new Error(error.response.data.toString());
     }
 }

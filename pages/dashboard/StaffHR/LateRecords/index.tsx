@@ -4,6 +4,7 @@ import React from 'react';
 import useSWR from 'swr';
 import LateRecordsDataTable from './LateRecordsDataTable';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
+import LoaderComponent from '@/pages/components/LoaderComponent';
 
 const LateRecordsPage = () => {
     const [page, setPage] = React.useState(1);
@@ -13,7 +14,13 @@ const LateRecordsPage = () => {
         <div>
             <Seo title="Late Records" />
             <PageHeader title="Late Records" item="Staff HR" active_item='Late Records' />
-            {lateRecords && <LateRecordsDataTable pendingData={lateRecords} updatePage={(page: number) => setPage(page)} />}
+
+            {
+                isValidating ? <LoaderComponent /> :
+                    (lateRecords && <LateRecordsDataTable
+                        pendingData={lateRecords}
+                        updatePage={(page: number) => setPage(page)} />)
+            }
         </div>
     );
 };
