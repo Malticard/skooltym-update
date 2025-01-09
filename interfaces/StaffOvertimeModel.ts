@@ -42,6 +42,7 @@ export interface StaffOvertimeResult {
 
 export interface StaffOvertimePaginatedResponse {
     page: number;
+    pages: number;
     limit: number;
     total: number;
     results: StaffOvertimeResult[];

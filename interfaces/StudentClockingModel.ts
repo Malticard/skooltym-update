@@ -39,6 +39,7 @@ export interface StudentClockingResult {
 
 export interface StudentClockingResponse {
     page: number;
+    pages: number;
     limit: number;
     total: number;
     results: StudentClockingResult[];

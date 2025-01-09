@@ -39,6 +39,7 @@ export interface StaffLateResult {
 
 export interface StaffLatePaginatedResponse {
     page: number;
+    pages: number;
     limit: number;
     total: number;
     results: StaffLateResult[];

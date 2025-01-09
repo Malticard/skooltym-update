@@ -3,29 +3,28 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StudentClockingResponse, StudentClockingResult } from '@/interfaces/StudentClockingModel';
 import moment from 'moment';
+import { Button } from 'react-bootstrap';
+import DateFilterComponent from '../../components/DateFilterComponent';
+
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
-
-// interface StudentClockingResponse {
-//     results: StudentClockingResult[];
-//     page: number;
-//     limit: number;
-//     total: number;
-// }
 
 interface StudentClockingDataTableProps {
     clockingData: StudentClockingResponse;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 export default function StudentClockingDataTable({
     clockingData,
-    updatePage
+    updatePage,
+    updateLimit
 }: StudentClockingDataTableProps) {
     // Provide default values when clockingData is undefined
     const defaultData: StudentClockingResponse = {
         results: [],
         page: 1,
+        pages: 0,
         limit: 10,
         total: 0
     };
@@ -66,11 +65,11 @@ export default function StudentClockingDataTable({
                         className="m-2 rounded-full w-12 h-12 object-cover"
                         width={48}
                         height={48}
-                        src={row.student?.student_profile_pic ?? '/placeholder-student.jpg'}
+                        src={row.student?.student_profile_pic}
                         alt={`${row.student?.student_fname ?? 'Student'}'s profile picture`}
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.src = '/placeholder-student.jpg';
+                            target.src = 'https://placehold.co/500x500';
                         }}
                     />
                 </div>
@@ -104,28 +103,33 @@ export default function StudentClockingDataTable({
         },
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
-
     const tableData = {
         columns,
         data,
     };
 
     return (
-        <div className="w-full">
+        <div className="">
+            <DateFilterComponent handleFilter={(data) => console.log(data)} />
+
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
                     data={data}
                     pagination
+                    fixedHeader
                     paginationServer
                     paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
+                    // onSelectedRowsChange={(state) => console.log(state.)}
+                    // paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(x) => {
+                        updatePage(x);
+                        console.log("page", x)
+                    }}
+                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                        updateLimit(currentRowsPerPage)
+                    }}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clocking records found
@@ -152,8 +156,8 @@ export default function StudentClockingDataTable({
                         },
                         cells: {
                             style: {
-                                paddingLeft: '8px',
-                                paddingRight: '8px',
+                                paddingLeft: '2px',
+                                paddingRight: '2px',
                             },
                         },
                     }}

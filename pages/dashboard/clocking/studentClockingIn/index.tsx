@@ -8,42 +8,36 @@ import { StudentClockingResponse } from '@/interfaces/StudentClockingModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 
 // Fetcher function to get student clocking data
-const fetchStudentClocking = () => studentClockingIn().then(res => res);
 
 const StudentClockingPage = () => {
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
     // Using SWR with automatic revalidation for student clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
         'fetchStudentClocking',
-        fetchStudentClocking,
-        // {
-        //     // revalidateOnFocus: false,
-        //     // revalidateOnReconnect: false,
-        //     // refreshInterval: 0,
-        //     // dedupingInterval: 500, // 5 
-        //     onError: (err) => console.error('Error fetching student clocking data:', err)
-        // }
+        () => studentClockingIn(page, limit),
+
     );
-
-    // // Handle loading state
-    // if (isClockingLoading) {
-    //     return (
-    //         <div>
-    //             <LoaderComponent />
-    //         </div>
-    //     );
-    // }
-
     // Handle error state
     if (clockingError) {
         return <div>Error loading student clocking data</div>;
     }
     // function to handle mutating staff clocking
-    const handleChange = async (page: number) => {
-        const clock = await studentClockingIn(page)
+    const handleChangePage = async (page: number) => {
+        console.log("current page", page, "rows per page", limit)
+        setPage(page);
+        const clock = await studentClockingIn(page, limit);
+        mutateClockingData(clock)
+    }
+
+    const handleChangeLimit = async (lm: number) => {
+        console.log("current page", page, "rows per page", limit)
+        setLimit(lm);
+        const clock = await studentClockingIn(page, limit);
         mutateClockingData(clock)
     }
     return (
-        <>
+        <div className='ml-5 my-4'>
             <Seo title="Student Clocking In" />
             <PageHeader
                 title="Students"
@@ -51,10 +45,11 @@ const StudentClockingPage = () => {
                 active_item="Student Clocking"
             />
             <StudentClockingDataTable
-                updatePage={handleChange}
-                clockingData={clockingData || { results: [], limit: 0, page: 0, total: 0 }}
+                updatePage={handleChangePage}
+                updateLimit={handleChangeLimit}
+                clockingData={clockingData || { results: [], limit: 0, page: 0, pages: 0, total: 0 }}
             />
-        </>
+        </div>
     );
 };
 StudentClockingPage.layout = "Contentlayout";

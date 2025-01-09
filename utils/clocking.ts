@@ -5,20 +5,20 @@ import { StudentClockingResponse } from "@/interfaces/StudentClockingModel";
 import { StaffLatePaginatedResponse } from "@/interfaces/StaffLateInterface";
 import { StaffOvertimePaginatedResponse } from "@/interfaces/StaffOvertimeModel";
 
-export const staffClockingIn = async (page = 1, limit = 10): Promise<StaffClockingResponse> => {
+export const staffClockingIn = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StaffClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.clockingStaffIn}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.clockingStaffIn}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
 // clocking out
-export const staffClockingOut = async (page = 1, limit = 10): Promise<StaffClockingResponse> => {
+export const staffClockingOut = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StaffClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.clockingStaffOut}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.clockingStaffOut}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -26,10 +26,10 @@ export const staffClockingOut = async (page = 1, limit = 10): Promise<StaffClock
 }
 
 // student clocking
-export const studentClockingIn = async (page = 1, limit = 10): Promise<StudentClockingResponse> => {
+export const studentClockingIn = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StudentClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.clockingStudentIn}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.clockingStudentIn}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (err: any) {
         throw new Error(err.response.data.toString());
@@ -37,10 +37,10 @@ export const studentClockingIn = async (page = 1, limit = 10): Promise<StudentCl
 }
 
 // student clocking
-export const studentClockingOut = async (page = 1, limit = 10): Promise<StudentClockingResponse> => {
+export const studentClockingOut = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StudentClockingResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.clockingStudentOut}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.clockingStudentOut}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (err: any) {
         throw new Error(err.toString());
@@ -48,10 +48,10 @@ export const studentClockingOut = async (page = 1, limit = 10): Promise<StudentC
 }
 
 // get staff overtimes
-export const getStaffOvertimes = async (page = 1, limit = 10): Promise<StaffOvertimePaginatedResponse> => {
+export const getStaffOvertimes = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StaffOvertimePaginatedResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.getStaffOvertime}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.getStaffOvertime}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.response.data.message);
@@ -59,10 +59,10 @@ export const getStaffOvertimes = async (page = 1, limit = 10): Promise<StaffOver
 }
 
 // get staff late records
-export const getStaffLateRecords = async (page = 1, limit = 10): Promise<StaffLatePaginatedResponse> => {
+export const getStaffLateRecords = async (page = 1, limit = 10, startDate = "", endDate = ""): Promise<StaffLatePaginatedResponse> => {
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
-        const response = await axios.get(`${AppUrls.getStaffLateRecords}/${school}?page=${page}&limit=${limit}`);
+        const response = await axios.get(`${AppUrls.getStaffLateRecords}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         console.log(response.data);
         return response.data;
     }
