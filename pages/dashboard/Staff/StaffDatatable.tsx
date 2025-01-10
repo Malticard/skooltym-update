@@ -47,10 +47,18 @@ export default function StaffDataTable({
     updateLimit,
     handleUpdates
 }: StaffDataTableProps) {
-    const [data, setData] = React.useState<Staff[]>(staff.results || []);
-    const [currentPage, setCurrentPage] = React.useState(staff.currentPage || 1);
-    const [pageSize, setPageSize] = React.useState(staff.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(staff.totalDocuments || 0);
+    const defaultData: StaffResponse = {
+        results: [],
+        currentPage: 1,
+        totalPages: 0,
+        pageSize: 10,
+        totalDocuments: 0
+    };
+    const setSData = staff ?? defaultData;
+    const [data, setData] = React.useState<Staff[]>(setSData.results);
+    const [currentPage, setCurrentPage] = React.useState(setSData.currentPage);
+    const [pageSize, setPageSize] = React.useState(setSData.pageSize);
+    const [totalDocuments, setTotalDocuments] = React.useState(setSData.totalDocuments);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);

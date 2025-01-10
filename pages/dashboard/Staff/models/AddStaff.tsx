@@ -107,7 +107,7 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
                                 <span>Staff Profile</span>
                             </Col>
                             <Col className='mx-20'>
-                                <LiveImageComponent url={URL.createObjectURL(imageFile as Blob)} />
+                                <LiveImageComponent url={imageFile == null ? "https://placehold.co/500x500" : URL.createObjectURL(imageFile as Blob)} />
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {

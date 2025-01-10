@@ -46,10 +46,18 @@ export default function GuardianDataTable({
     updatePage,
     updateLimit
 }: GuardianDataTableProps) {
-    const [data, setData] = React.useState<Guardian[]>(guardians.results || []);
-    const [currentPage, setCurrentPage] = React.useState(guardians.currentPage || 1);
-    const [pageSize, setPageSize] = React.useState(guardians.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(guardians.totalDocuments || 0);
+    const defaultData: GuardianResponse = {
+        results: [],
+        currentPage: 1,
+        totalPages: 0,
+        pageSize: 10,
+        totalDocuments: 0
+    };
+    const setGData = guardians ?? defaultData;
+    const [data, setData] = React.useState<Guardian[]>(setGData.results);
+    const [currentPage, setCurrentPage] = React.useState(setGData.currentPage);
+    const [pageSize, setPageSize] = React.useState(setGData.pageSize ?? 10);
+    const [totalDocuments, setTotalDocuments] = React.useState(setGData.totalDocuments);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
