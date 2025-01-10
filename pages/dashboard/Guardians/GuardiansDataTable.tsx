@@ -9,6 +9,7 @@ import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import { Guardian, GuardianResponse } from '@/interfaces/GuardiansModel';
 import EditGuardian from './models/EditGuardian';
 import AddGuardian from './models/AddGuardian';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 // Define proper types for DataTableExtensions
 interface DataTableExtensionsProps {
@@ -31,8 +32,9 @@ interface GuardianDataTableProps {
     students: StudentsNotPaginated[];
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-    loadingClasses: boolean;
+    loadingClasses?: boolean;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 export default function GuardianDataTable({
@@ -41,25 +43,17 @@ export default function GuardianDataTable({
     addModalShow,
     setAddModalShow,
     loadingClasses,
-    updatePage
+    updatePage,
+    updateLimit
 }: GuardianDataTableProps) {
-    const [data, setData] = React.useState<Guardian[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+    const [data, setData] = React.useState<Guardian[]>(guardians.results || []);
+    const [currentPage, setCurrentPage] = React.useState(guardians.currentPage || 1);
+    const [pageSize, setPageSize] = React.useState(guardians.pageSize || 10);
+    const [totalDocuments, setTotalDocuments] = React.useState(guardians.totalDocuments || 0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentGuardian, setCurrentGuardian] = React.useState<Guardian | null>(null);
-
-    React.useEffect(() => {
-        if (guardians) {
-            setData(guardians.results || []);
-            setCurrentPage(guardians.currentPage || 1);
-            setPageSize(guardians.pageSize || 10);
-            setTotalDocuments(guardians.totalDocuments || 0);
-        }
-    }, [guardians]);
 
     const handleEdit = (guardian: Guardian) => {
         setCurrentGuardian(guardian);
@@ -100,17 +94,11 @@ export default function GuardianDataTable({
         updatePage(page);
     };
 
-    const columns = [
+    const columns: any = [
         {
             name: "Guardian Profile".toLocaleUpperCase(),
             cell: (row: Guardian) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.guardian_profile_pic}
-                    alt={`${row.guardian_fname}'s profile`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.guardian_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -140,7 +128,7 @@ export default function GuardianDataTable({
             cell: (row: Guardian) => (
                 <div className="flex space-x-2">
                     <Button
-                        variant="primary"
+                        variant="outline-primary"
                         size="sm"
                         onClick={() => handleEdit(row)}
                         className="flex items-center"
@@ -148,7 +136,7 @@ export default function GuardianDataTable({
                         <IconEdit className="w-4 h-4" />
                     </Button>
                     <Button
-                        variant="danger"
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(row)}
                         className="flex items-center"
@@ -158,6 +146,7 @@ export default function GuardianDataTable({
                 </div>
             ),
             ignoreRowClick: true,
+            allowOverflow: true,
             button: true,
         }
     ];
@@ -178,11 +167,12 @@ export default function GuardianDataTable({
                     columns={columns}
                     data={data}
                     pagination
-                    paginationServer={false}
+                    paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, ttt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive
                     striped
                     noDataComponent={
@@ -195,7 +185,7 @@ export default function GuardianDataTable({
 
             <EditGuardian
                 students={students}
-                loadingClasses={loadingClasses}
+                loadingClasses={loadingClasses ?? false}
                 editModalShow={editModalShow}
                 currentGuardian={currentGuardian}
                 setCurrentGuardian={setCurrentGuardian}
@@ -213,7 +203,7 @@ export default function GuardianDataTable({
 
             <AddGuardian
                 students={students}
-                loadingClasses={loadingClasses}
+                loadingClasses={loadingClasses ?? false}
                 addModalShow={addModalShow}
                 setAddModalShow={setAddModalShow}
                 handleSave={handleSave}

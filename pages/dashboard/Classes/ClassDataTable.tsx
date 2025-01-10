@@ -74,7 +74,7 @@ export default function ClassDataTable({
             cell: (row: SchoolClass) => (
                 <div className="flex gap-1">
                     <Button
-                        variant="primary"
+                        variant="outline-primary"
                         className="mx-1"
                         size="sm"
                         onClick={() => handleEdit(row)}
@@ -82,7 +82,7 @@ export default function ClassDataTable({
                         <IconEdit className="text-sm w-5 h-5" />
                     </Button>
                     <Button
-                        variant="danger"
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(row)}
                     >
@@ -140,10 +140,6 @@ export default function ClassDataTable({
         data,
     };
 
-    if (loadingClasses) {
-        return <div className="p-4 text-center">Loading...</div>;
-    }
-
     return (
         <div className="w-full">
             <DataTableExtensions {...tableData}>
@@ -155,9 +151,9 @@ export default function ClassDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
-                    onChangeRowsPerPage={updateRows}
-                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, page) => updateRows(limit)}
+                    paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
                     paginationComponentOptions={{
                         noRowsPerPage: false,
                         rowsPerPageText: 'Rows per page:',

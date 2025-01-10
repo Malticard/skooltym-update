@@ -8,53 +8,43 @@ import { ClassResponse } from '@/interfaces/ClassesModel';
 import { Stream } from '@/interfaces/StreamModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import useSWR from 'swr';
-
 const Classes = () => {
     const [addModalShow, setAddModalShow] = React.useState(false);
     const router = useRouter();
-    const page = Number(router.query.page) || 1;
-
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
     const { data: classes, error: classError, mutate: mutateClasses, isValidating: isValidatingClasses } = useSWR(
-        ['fetchClasses', page],
-        () => fetchClasses(),
-        // {
-        //     // revalidateOnFocus: false,
-        //     // revalidateOnReconnect: false,
-        //     // refreshInterval: 0,
-        //     // dedupingInterval: 500, // 5 seconds
-        //     // onError: (err) => console.error('Error fetching classes:', err)
-        // }
+        "fetchClasses",
+        async () => await fetchClasses(page, limit),
     );
 
-    const { data: streams, error: streamError } = useSWR('streams', () => fetchStream(1, 100), {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        refreshInterval: 0,
-        dedupingInterval: 5000, // 5 seconds
-        onError: (err) => console.error('Error fetching streams:', err)
-    });
+    const { data: streams, error: streamError } = useSWR('streams', () => fetchStream(1, 1000));
 
-    React.useEffect(() => {
-        if (!classes && !isValidatingClasses) {
-            mutateClasses();
-        }
-    }, [classes, isValidatingClasses, mutateClasses]);
-
-    const onChangePage = (newPage: number) => {
+    const onChangePage = async (newPage: number) => {
         router.push({ query: { ...router.query, page: newPage } }, undefined, { shallow: true });
+        setPage(newPage);
+        const result = await fetchClasses(newPage, limit);
+        mutateClasses(result);
     };
 
     const handleUpdates = async () => {
-        const cls = await fetchClasses(page);
-        mutateClasses(cls, true);
+        const cls = await fetchClasses(page, limit);
+        mutateClasses(cls);
     };
+
+    // handle updated limit
+    const handleLimit = async (lm: number) => {
+        setLimit(lm);
+        const cls = await fetchClasses(page, limit);
+        mutateClasses(cls);
+    }
 
     if (classError || streamError) {
         return <div>Error loading data: {classError?.message || streamError?.message}</div>;
     }
 
     return (
-        <div>
+        <div className='my-2'>
             <Seo title='Classes' />
             <PageHeader
                 title='Classes'
@@ -63,18 +53,16 @@ const Classes = () => {
                 buttonText='Add Class'
                 onTap={() => setAddModalShow(true)}
             />
-            {isValidatingClasses ? (
-                <LoaderComponent />
-            ) : (
+            {classes && (
                 <ClassDataTable
-                    loadingClasses={isValidatingClasses}
+                    loadingClasses
                     streams={streams?.results ?? []}
                     addModalShow={addModalShow}
                     setAddModalShow={setAddModalShow}
                     updatePage={onChangePage}
                     classData={classes as ClassResponse}
                     handleUpdates={handleUpdates}
-                    updateRows={onChangePage}
+                    updateRows={handleLimit}
                 />
             )}
         </div>

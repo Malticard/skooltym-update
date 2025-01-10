@@ -28,7 +28,6 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
         throw new Error(err.response.data.message);
     }
 }
-
 // export async function assignRole(role: string): Promise<string> {
 //     try {
 //         const response = await axios.get(AppUrls.roles);
@@ -39,7 +38,6 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
 //         return Promise.reject("Lost connection to server");
 //     }
 // }
-
 export async function fetchAndDisplayImage(imageURL: string): Promise<string> {
     return imageURL;
 }
@@ -50,7 +48,7 @@ export function formatNumber(number: number): string {
 
 export async function fetchSettings(): Promise<SettingsModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
-    console.log("user login data", data);
+    // console.log("user login data", data);
     const response = await axios.get(`${AppUrls.settings}${data.school}`);
     return (response.data[0]);
 }
@@ -112,30 +110,30 @@ export function greetUser(): string {
 
 
 // fetch drop offs
-export async function fetchDropOffs(page = 1, limit = 20): Promise<DropoffRecordsResponse> {
+export async function fetchDropOffs(page = 1, limit = 10, startDate = "", endDate = ""): Promise<DropoffRecordsResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getDropOffs + data.school + `?page=${page}&limit=${limit}`);
+        let response = await axios.get(AppUrls.getDropOffs + data.school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
 // fetch pick ups
-export async function fetchPickUps(page = 1, limit = 20): Promise<PickupResponse> {
+export async function fetchPickUps(page = 1, limit = 10, startDate = "", endDate = ""): Promise<PickupResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&limit=${limit}`);
+        let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
 // fetch pending overtime data
-export async function fetchPendingOvertimeData(page = 1, limit = 20): Promise<any> {
+export async function fetchPendingOvertimeData(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.pendingOvertime + data.school + `?page=${page}&limit=${limit}`);
+        let response = await axios.get(AppUrls.pendingOvertime + data.school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         // return OvertimeModel.fromJSON(response.data);
         return response;
     } catch (error: any) {
@@ -143,10 +141,10 @@ export async function fetchPendingOvertimeData(page = 1, limit = 20): Promise<an
     }
 }
 // fetch cleared overtime data
-export async function fetchClearedOvertimeData(page = 1, limit = 20): Promise<any> {
+export async function fetchClearedOvertimeData(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
     let school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
     try {
-        let response = await axios.get(AppUrls.clearedOvertime + school + `?page=${page}&limit=${limit}`);
+        let response = await axios.get(AppUrls.clearedOvertime + school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
         // return OvertimeModel.fromJSON(response.data);
         return response;
     } catch (error: any) {
@@ -232,10 +230,10 @@ export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
 }
 
 // ----------------------  students
-export async function fetchStudents(page = 1, limit = 15): Promise<StudentsModel> {
+export async function fetchStudents(page = 1, limit = 10, startDate = "", endDate = ""): Promise<StudentsModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(`${AppUrls.getStudents}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.getStudents}${data.school}?page=${page}&pageSize=${limit}}&startDate=${startDate}&endDate=${endDate}`);
         return StudentModelConvert.toStudentsModel(JSON.stringify(response.data));
     } catch (error: any) {
         throw new Error(error.toString());
@@ -279,12 +277,14 @@ export async function deleteStudentData(id: string): Promise<any> {
     }
 }
 // ------------- end of student data -------------
+
+
 // --------------------- fetch classes
-export async function fetchClasses(page = 1, limit = 20): Promise<ClassPaginatedResult> {
+export async function fetchClasses(page = 1, limit = 10, startDate = "", endDate = ""): Promise<ClassPaginatedResult> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     console.log("school id", data.school)
     try {
-        let response = await axios.get(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.getClasses}${data.school}?page=${page}&pageSize=${limit}}&startDate=${startDate}&endDate=${endDate}`);
         // console.log("class data", response);
         return response.data;
 
@@ -330,10 +330,10 @@ export async function deleteClassData(id: string): Promise<any> {
 // ----------------- end of class data ------------
 
 // ------- fetch stream
-export async function fetchStream(page = 1, limit = 20): Promise<PaginatedStreamResult> {
+export async function fetchStream(page = 1, limit = 10, startDate = "", endDate = ""): Promise<PaginatedStreamResult> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(`${AppUrls.getStreams}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.getStreams}${data.school}?page=${page}&pageSize=${limit}}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -384,10 +384,10 @@ export async function deleteStreamData(id: string): Promise<any> {
 
 
 /// ============ staff
-export async function fetchStaff(page = 1, limit = 15): Promise<StaffResponse> {
+export async function fetchStaff(page = 1, limit = 10, startDate = "", endDate = ""): Promise<StaffResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(`${AppUrls.staff}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.staff}${data.school}?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -443,10 +443,10 @@ export async function fetchRoles(): Promise<Role[]> {
 //-------- end of roles ---------------------
 
 // ============= guardians
-export async function fetchGuardians(page = 1, limit = 15): Promise<GuardianResponse> {
+export async function fetchGuardians(page = 1, limit = 10, startDate = "", endDate = ""): Promise<GuardianResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(`${AppUrls.getGuardians}${data.school}?page=${page}&pageSize=${limit}}`);
+        let response = await axios.get(`${AppUrls.getGuardians}${data.school}?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -506,10 +506,10 @@ export async function fetchStudentsNoPaginate(): Promise<StudentsNotPaginated[]>
 // ----------------- end of guardian data ------------
 
 // pending Overtime
-export async function fetchSpecificOvertime(page = 1, limit = 20): Promise<OvertimeModel> {
+export async function fetchSpecificOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.pendingOvertime + data.school + "?page=" + page + "&limit=" + limit);
+        let response = await axios.get(AppUrls.pendingOvertime + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
         return (response.data);
     } catch (error: any) {
         throw new Error(error.toString());
@@ -518,10 +518,10 @@ export async function fetchSpecificOvertime(page = 1, limit = 20): Promise<Overt
     }
 }
 // cleared overtime
-export async function fetchClearedOvertime(page = 1, limit = 20): Promise<OvertimeModel> {
+export async function fetchClearedOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.clearedOvertime + data.school + "?page=" + page + "&limit=" + limit);
+        let response = await axios.get(AppUrls.clearedOvertime + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
         return (response.data);
     } catch (error: any) {
         throw new Error(error.toString());
@@ -529,30 +529,30 @@ export async function fetchClearedOvertime(page = 1, limit = 20): Promise<Overti
 }
 
 // payments
-export async function fetchPayments(page = 1, limit = 20): Promise<any> {
+export async function fetchPayments(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getPayment + data.school + "?page=" + page + "&limit=" + limit);
+        let response = await axios.get(AppUrls.getPayment + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
 // get drop offs
-export async function fetchSpecificDropOffs(page = 1, limit = 20): Promise<any> {
+export async function fetchSpecificDropOffs(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getDropOffs + data.school + "?page=" + page + "&limit=" + limit);
+        let response = await axios.get(AppUrls.getDropOffs + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
     }
 }
 // get pick ups
-export async function fetchSpecificPickUps(page = 1, limit = 20): Promise<any> {
+export async function fetchSpecificPickUps(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.pickUps + data.school + "?page=" + page + "&limit=" + limit);
+        let response = await axios.get(AppUrls.pickUps + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());

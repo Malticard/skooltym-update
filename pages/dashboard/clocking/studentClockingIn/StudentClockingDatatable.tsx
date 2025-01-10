@@ -5,6 +5,7 @@ import { StudentClockingResponse, StudentClockingResult } from '@/interfaces/Stu
 import moment from 'moment';
 import { Button } from 'react-bootstrap';
 import DateFilterComponent from '../../components/DateFilterComponent';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
@@ -60,19 +61,7 @@ export default function StudentClockingDataTable({
         {
             name: "Student ID".toLocaleUpperCase(),
             cell: (row: StudentClockingResult) => (
-                <div className="flex items-center justify-center">
-                    <img
-                        className="m-2 rounded-full w-12 h-12 object-cover"
-                        width={48}
-                        height={48}
-                        src={row.student?.student_profile_pic}
-                        alt={`${row.student?.student_fname ?? 'Student'}'s profile picture`}
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = 'https://placehold.co/500x500';
-                        }}
-                    />
-                </div>
+                <LiveImageComponent url={row.student?.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -95,11 +84,11 @@ export default function StudentClockingDataTable({
             name: "Clock In".toLocaleUpperCase(),
             selector: (row: StudentClockingResult) => formatTime(row.clock_in),
             sortable: true,
-            cell: (row: StudentClockingResult) => (
-                <div className="font-medium">
-                    {formatTime(row.clock_in)}
-                </div>
-            )
+            // cell: (row: StudentClockingResult) => (
+            //     <div className="font-medium">
+            //         {formatTime(row.clock_in)}
+            //     </div>
+            // )
         },
     ];
 
@@ -118,11 +107,11 @@ export default function StudentClockingDataTable({
                     fixedHeader
                     paginationServer
                     paginationTotalRows={totalDocuments}
-                    // onSelectedRowsChange={(state) => console.log(state.)}
-                    // paginationDefaultPage={currentPage}
+                    paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={(x) => {
+                    onChangePage={(x, total) => {
                         updatePage(x);
+                        setCurrentPage(x);
                     }}
                     onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
                         updateLimit(currentRowsPerPage)
@@ -132,12 +121,7 @@ export default function StudentClockingDataTable({
                             No clocking records found
                         </div>
                     }
-                    // progressPending={!data.length}
-                    // progressComponent={
-                    //     <div className="p-4 text-center text-gray-500">
-                    //         Loading records...
-                    //     </div>
-                    // }
+
                     customStyles={{
                         rows: {
                             style: {

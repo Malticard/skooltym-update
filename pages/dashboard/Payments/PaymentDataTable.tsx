@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 import AddPayment from './modals/AddPayment';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 const DataTableExtensions: any = dynamic(() =>
     import('react-data-table-component-extensions'),
@@ -11,15 +12,13 @@ const DataTableExtensions: any = dynamic(() =>
 
 interface PaymentDataTableProps {
     clearedData: OvertimeModel;
-    // openPaymentModal: boolean;
-    // setOpenAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 export default function PaymentDataTable({
     clearedData,
-    // openPaymentModal,
-    // setOpenAddPayment,
+    updateLimit,
     updatePage
 }: PaymentDataTableProps) {
     const [data, setData] = React.useState<Overtimes[]>([]);
@@ -41,13 +40,7 @@ export default function PaymentDataTable({
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: Overtimes) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.student.studentProfilePic}
-                    alt={`${row.student.studentFname}'s picture`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.student.studentProfilePic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -96,7 +89,7 @@ export default function PaymentDataTable({
                     onChangePage={handlePageChange}
                     responsive
                     striped
-                    highlightOnHover
+                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No payment records found

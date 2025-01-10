@@ -1,54 +1,32 @@
 import React from 'react'
 import PageHeader from '@/shared/layout-components/page-header/page-header'
-import { Col, Row } from "react-bootstrap";
 import Seo from '@/shared/layout-components/seo/seo';
 import GuardianDataTable from './GuardiansDataTable';
 import { fetchGuardians, fetchStudentsNoPaginate } from '@/utils/data_fetch';
-import { IconLoader } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
-import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
-import { GuardianResponse } from '@/interfaces/GuardiansModel';
-import LoaderComponent from '@/pages/components/LoaderComponent';
+import useSWR from 'swr';
 
 
 const Guardian = () => {
-    const [guardians, setGuardians] = React.useState<GuardianResponse>(null as unknown as GuardianResponse);
-    const [students, setStudents] = React.useState<StudentsNotPaginated[]>([]);
-    const [loadingData, setLoadingData] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+    const { data: guardians, error, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit));
+    const { data: students, mutate: mutateStudent } = useSWR("students", async () => await fetchStudentsNoPaginate());
     const [addModalShow, setAddModalShow] = React.useState(false);
-    React.useEffect(() => {
-        setLoadingData(true);
-        // fetch staff data
-        fetchGuardians().then((data) => {
-            setGuardians(data);
-            setLoadingData(false);
-        }).catch((error) => {
-            console.log(error);
-            setLoading(false);
-        });
-        // roles
-        fetchStudentsNoPaginate().then((data) => {
-            console.log(data);
-            setStudents(data);
-        }).catch((error) => {
-            console.log(error);
-            setLoading(false);
-        });
-    }, []);
+
     // methods for change of page
-    const onChangePage = (page: number) => {
-        // setLoading(true);
-        fetchGuardians(page).then((res) => {
-            setGuardians(res);
-            console.log(res);
-            // setLoading(false);
-        }).catch((error) => {
-            // setLoading(false);
-            console.log(error);
-        })
+    const onChangePage = async (page: number) => {
+        setPage(page)
+        const result = await fetchGuardians(page, limit);
+        mutateGuardians(result);
+    }
+    // handle limit
+    const onChangeLimit = async (newLimit: number) => {
+        setLimit(newLimit)
+        const result = await fetchGuardians(page, limit);
+        mutateGuardians(result);
     }
     return (
-        <>
+        <div className='my-2'>
             <Seo title="Guardians" />
 
             <PageHeader
@@ -62,17 +40,18 @@ const Guardian = () => {
             />
 
             {/* <!-- Row --> */}
-            <Row>
-                <Col xl={12}>
-                    {loadingData ? (<LoaderComponent />) : guardians && (<GuardianDataTable addModalShow={addModalShow} setAddModalShow={setAddModalShow} students={students} loadingClasses={false} updatePage={onChangePage} guardians={guardians} />)}
-                </Col>
-            </Row>
+            {guardians && (<GuardianDataTable
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                students={students ?? []}
+                updatePage={onChangePage}
+                updateLimit={onChangeLimit}
+                guardians={guardians}
+            />)}
             {/* <!-- End Row --> */}
-        </>
+        </div>
     )
 }
 
 Guardian.layout = "Contentlayout"
-
-
 export default Guardian

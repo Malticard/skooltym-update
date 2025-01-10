@@ -5,60 +5,64 @@ import useSWR from 'swr';
 import React from 'react';
 import StaffClockingOutDataTable from './StaffClockingOuttable';
 import { StaffClockingResponse } from '@/interfaces/StaffClockingModel';
-import { Row, Col } from 'react-bootstrap';
-import LoaderComponent from '@/pages/components/LoaderComponent';
+import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
 
 // Fetcher function to get staff clocking data
-const fetchStaffClocking = () => staffClockingOut().then(res => res);
-
 const StaffClockingPage = () => {
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+    const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
     // Using SWR with automatic revalidation for staff clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StaffClockingResponse>(
         'fetchStaffClocking',
-        fetchStaffClocking,
-        {
-            // revalidateOnFocus: false,
-            // revalidateOnReconnect: false,
-            // refreshInterval: 0,
-            // dedupingInterval: 0, // 5 
-            onError: (err) => console.error('Error fetching staff clocking data:', err)
-        }
+        async () => await staffClockingOut(page, limit, dateChange.startDate, dateChange.endDate),
+
     );
-    // if (isClockingLoading) {
-    //     return <LoaderComponent />;
-    // }
 
     // Handle error state
     if (clockingError) {
         return <div>Error loading staff clocking data</div>;
     }
     // function to handle mutating staff clocking
-    const handleChange = async (page: number) => {
+    const handleChangePage = async (page: number) => {
         const clock = await staffClockingOut(page)
         mutateClockingData(clock)
     }
+    // handle change limit
+    const handleChangeLimit = async (lm: number) => {
+        const clock = await staffClockingOut(page)
+        mutateClockingData(clock)
+    }
+    // handle date change
+    const handleDateChange = async (data: DateFilterIF) => {
+        setDateChange(data)
+        const clock = await staffClockingOut(page, limit, data.startDate, data.endDate);
+        mutateClockingData(clock);
+    }
 
     return (
-        <>
+        <div className='my-2'>
             <Seo title="Staff Clocking Out" />
-            <PageHeader
-                title="Staff"
-                item="Skooltym"
-                active_item="Staff Clocking Out"
-            />
-            <Row>
-                <Col xl={12}>
-                    {
-                        clockingData && (
-                            <StaffClockingOutDataTable
-                                updatePage={handleChange}
-                                clockingData={clockingData}
-                            />
-                        )
-                    }
-                </Col>
-            </Row>
-        </>
+            <div className="flex sm:flex-row flex-col justify-between w-4/5">
+                <PageHeader
+                    title="Staff"
+                    item="Dashboard"
+                    active_item="Clocking Out"
+                />
+                <DateFilterComponent handleFilter={handleDateChange} />
+            </div>
+
+            {
+                clockingData && (
+                    <StaffClockingOutDataTable
+                        updatePage={handleChangePage}
+                        updateLimit={handleChangeLimit}
+                        clockingData={clockingData}
+                    />
+                )
+            }
+
+        </div>
     );
 };
 

@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StaffClockingResponse, StaffClockingResult } from '@/interfaces/StaffClockingModel';
 import moment from 'moment';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -16,11 +17,13 @@ const DataTableExtensions: any = dynamic(() => import('react-data-table-componen
 interface StaffClockingOutDataTableProps {
     clockingData: StaffClockingResponse;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 export default function StaffClockingOutDataTable({
     clockingData,
-    updatePage
+    updatePage,
+    updateLimit,
 }: StaffClockingOutDataTableProps) {
     // Provide default values when clockingData is undefined
     const defaultData: StaffClockingResponse = {
@@ -62,17 +65,7 @@ export default function StaffClockingOutDataTable({
             name: "Staff ID".toLocaleUpperCase(),
             cell: (row: StaffClockingResult) => (
                 <div className="flex items-center justify-center">
-                    <img
-                        className="m-2 rounded-full w-12 h-12 object-cover"
-                        width={48}
-                        height={48}
-                        src={row.staff?.staff_profilePic ?? '/placeholder-avatar.jpg'}
-                        alt={`${row.staff?.staff_fname ?? 'Staff'} profile picture`}
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = '/placeholder-avatar.jpg';
-                        }}
-                    />
+                    <LiveImageComponent url={row.staff.staff_profilePic} />
                 </div>
             ),
             ignoreRowClick: true,
@@ -130,18 +123,16 @@ export default function StaffClockingOutDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, total) => handlePageChange(page)}
+                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                        updateLimit(currentRowsPerPage);
+                    }}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clock-out records found
                         </div>
                     }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading records...
-                        </div>
-                    }
+
                     customStyles={{
                         rows: {
                             style: {

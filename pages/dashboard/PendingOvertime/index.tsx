@@ -4,58 +4,65 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { fetchSpecificOvertime } from '@/utils/data_fetch';
 import React from 'react';
 import PendingDataTable from './PendingDataTable';
-import LoaderComponent from '@/pages/components/LoaderComponent';
+import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
+import useSWR from 'swr';
+import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 
 const PendingOvertime = () => {
-    const [pending, setPending] = React.useState({} as OvertimeModel);
-    const [loading, setLoading] = React.useState(false);
+    const [page, setPages] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+    const [user, setUser] = React.useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
+    const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
     // load data
     // payment modal
     const [openAddPayment, setOpenAddPayment] = React.useState(false);
-    // s
-    React.useEffect(() => {
-        setLoading(true);
-        fetchSpecificOvertime().then((res) => {
-            setPending(res);
-            setLoading(false);
-        }).then((err) => {
-            console.log(err);
-            setLoading(false);
-        });
-    }, []);
+    const { data: pending, mutate, error } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], async () => await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate));
     // on change of page
-    const onChangePage = (page: number) => {
-        fetchSpecificOvertime(page).then((res) => {
-            setPending(res);
-            setLoading(false);
-        }).catch((error) => {
-            setLoading(false);
-            console.log(error);
-        })
+    const onChangePage = (data: number) => {
+        setPages(data);
+        const result = fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
+        mutate(result);
     }
+    const handleDateChange = async (data: DateFilterIF) => {
+        setDateChange(data);
+        const result = await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
+        mutate(result);
+    }
+    const changeLimit = async (data: number) => {
+        setLimit(data);
+        const result = await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
+        mutate(result);
+    }
+    React.useEffect(() => {
+        const result = JSON.parse(localStorage.getItem("skooltym_user") as string) as AuthenticatedUserModel;
+        setUser(result);
+    }, []);
     return (
-        <>
+        <div className='my-2'>
             <Seo title="Pending Overtime" />
-            <PageHeader
-                title="Pending Overtime"
-                item="Skooltym"
-                active_item="Pending Overtime"
-                buttonText='Add Payment'
-                onTap={() => setOpenAddPayment(true)}
-            />
+            <div className="flex sm:flex-row flex-col w-4/5 justify-between">
+                <PageHeader
+                    title="Pending Overtime"
+                    item="Skooltym"
+                    active_item="Pending Overtime"
+                    buttonText={user.role == 'Admin' ? '' : 'Add Payment'}
+                    onTap={() => setOpenAddPayment(true)}
+                />
+            </div>
+            <DateFilterComponent handleFilter={handleDateChange} />
+
             {
-                loading ? (
-                    <LoaderComponent />
-                ) : pending && (
+                pending && (
                     <PendingDataTable
                         pendingData={pending}
                         openAddPayment={openAddPayment}
                         setAddPayment={setOpenAddPayment}
                         updatePage={onChangePage}
+                        updateLimit={changeLimit}
                     />
                 )
             }
-        </>
+        </div>
     );
 };
 PendingOvertime.layout = "Contentlayout";

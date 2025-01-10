@@ -10,6 +10,7 @@ import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import AddStudent from './models/AddStudent';
 import { deleteStudentData } from '@/utils/data_fetch';
+import LiveImageComponent from '../components/LiveImageComponent';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentsDataTable({
@@ -20,6 +21,7 @@ export default function StudentsDataTable({
     streams = [], // Add default value
     loadingClasses = false, // Add default value
     updatePage,
+    updateLimit,
     classes = [] // Add default value
 }: {
     students?: StudentsModel; // Make optional
@@ -30,6 +32,7 @@ export default function StudentsDataTable({
     loadingClasses: boolean;
     classes: SchoolClass[];
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }) {
     const [data, setData] = React.useState<StudentResult[]>(students?.results || []);
     const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
@@ -54,16 +57,7 @@ export default function StudentsDataTable({
         {
             name: "Student Profile".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
-                <img
-                    className='m-2 rounded-full w-[3em] h-[3em]'
-                    src={row.student_profile_pic}
-                    width={50}
-                    height={50}
-                    alt={`${row.student_fname}'s profile`}
-                    onError={(e: any) => {
-                        e.target.src = '/default-profile.png'; // Add a default profile image
-                    }}
-                />
+                <LiveImageComponent url={row.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -88,17 +82,12 @@ export default function StudentsDataTable({
             selector: (row: StudentResult) => [row.isHalfDay ? 'Half Day Student' : 'Full Day Student'],
             sortable: true,
         },
-        // {
-        //     name: "is Dropped".toLocaleUpperCase(),
-        //     selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
-        //     sortable: true
-        // },
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
                 <>
                     <Button
-                        variant="primary"
+                        variant="outline-primary"
                         className='mx-1'
                         size="sm"
                         onClick={() => handleEdit(row)}
@@ -107,7 +96,7 @@ export default function StudentsDataTable({
                         <IconEdit className='text-sm w-5 h-5' />
                     </Button>
                     <Button
-                        variant="danger"
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(row)}
                         disabled={deleting}
@@ -206,7 +195,8 @@ export default function StudentsDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, total) => handlePageChange(page)}
+                    onChangeRowsPerPage={(page, rows) => updateLimit(page)}
                     progressPending={deleting}
                 />
             </DataTableExtensions>

@@ -3,9 +3,8 @@ import DataTable from 'react-data-table-component';
 import { Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
-import { deleteStreamData } from '@/utils/data_fetch';
-import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 import { StaffLatePaginatedResponse, StaffLateResult } from '@/interfaces/StaffLateInterface';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
@@ -13,8 +12,9 @@ const DataTableExtensions: any = dynamic(() => import('react-data-table-componen
 interface LateRecordsIR {
     pendingData: StaffLatePaginatedResponse | undefined;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
-const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage }) => {
+const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage, updateLimit }) => {
     // Initialize states with safe default values
     const [data, setData] = React.useState<StaffLateResult[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -35,13 +35,7 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
         {
             name: "Staff Picture".toLocaleUpperCase(),
             cell: (row: StaffLateResult) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.staff.staff_profilePic}
-                    alt={`${row.staff.staff_fname}'s picture`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.staff.staff_profilePic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -103,7 +97,8 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
                 paginationTotalRows={totalDocuments}
                 paginationDefaultPage={currentPage}
                 paginationPerPage={pageSize}
-                onChangePage={handlePageChange}
+                onChangePage={(page, total) => handlePageChange(page)}
+                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
                 responsive
                 striped
             />

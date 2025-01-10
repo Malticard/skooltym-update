@@ -9,25 +9,33 @@ import useSWR from 'swr';
 const Streams = () => {
     const [addModalShow, setAddModalShow] = React.useState(false);
     const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+
 
     // Fetch streams with SWR and dynamic pagination
-    const { data: streams, error, mutate: mutateStream } = useSWR(['fetchStream', page], () => fetchStream(page));
+    const { data: streams, error, mutate: mutateStream } = useSWR([page, limit], () => fetchStream(page, limit));
     // console.log(streams);
     // Handle page change for pagination
-    const onChangePage = (newPage: number) => {
+    const onChangePage = async (newPage: number) => {
         setPage(newPage); // Set new page number
-        mutateStream(); // Revalidate data on page change
+        const result = await fetchStream(newPage, limit);
+        mutateStream(result); // Revalidate data on page change
     };
     const updates = async () => {
-        const streams = fetchStream();
-        mutateStream(streams, false)
+        const streams = await fetchStream(page, limit);
+        mutateStream(streams);
     }
-
+    // handle updated limit
+    const updateLimit = async (lm: number) => {
+        setLimit(lm);
+        const streams = await fetchStream(page, limit);
+        mutateStream(streams);
+    }
     // if (streamLoading) return <LoaderComponent />;
     if (error) return <div>Error loading streams</div>;
 
     return (
-        <div>
+        <div className='my-2'>
             <Seo title='Streams' />
 
             <PageHeader
@@ -43,6 +51,7 @@ const Streams = () => {
                     addModalShow={addModalShow}
                     setAddModalShow={setAddModalShow}
                     updatePage={onChangePage}
+                    updateLimit={updateLimit}
                     streamData={streams}
                     handleUpdates={updates}
                 />

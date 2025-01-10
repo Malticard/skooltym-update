@@ -9,6 +9,7 @@ import { deleteStaffData } from '@/utils/data_fetch';
 import { Staff, StaffResponse } from '@/interfaces/StaffModel';
 import { Role } from '@/interfaces/RolesModel';
 import AddStaff from './models/AddStaff';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -27,6 +28,7 @@ interface StaffDataTableProps {
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     loadingClasses: boolean;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
     handleUpdates: () => void;
 }
 
@@ -42,25 +44,17 @@ export default function StaffDataTable({
     setAddModalShow,
     loadingClasses,
     updatePage,
+    updateLimit,
     handleUpdates
 }: StaffDataTableProps) {
-    const [data, setData] = React.useState<Staff[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+    const [data, setData] = React.useState<Staff[]>(staff.results || []);
+    const [currentPage, setCurrentPage] = React.useState(staff.currentPage || 1);
+    const [pageSize, setPageSize] = React.useState(staff.pageSize || 10);
+    const [totalDocuments, setTotalDocuments] = React.useState(staff.totalDocuments || 0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentStaff, setCurrentStaff] = React.useState<Staff | null>(null);
-
-    React.useEffect(() => {
-        if (staff) {
-            setData(staff.results || []);
-            setCurrentPage(staff.currentPage || 1);
-            setPageSize(staff.pageSize || 10);
-            setTotalDocuments(staff.totalDocuments || 0);
-        }
-    }, [staff]);
 
     const handleEdit = (staffMember: Staff) => {
         setCurrentStaff(staffMember);
@@ -106,13 +100,7 @@ export default function StaffDataTable({
         {
             name: "Staff Profile".toLocaleUpperCase(),
             cell: (row: Staff) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.staff_profilePic}
-                    alt={`${row.staff_fname}'s profile`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.staff_profilePic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -184,7 +172,8 @@ export default function StaffDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(perPage, tt) => updateLimit(perPage)}
                     responsive
                     striped
                     noDataComponent={
@@ -192,12 +181,7 @@ export default function StaffDataTable({
                             No staff records found
                         </div>
                     }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading staff records...
-                        </div>
-                    }
+
                 />
             </DataTableExtensions>
 

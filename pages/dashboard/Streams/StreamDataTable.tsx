@@ -26,6 +26,7 @@ interface StreamDataTableProps {
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
     handleUpdates: () => void;
 }
 
@@ -39,6 +40,7 @@ export default function StreamDataTable({
     addModalShow,
     setAddModalShow,
     updatePage,
+    updateLimit,
     handleUpdates
 }: StreamDataTableProps) {
     const router = useRouter();
@@ -132,7 +134,7 @@ export default function StreamDataTable({
             cell: (row: Stream) => (
                 <div className="flex space-x-2">
                     <Button
-                        variant="primary"
+                        variant="outline-primary"
                         size="sm"
                         onClick={() => handleEdit(row)}
                         className="flex items-center"
@@ -140,7 +142,7 @@ export default function StreamDataTable({
                         <IconEdit className="w-4 h-4" />
                     </Button>
                     <Button
-                        variant="danger"
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(row)}
                         className="flex items-center"
@@ -174,21 +176,17 @@ export default function StreamDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive
                     striped
-                    highlightOnHover
+                    fixedHeader
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No streams found
                         </div>
                     }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading streams...
-                        </div>
-                    }
+
                 />
             </DataTableExtensions>
 

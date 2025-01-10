@@ -2,15 +2,17 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 interface ClearedDataTableProps {
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
     clearedData?: OvertimeModel; // Made optional to handle undefined case
 }
 
-export default function ClearedDataTable({ clearedData, updatePage }: ClearedDataTableProps) {
+export default function ClearedDataTable({ clearedData, updatePage, updateLimit }: ClearedDataTableProps) {
     // Provide default values when clearedData is undefined
     const defaultData: OvertimeModel = {
         results: [],
@@ -40,7 +42,11 @@ export default function ClearedDataTable({ clearedData, updatePage }: ClearedDat
     const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
-            selector: (row: Overtimes) => row.student?.studentProfilePic ?? '',
+            // selector: (row: Overtimes) => row.student?.studentProfilePic ?? '',
+            cell: (row: Overtimes) => (
+                <LiveImageComponent url={row.student?.studentProfilePic} />
+            ),
+            ignoreRowClick: true,
             sortable: true
         },
         {
@@ -84,11 +90,14 @@ export default function ClearedDataTable({ clearedData, updatePage }: ClearedDat
                     columns={columns}
                     data={data}
                     pagination
+                    fixedHeader
+                    striped
                     paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, total) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, rows) => updateLimit(limit)}
                     noDataComponent={<div className="p-4">No records found</div>}
                 />
             </DataTableExtensions>

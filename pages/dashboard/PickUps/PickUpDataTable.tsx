@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 import { PickupRecord } from '@/interfaces/pickUp';
 import moment from 'moment';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -25,6 +26,7 @@ interface PickupResponse {
 interface PickUpDataTableProps {
     pickUpData: PickupResponse;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 const DataTableExtensions = dynamic<DataTableExtensionsProps>(
@@ -34,7 +36,8 @@ const DataTableExtensions = dynamic<DataTableExtensionsProps>(
 
 export default function PickUpDataTable({
     pickUpData,
-    updatePage
+    updatePage,
+    updateLimit
 }: PickUpDataTableProps) {
     const [data, setData] = React.useState<PickupRecord[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -54,13 +57,7 @@ export default function PickUpDataTable({
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: PickupRecord) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.student_name.student_profile_pic}
-                    alt={`${row.student_name.student_fname}'s profile`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.student_name.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -124,19 +121,13 @@ export default function PickUpDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, tt) => updateLimit(limit)}
                     responsive
                     striped
-                    highlightOnHover
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No pick-up records found
-                        </div>
-                    }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading records...
                         </div>
                     }
                     theme="default"

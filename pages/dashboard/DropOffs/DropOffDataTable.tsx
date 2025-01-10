@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { DropoffRecord, DropoffRecordsResponse } from '@/interfaces/DropOff';
 import moment from 'moment';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -22,11 +23,12 @@ const DataTableExtensions = dynamic<DataTableExtensionsProps>(
 interface DropOffDataTableProps {
     dropOffData: DropoffRecordsResponse;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 
 export default function DropOffDataTable({
     dropOffData,
-    updatePage
+    updatePage, updateLimit
 }: DropOffDataTableProps) {
     const [data, setData] = React.useState<DropoffRecord[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -46,13 +48,7 @@ export default function DropOffDataTable({
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: DropoffRecord) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.student_name.student_profile_pic}
-                    alt={`${row.student_name.student_fname}'s profile`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.student_name.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -106,11 +102,13 @@ export default function DropOffDataTable({
                     columns={columns}
                     data={data}
                     pagination
+                    fixedHeader
                     paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, total) => handlePageChange(page)}
+                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive
                     striped
                     noDataComponent={
@@ -118,12 +116,7 @@ export default function DropOffDataTable({
                             No drop-off records found
                         </div>
                     }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading records...
-                        </div>
-                    }
+
                 />
             </DataTableExtensions>
         </div>

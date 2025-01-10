@@ -4,19 +4,43 @@ import React from 'react';
 import StaffOvertimeDataTable from './StaffOvertimeDataTable';
 import useSWR, { mutate } from 'swr';
 import { getStaffOvertimes } from '@/utils/clocking';
+import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
 
 const StaffOvertime = () => {
     const [page, setPage] = React.useState(1);
-    const { data, isLoading, error } = useSWR('staff_overtime', () => getStaffOvertimes(page));
-    const handlePageChange = (page: number) => {
+    const [limit, setLimit] = React.useState(10);
+    const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
+    const { data, isLoading, error } = useSWR('staff_overtime', async () => await getStaffOvertimes(page, limit, dateChange.startDate, dateChange.endDate));
+    const handlePageChange = async (page: number) => {
         setPage(page);
-        mutate('staff_overtime', getStaffOvertimes(page));
+        mutate('staff_overtime', await getStaffOvertimes(page, limit, dateChange.startDate, dateChange.endDate));
+    }
+    // handle limit change
+    const handleChangeLimit = async (lm: number) => {
+        setLimit(lm);
+        mutate('staff_overtime', await getStaffOvertimes(page, limit, dateChange.startDate, dateChange.endDate));
+    }
+    // handle date change
+    const handleDateChange = async (data: DateFilterIF) => {
+        setDateChange(data)
+        mutate('staff_overtime', await getStaffOvertimes(page, limit, data.startDate, data.endDate));
+    }
+    if (error) {
+        return <div>Error loading staff overtime data</div>;
     }
     return (
-        <div>
+        <div className='my-2'>
             <Seo title="Staff Overtime" />
-            <PageHeader title="Staff Overtime" item="Dashboard" active_item='Staff Overtime' />
-            <StaffOvertimeDataTable pendingData={data} updatePage={handlePageChange} />
+            <div className="flex sm:flex-row flex-col w-4/5 justify-between">
+                <PageHeader title="Staff Overtime" item="Dashboard" active_item='Staff Overtime' />
+                <DateFilterComponent handleFilter={handleDateChange} />
+            </div>
+
+            {data && (<StaffOvertimeDataTable
+                updateLimit={handleChangeLimit}
+                pendingData={data}
+                updatePage={handlePageChange}
+            />)}
         </div>
     );
 };

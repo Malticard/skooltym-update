@@ -4,44 +4,57 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { fetchClearedOvertime } from '@/utils/data_fetch';
 import React from 'react';
 import ClearedDataTable from './ClearedDatatable';
-import LoaderComponent from '@/pages/components/LoaderComponent';
+import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
+import useSWR from 'swr';
 
 const ClearedOvertime = () => {
-    const [cleared, setCleared] = React.useState({} as OvertimeModel);
-    const [loading, setLoading] = React.useState(false);
+
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+    const [dataChange, setDataChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
     // load data
-    React.useEffect(() => {
-        setLoading(true);
-        fetchClearedOvertime().then((res) => {
-            setCleared(res);
-            setLoading(false);
-        }).then((err) => {
-            console.log(err);
-            setLoading(false);
-        });
-    }, []);
+    const { data: cleared, mutate, error } = useSWR([page, limit, dataChange.startDate, dataChange.endDate], async () => await fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate));
     // on change of page
     const onChangePage = (page: number) => {
-        fetchClearedOvertime(page).then((res) => {
-            setCleared(res);
-            setLoading(false);
-        }).catch((error) => {
-            setLoading(false);
-            console.log(error);
-        })
+        setPage(page);
+        const result = fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate);
+        mutate(result);
+    }
+    // handle limit change
+    const onChangeLimit = async (lm: number) => {
+        setLimit(lm);
+        const result = await fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate);
+        mutate(result);
+    }
+    // handle date change 
+    const handleDateChange = async (data: DateFilterIF) => {
+        setDataChange(data)
+        const result = await fetchClearedOvertime(page, limit, data.startDate, data.endDate);
+        mutate(result);
     }
     return (
-        <>
+        <div className='my-2'>
             <Seo title="Cleared Overtime" />
-            <PageHeader title="Cleared Overtime" item="Skooltym" active_item="Cleared Overtime" />
+            <div className="flex sm:flex-row flex-col w-4/5 justify-center">
+                <PageHeader
+                    title="Cleared Overtime"
+                    item="Skooltym"
+                    active_item="Cleared Overtime"
+                />
+                <DateFilterComponent handleFilter={handleDateChange} />
+            </div>
+
+
             {
-                loading ? (
-                    <LoaderComponent />
-                ) : cleared && (
-                    <ClearedDataTable clearedData={cleared} updatePage={onChangePage} />
+                cleared && (
+                    <ClearedDataTable
+                        clearedData={cleared}
+                        updatePage={onChangePage}
+                        updateLimit={onChangeLimit}
+                    />
                 )
             }
-        </>
+        </div>
     );
 };
 ClearedOvertime.layout = "Contentlayout";

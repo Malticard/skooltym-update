@@ -6,6 +6,7 @@ import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/ico
 import { deleteStreamData } from '@/utils/data_fetch';
 import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 import AddPayment from '../Payments/modals/AddPayment';
+import LiveImageComponent from '../components/LiveImageComponent';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
@@ -15,12 +16,14 @@ interface PendingOvertimeIF {
     openAddPayment: boolean;
     setAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
     updatePage: (value: number) => void;
+    updateLimit: (value: number) => void;
 }
 export default function PendingDataTable({
     pendingData,
     openAddPayment,
     setAddPayment,
-    updatePage
+    updatePage,
+    updateLimit,
 }: PendingOvertimeIF) {
     // Initialize states with safe default values
     const [data, setData] = React.useState<Overtimes[]>([]);
@@ -42,13 +45,7 @@ export default function PendingDataTable({
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: Overtimes) => (
-                <img
-                    className="rounded-full w-12 h-12 object-cover"
-                    src={row.student.studentProfilePic}
-                    alt={`${row.student.studentFname}'s picture`}
-                    width={48}
-                    height={48}
-                />
+                <LiveImageComponent url={row.student.studentProfilePic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -92,10 +89,11 @@ export default function PendingDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(lm, page) => updateLimit(lm)}
                     responsive
                     striped
-                    highlightOnHover
+                    fixedHeader
                 />
 
             </DataTableExtensions>
