@@ -109,9 +109,7 @@ export default function StudentClockingDataTable({
     };
 
     return (
-        <div className="">
-            <DateFilterComponent handleFilter={(data) => console.log(data)} />
-
+        <>
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
@@ -125,7 +123,6 @@ export default function StudentClockingDataTable({
                     paginationPerPage={pageSize}
                     onChangePage={(x) => {
                         updatePage(x);
-                        console.log("page", x)
                     }}
                     onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
                         updateLimit(currentRowsPerPage)
@@ -135,12 +132,12 @@ export default function StudentClockingDataTable({
                             No clocking records found
                         </div>
                     }
-                    progressPending={!data.length}
-                    progressComponent={
-                        <div className="p-4 text-center text-gray-500">
-                            Loading records...
-                        </div>
-                    }
+                    // progressPending={!data.length}
+                    // progressComponent={
+                    //     <div className="p-4 text-center text-gray-500">
+                    //         Loading records...
+                    //     </div>
+                    // }
                     customStyles={{
                         rows: {
                             style: {
@@ -163,6 +160,6 @@ export default function StudentClockingDataTable({
                     }}
                 />
             </DataTableExtensions>
-        </div>
+        </>
     );
 }

@@ -6,16 +6,18 @@ import React from 'react';
 import StudentClockingDataTable from './StudentClockingDatatable';
 import { StudentClockingResponse } from '@/interfaces/StudentClockingModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
+import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
 
 // Fetcher function to get student clocking data
 
 const StudentClockingPage = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
+    const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
     // Using SWR with automatic revalidation for student clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
         'fetchStudentClocking',
-        () => studentClockingIn(page, limit),
+        () => studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate),
 
     );
     // Handle error state
@@ -24,26 +26,35 @@ const StudentClockingPage = () => {
     }
     // function to handle mutating staff clocking
     const handleChangePage = async (page: number) => {
-        console.log("current page", page, "rows per page", limit)
+        // console.log("current page", page, "rows per page", limit)
         setPage(page);
-        const clock = await studentClockingIn(page, limit);
+        const clock = await studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
         mutateClockingData(clock)
     }
 
     const handleChangeLimit = async (lm: number) => {
-        console.log("current page", page, "rows per page", limit)
+        // console.log("current page", page, "rows per page", limit)
         setLimit(lm);
-        const clock = await studentClockingIn(page, limit);
+        const clock = await studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
+        mutateClockingData(clock)
+    }
+    // handleDate change
+    const handleDateChange = async (data: DateFilterIF) => {
+        setDateChange(data)
+        const clock = await studentClockingIn(page, limit, data.startDate, data.endDate);
         mutateClockingData(clock)
     }
     return (
-        <div className='ml-5 my-4'>
+        <div className='ml-10 my-2'>
             <Seo title="Student Clocking In" />
-            <PageHeader
-                title="Students"
-                item="Skooltym"
-                active_item="Student Clocking"
-            />
+            <div className="flex sm:flex-row flex-col justify-between w-4/5">
+                <PageHeader
+                    title="Clock In"
+                    item="Dashboard"
+                    active_item="Student Clocking In"
+                />
+                <DateFilterComponent handleFilter={handleDateChange} />
+            </div>
             <StudentClockingDataTable
                 updatePage={handleChangePage}
                 updateLimit={handleChangeLimit}

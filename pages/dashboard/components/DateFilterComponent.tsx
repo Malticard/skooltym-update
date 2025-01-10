@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
-interface DateFilterIF {
+export interface DateFilterIF {
     startDate: string;
     endDate: string;
 }
@@ -11,7 +11,6 @@ const DateFilterComponent: React.FC<DateFilterComponentProps> = ({ handleFilter 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        // console.log(e.currentTarget.value);
         const data: DateFilterIF = {
             startDate: formData.get('startDate') as string,
             endDate: formData.get('endDate') as string,
