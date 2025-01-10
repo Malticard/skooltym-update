@@ -99,8 +99,11 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                             value={paymentMethod}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         >
+                            <option value="">Select Payment Method</option>
                             <option value="Cash">Cash</option>
                             <option value="Comment">Comment</option>
+                            <option value="Mobile Money">Comment</option>
+                            <option value="Bank">Bank Card</option>
                         </Form.Select>
                     </Form.Group>
 

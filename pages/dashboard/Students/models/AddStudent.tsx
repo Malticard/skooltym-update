@@ -8,6 +8,7 @@ import SwitchTile from './SwitchTile';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import { postStudentData } from '@/utils/data_fetch';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: StudentResult) => void }) => {
     const options = [] as Option[];
@@ -112,7 +113,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
                                 <span>Student Profile</span>
                             </Col>
                             <Col className='mx-20'>
-                                <img className='rounded-full w-20 h-20' src={imageFile == null ? "https://via.placeholder.com/500" : URL.createObjectURL(imageFile as Blob)} alt="student profile" />
+                                <LiveImageComponent url={imageFile == null ? "https://placehold.co/500x500" : URL.createObjectURL(imageFile as Blob)} />
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {

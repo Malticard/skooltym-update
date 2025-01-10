@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StudentClockingResult } from '@/interfaces/StudentClockingModel';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import moment from 'moment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
@@ -49,7 +50,7 @@ export default function StudentClockingDataTable({
         },
         {
             name: "Clock Out".toLocaleUpperCase(),
-            selector: (row: StudentClockingResult) => row.clock_out || 'N/A',
+            selector: (row: StudentClockingResult) => moment(row.clock_out).format('hh:mm a') || 'N/A',
             sortable: true
         },
     ];

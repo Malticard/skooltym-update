@@ -8,6 +8,7 @@ import { ThemeChanger } from "@/shared/redux/actions";
 import { connect } from "react-redux";
 import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
 import { StaffLogin } from "@/interfaces/StaffLogin";
+import LiveImageComponent from "@/pages/dashboard/components/LiveImageComponent";
 
 const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, ThemeChanger: any }) => {
   let location = useRouter();
@@ -189,11 +190,6 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
           item.active = !item.active;
         }
       }
-
-
-
-
-
     }
     setMenuitems((arr) => [...arr]);
 
@@ -480,7 +476,15 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
           {localData && (
             <Link className="header-logo" href={`/dashboard`}>
               {/* school bag */}
-              <img src={localData.school_badge} alt="skooltym" width={50} height={50} />
+              <LiveImageComponent url={localData.school_badge} />
+              {/* <img src={localData.school_badge}
+                alt="skooltym"
+                width={50} height={50}
+                onError={(event: any) => {
+                  event.target.onerror = null;
+                  event.target.src = "https://placehold.co/500x500";
+                }}
+              /> */}
               {/* <p>{localData.schoolName}</p> */}
             </Link>
           )}

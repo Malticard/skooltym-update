@@ -7,6 +7,7 @@ import SwitchTile from './SwitchTile';
 import { updateStaffData } from '@/utils/data_fetch';
 import { Role } from '@/interfaces/RolesModel';
 import { Staff } from '@/interfaces/StaffModel';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<any>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
@@ -33,7 +34,6 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
     if (roles) {
         roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
         if (Object.entries(currentStaff).length > 0) {
-
             defaultRole = rolesOptions.filter((pred) => pred.name === currentStaff.staff_role?.role_type || '');
             console.log(defaultRole);
             if (defaultRole.length > 0) {
@@ -123,7 +123,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     <span>Staff Profile</span>
                                 </Col>
                                 <Col className='mx-10'>
-                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentStaff.staff_profilePic : selectedImage} alt="staff profile" />
+                                    <LiveImageComponent url={selectedImage == null ? currentStaff.staff_profilePic : selectedImage} />
                                 </Col>
                                 <Col className='my-auto'>
                                     <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {

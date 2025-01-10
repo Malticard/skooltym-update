@@ -40,7 +40,7 @@ const PendingOvertime = () => {
     return (
         <div className='my-2'>
             <Seo title="Pending Overtime" />
-            <div className="flex sm:flex-row flex-col w-4/5 justify-between">
+            {user.role == 'Admin' ? (<div className="flex sm:flex-row flex-col w-4/5 justify-between">
                 <PageHeader
                     title="Pending Overtime"
                     item="Skooltym"
@@ -48,8 +48,20 @@ const PendingOvertime = () => {
                     buttonText={user.role == 'Admin' ? '' : 'Add Payment'}
                     onTap={() => setOpenAddPayment(true)}
                 />
-            </div>
-            <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent handleFilter={handleDateChange} />
+            </div>) : (
+                <>
+                    <PageHeader
+                        title="Pending Overtime"
+                        item="Skooltym"
+                        active_item="Pending Overtime"
+                        buttonText={user.role == 'Admin' ? '' : 'Add Payment'}
+                        onTap={() => setOpenAddPayment(true)}
+                    />
+                    <DateFilterComponent handleFilter={handleDateChange} />
+                </>
+            )}
+
 
             {
                 pending && (

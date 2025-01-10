@@ -13,7 +13,7 @@ const Streams = () => {
 
 
     // Fetch streams with SWR and dynamic pagination
-    const { data: streams, error, mutate: mutateStream } = useSWR([page, limit], () => fetchStream(page, limit));
+    const { data: streams, error, mutate: mutateStream } = useSWR("fetchStream", () => fetchStream(page, limit));
     // console.log(streams);
     // Handle page change for pagination
     const onChangePage = async (newPage: number) => {

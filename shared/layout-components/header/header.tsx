@@ -8,6 +8,7 @@ import { ThemeChanger } from "@/shared/redux/actions";
 import store from "@/shared/redux/store";
 import { Defaultmenu, Closedmenu, iconText, iconOverayFn, DetachedFn, DoubletFn } from "@/shared/data/switcherdata/switcherdata";
 import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
+import LiveImageComponent from "@/pages/dashboard/components/LiveImageComponent";
 const HeadDropDown = dynamic(
   () => import('../../data/header/head'),
   { ssr: false }
@@ -252,7 +253,9 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
                   </div>
                   <Dropdown>
                     <Dropdown.Toggle variant="link" id="dropdown-basic">
-                      <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                      {/* <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
+                       */}
+                      <LiveImageComponent url={localData.profile_pic} />
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>

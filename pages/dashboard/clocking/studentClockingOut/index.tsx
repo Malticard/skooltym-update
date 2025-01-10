@@ -15,18 +15,17 @@ const StudentClockingPage = () => {
 
     // Using SWR with automatic revalidation for student clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
-        'fetchStudentClocking',
+        'studentClockingOut',
         async () => await studentClockingOut(page, limit, dateChange.startDate, dateChange.endDate),
     );
 
     // Handle error state
     if (clockingError) {
-        return <div>Error loading student clocking data</div>;
+        return <div className='alert alert-danger'>Error loading student clocking data</div>;
     }
     // function to handle mutating staff clocking
-    const handleChangePage = async (page: number) => {
-        // console.log("current page", page, "rows per page", limit)
-        setPage(page);
+    const handleChangePage = async (newPage: number) => {
+        setPage(newPage);
         const clock = await studentClockingOut(page, limit, dateChange.startDate, dateChange.endDate);
         mutateClockingData(clock)
     }
@@ -55,7 +54,7 @@ const StudentClockingPage = () => {
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
 
-            {isClockingLoading && (<StudentClockingDataTable
+            {clockingData && (<StudentClockingDataTable
                 updateLimit={handleChangeLimit}
                 updatePage={handleChangePage}
                 clockingData={clockingData}

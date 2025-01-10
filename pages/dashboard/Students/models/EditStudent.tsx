@@ -8,6 +8,7 @@ import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import { updateStudentData } from '@/utils/data_fetch';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
+import LiveImageComponent from '../../components/LiveImageComponent';
 
 const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, studentData, setStudentData, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; editModalShow: boolean; studentData: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setStudentData: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
@@ -112,7 +113,7 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                     <span>Student Profile</span>
                                 </Col>
                                 <Col className='mx-20'>
-                                    <img className='rounded-full w-20 h-20' src={selectedImage == null ? studentData.student_profile_pic : selectedImage} alt="student profile" />
+                                    <LiveImageComponent url={selectedImage == null ? studentData.student_profile_pic : selectedImage} />
                                 </Col>
                                 <Col className='my-auto'>
                                     <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
