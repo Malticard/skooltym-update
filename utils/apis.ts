@@ -103,9 +103,11 @@ class AppUrls {
     static clockingStaffOut: string = `${AppUrls.devURL}clocking/staff_out`;
     static clockingStudentIn: string = `${AppUrls.devURL}clocking/student_in`;
     static clockingStudentOut: string = `${AppUrls.devURL}clocking/student_out`;
+    static staffClockingData: string = `${AppUrls.devURL}clocking/staff_data`;
+    static staffLateData: string = `${AppUrls.devURL}clocking/staff_accumated_`;
     // extra functionality for staff
-    static getStaffOvertime: string = `${AppUrls.devURL}clocking/staff_overtime`;
-    static getStaffLateRecords: string = `${AppUrls.devURL}clocking/staff_late`;
+    static getStaffOvertime: string = `${AppUrls.devURL}clocking/staff_accumulated_overtime`;
+    static getStaffLateRecords: string = `${AppUrls.devURL}clocking/staff_accumulated_late`;
 }
 
 export default AppUrls;

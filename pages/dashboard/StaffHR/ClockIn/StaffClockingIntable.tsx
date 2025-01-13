@@ -102,6 +102,15 @@ export default function StaffClockingInDataTable({
     if (!clockingData) {
         return <div className="p-4 text-center">Loading...</div>;
     }
+    const headerFilters = React.useMemo(() => {
+        return (
+            <>
+                <div>Header panel</div>
+            </>
+        )
+    }
+
+        , []);
 
     return (
         <div className="w-full">
@@ -112,10 +121,14 @@ export default function StaffClockingInDataTable({
                     pagination
                     paginationServer
                     fixedHeader
+                    fixedHeaderScrollHeight="400px"
+                    subHeader
+                    subHeaderComponent={headerFilters}
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
                     onChangePage={(page, total) => handlePageChange(page)}
+                    keyField='id'
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clocking records found

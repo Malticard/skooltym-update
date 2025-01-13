@@ -106,7 +106,7 @@ const Home = () => {
                               className="form-control"
                               placeholder="Enter your registered contact"
                               name="email"
-                              type='text'
+                              type='phone'
                               value={email}
                               disabled={loading}
                               onChange={changeHandler}

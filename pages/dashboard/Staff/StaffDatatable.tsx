@@ -2,7 +2,7 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import { Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
-import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
+import { IconEdit, IconEye, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import EditStaff from './models/EditStaff';
 import DeleteStudent from './models/DeleteStudent';
 import { deleteStaffData } from '@/utils/data_fetch';
@@ -10,6 +10,7 @@ import { Staff, StaffResponse } from '@/interfaces/StaffModel';
 import { Role } from '@/interfaces/RolesModel';
 import AddStaff from './models/AddStaff';
 import LiveImageComponent from '../components/LiveImageComponent';
+import StaffDetailsComponent from './StaffDetailsComponent';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -63,12 +64,18 @@ export default function StaffDataTable({
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentStaff, setCurrentStaff] = React.useState<Staff | null>(null);
+    const [openStaffDetails, setOpenStaffDetails] = React.useState<boolean>(false);
 
     const handleEdit = (staffMember: Staff) => {
         setCurrentStaff(staffMember);
         setEditModalShow(true);
     };
+    // handle viewing staff details
+    const handleView = (staffMember: Staff) => {
+        setCurrentStaff(staffMember);
+        setOpenStaffDetails(true);
 
+    }
     const handleDelete = (staffMember: Staff) => {
         setCurrentStaff(staffMember);
         setDeleteModalShow(true);
@@ -115,7 +122,9 @@ export default function StaffDataTable({
         },
         {
             name: "First Name".toLocaleUpperCase(),
-            selector: (row: Staff) => row.staff_fname,
+            cell: (row: Staff) => (<>
+                <a className='font-semibold w-45'>{row.staff_fname}</a>
+            </>),
             sortable: true
         },
         {
@@ -136,17 +145,26 @@ export default function StaffDataTable({
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: Staff) => (
-                <div className="flex space-x-2">
+                <div className="flex flex-row justify-around items-center space-x-1">
+                    {/* handle viewing */}
+                    <Button variant='outline-info'
+                        size="sm"
+                        onClick={() => handleView(row)}
+                        className="flex items-center">
+                        <IconEye className="w-4 h-4" />
+                    </Button>
+                    {/* handle edit */}
                     <Button
-                        variant="primary"
+                        variant="outline-primary"
                         size="sm"
                         onClick={() => handleEdit(row)}
                         className="flex items-center"
                     >
                         <IconEdit className="w-4 h-4" />
                     </Button>
+                    {/* handle delete */}
                     <Button
-                        variant="danger"
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(row)}
                         className="flex items-center"
@@ -220,6 +238,8 @@ export default function StaffDataTable({
                 setAddModalShow={setAddModalShow}
                 handleSave={handleSave}
             />
+            {/* staff details */}
+            <StaffDetailsComponent staff={currentStaff} showStaffDetails={openStaffDetails} setStaffDetails={setOpenStaffDetails} />
         </div>
     );
 }

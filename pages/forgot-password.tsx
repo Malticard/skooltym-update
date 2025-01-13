@@ -122,7 +122,6 @@ const ForgotPassword = () => {
                 </div>
 
                 {/* <!-- End Row --> */}
-
             </Fragment>
             {/* <!-- End Row --> */}
         </div>
