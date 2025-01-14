@@ -4,6 +4,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import StaffDataTable from './StaffDatatable';
 import { fetchRoles, fetchStaff } from '@/utils/data_fetch';
 import useSWR from 'swr';
+import Link from 'next/link';
 
 const Checkout = () => {
   const [addModalShow, setAddModalShow] = React.useState(false);
@@ -48,11 +49,13 @@ const Checkout = () => {
       <Seo title="Staff" />
       <PageHeader
         title="Staff"
-        item="Skooltym"
-        active_item="Staff"
+        link
         buttonText="Add Staff"
         onTap={() => setAddModalShow(true)}
-      />
+      >
+        <li className='breadcrumb-item'><Link href="/dashboard">Dashboard</Link></li>
+        <li className='breadcrumb-item active'>Staff Data</li>
+      </PageHeader>
       {/* Row */}
 
       {staff && (

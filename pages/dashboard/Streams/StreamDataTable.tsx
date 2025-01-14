@@ -166,7 +166,7 @@ export default function StreamDataTable({
     };
 
     return (
-        <div className="space-y-4">
+        <>
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
@@ -212,6 +212,6 @@ export default function StreamDataTable({
                 setAddModalShow={setAddModalShow}
                 handleSave={handleSave}
             />
-        </div>
+        </>
     );
 }

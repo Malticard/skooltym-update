@@ -123,7 +123,7 @@ export default function StaffDataTable({
         {
             name: "First Name".toLocaleUpperCase(),
             cell: (row: Staff) => (<>
-                <a className='font-semibold w-45'>{row.staff_fname}</a>
+                <span className='w-45'>{row.staff_fname}</span>
             </>),
             sortable: true
         },
@@ -188,7 +188,7 @@ export default function StaffDataTable({
     };
 
     return (
-        <div className="space-y-4">
+        <>
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
@@ -207,6 +207,26 @@ export default function StaffDataTable({
                             No staff records found
                         </div>
                     }
+                    customStyles={{
+                        rows: {
+                            style: {
+                                minHeight: '72px',
+                            },
+                        },
+                        headCells: {
+                            style: {
+                                paddingLeft: '8px',
+                                paddingRight: '8px',
+                                fontWeight: 'bold',
+                            },
+                        },
+                        cells: {
+                            style: {
+                                paddingLeft: '2px',
+                                paddingRight: '2px',
+                            },
+                        },
+                    }}
 
                 />
             </DataTableExtensions>
@@ -240,6 +260,6 @@ export default function StaffDataTable({
             />
             {/* staff details */}
             <StaffDetailsComponent staff={currentStaff} showStaffDetails={openStaffDetails} setStaffDetails={setOpenStaffDetails} />
-        </div>
+        </>
     );
 }

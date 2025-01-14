@@ -169,7 +169,7 @@ export default function GuardianDataTable({
     };
 
     return (
-        <div className="space-y-4">
+        <>
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
@@ -181,8 +181,6 @@ export default function GuardianDataTable({
                     paginationPerPage={pageSize}
                     onChangePage={(page, ttt) => handlePageChange(page)}
                     onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
-                    responsive
-                    striped
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No guardians found
@@ -216,6 +214,6 @@ export default function GuardianDataTable({
                 setAddModalShow={setAddModalShow}
                 handleSave={handleSave}
             />
-        </div>
+        </>
     );
 }

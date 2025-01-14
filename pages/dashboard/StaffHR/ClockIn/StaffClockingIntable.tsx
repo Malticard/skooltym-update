@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { StaffClockingResponse, StaffClockingResult } from '@/interfaces/StaffClockingModel';
 import moment from 'moment';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import { Form } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -103,17 +104,22 @@ export default function StaffClockingInDataTable({
         return <div className="p-4 text-center">Loading...</div>;
     }
     const headerFilters = React.useMemo(() => {
+        // const [searchResult, setSearchResult] = React.useState("")
+        const handleSearch = (result: string) => {
+            console.log(result)
+        }
         return (
             <>
-                <div>Header panel</div>
+                <Form.Group className='mt-4'>
+                    <Form.Control className='w-full sm:w-96' type='search' onChange={(e) => handleSearch(e.target.value)} placeholder='Search by name' />
+                </Form.Group>
             </>
         )
     }
-
         , []);
 
     return (
-        <div className="w-full">
+        <>
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
@@ -122,8 +128,8 @@ export default function StaffClockingInDataTable({
                     paginationServer
                     fixedHeader
                     fixedHeaderScrollHeight="400px"
-                    subHeader
-                    subHeaderComponent={headerFilters}
+                    // subHeader
+                    // subHeaderComponent={headerFilters}
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
@@ -139,6 +145,6 @@ export default function StaffClockingInDataTable({
                     }}
                 />
             </DataTableExtensions>
-        </div>
+        </>
     );
 }

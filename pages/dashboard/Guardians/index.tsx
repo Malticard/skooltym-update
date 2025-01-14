@@ -28,7 +28,6 @@ const Guardian = () => {
     return (
         <div className='my-2'>
             <Seo title="Guardians" />
-
             <PageHeader
                 title="Guardians"
                 item="Skooltym"
@@ -38,7 +37,6 @@ const Guardian = () => {
                     setAddModalShow(true);
                 }}
             />
-
             {/* <!-- Row --> */}
             {guardians && (<GuardianDataTable
                 addModalShow={addModalShow}

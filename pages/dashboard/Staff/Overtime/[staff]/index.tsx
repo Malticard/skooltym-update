@@ -19,6 +19,8 @@ import { getStaffOvertimeInfo } from '@/utils/clocking';
 import { useParams } from 'next/navigation';
 import { StaffOvertimeChargeSummary } from '@/interfaces/StaffAccumulatedOvertime';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
+import Link from 'next/link';
+import Seo from '@/shared/layout-components/seo/seo';
 
 interface StaffMember {
     _id: string;
@@ -149,7 +151,6 @@ const OvertimePage = () => {
 
     if (error) return (
         <div className="min-h-screen flex items-center justify-center">
-            {dateRange.startDate}
             <Card className="border-0 shadow-sm mb-6">
                 <Card.Body>
                     <div className="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -196,8 +197,11 @@ const OvertimePage = () => {
     return (
         <>
             <PageHeader title={`${data.staffId.staff_fname}'s Overtime`} link>
-                <Link> Dashboard</Link>
+                <li className='breadcrumb-item'><Link href={`/dashboard/`}> Dashboard</Link></li>
+                <li className='breadcrumb-item'><Link href={`/dashboard/Staff`}> Staff</Link></li>
+                <li className='breadcrumb-item active'>Overtime Info</li>
             </PageHeader>
+            <Seo title={`${data.staffId.staff_email}'s Overtime`} />
             <Container fluid className="py-6 px-4 bg-gray-50 min-h-screen">
                 {/* Date Range and Export Controls */}
                 <Card className="border-0 shadow-sm mb-6">
