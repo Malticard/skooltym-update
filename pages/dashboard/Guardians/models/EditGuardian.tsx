@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { updateStaffData } from '@/utils/data_fetch';
+import { updateGuardianData } from '@/utils/data_fetch';
 import { Guardian } from '@/interfaces/GuardiansModel';
 import FormElement from './FormElement';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
@@ -70,7 +70,7 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
         // student key
         formData.append('guardian_key[key]', '');
         // posting data
-        updateStaffData(formData, currentGuardian?._id).then((res) => {
+        updateGuardianData(formData, currentGuardian?._id).then((res) => {
             setMessage('Guardian added successfully');
             console.log(res);
             handleSaveEdit();

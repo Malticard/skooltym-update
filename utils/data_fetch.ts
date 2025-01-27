@@ -481,7 +481,7 @@ export async function updateGuardianData(data: FormData, id: any): Promise<any> 
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.toString());
+        throw new Error(error.response.data.message);
     }
 }
 // delete guardian data
