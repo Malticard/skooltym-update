@@ -6,6 +6,7 @@ import LateRecordsDataTable from './LateRecordsDataTable';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
+import { exportStaffLateRecords } from '@/utils/reports';
 
 const LateRecordsPage = () => {
     const [page, setPage] = React.useState(1);
@@ -35,7 +36,11 @@ const LateRecordsPage = () => {
         <div className='my-2'>
             <Seo title="Late Records" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-between">
-                <PageHeader title="Late Records" item="Staff HR" active_item='Late Records' />
+                <PageHeader
+                    title="Late Records"
+                    item="Staff HR"
+                    upload
+                    onDownload={() => exportStaffLateRecords()} active_item='Late Records' />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
 

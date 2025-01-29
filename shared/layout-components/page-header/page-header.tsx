@@ -6,8 +6,10 @@ interface PageHeaderProps {
   item?: string
   active_item?: string
   buttonText?: string
+  upload?: boolean
   left?: boolean
   onTap?: () => void
+  onDownload?: () => void
 
 }
 const PageHeader = (props: PageHeaderProps) => {
@@ -34,9 +36,18 @@ const PageHeader = (props: PageHeaderProps) => {
           {props.left && (
             <> {props.children}</>
           )}
+          {
+            props.upload && (
+              <button type="button"
+                onClick={() => props.onDownload && props.onDownload()}
+                className="btn btn-primary my-2 btn-icon-text d-inline-flex align-items-center">
+                <i className='fe fe-download-cloud me-2'></i>{"Download Report"}
+              </button>
+            )
+          }
           {props.buttonText && (<button type="button"
             onClick={() => props.onTap && props.onTap()}
-            className="btn btn-primary my-2 btn-icon-text d-inline-flex align-items-center">
+            className="btn btn-primary mx-2 my-2 btn-icon-text d-inline-flex align-items-center">
             <i className={`${props.buttonText === undefined ? 'fe fe-download-cloud' : 'ti-plus'} me-2`}></i>{props.buttonText ?? "Download Report"}
           </button>)}
         </div>

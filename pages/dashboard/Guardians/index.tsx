@@ -4,6 +4,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import GuardianDataTable from './GuardiansDataTable';
 import { fetchGuardians, fetchStudentsNoPaginate } from '@/utils/data_fetch';
 import useSWR from 'swr';
+import { exportGuardianRecords } from '@/utils/reports';
 
 
 const Guardian = () => {
@@ -33,6 +34,8 @@ const Guardian = () => {
                 item="Skooltym"
                 active_item="Guardians"
                 buttonText="Add Guardian"
+                upload
+                onDownload={() => exportGuardianRecords()}
                 onTap={() => {
                     setAddModalShow(true);
                 }}

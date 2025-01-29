@@ -5,6 +5,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import useSWR from 'swr';
 import { fetchClasses, fetchStream, fetchStudents } from '@/utils/data_fetch';
 import StudentsDataTable from './StudentsDataTable';
+import { exportStudents } from '@/utils/reports';
 
 
 const Orders = () => {
@@ -44,7 +45,9 @@ const Orders = () => {
                 item="Skooltym"
                 active_item="Students"
                 buttonText="Add Student"
+                upload
                 onTap={() => setAddModalShow(true)}
+                onDownload={() => exportStudents()}
             />
             {/* Data Table */}
             {students && (

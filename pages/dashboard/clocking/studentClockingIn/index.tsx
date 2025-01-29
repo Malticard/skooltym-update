@@ -6,6 +6,7 @@ import React from 'react';
 import StudentClockingDataTable from './StudentClockingDatatable';
 import { StudentClockingResponse } from '@/interfaces/StudentClockingModel';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
+import { exportStudentClockInRecords } from '@/utils/reports';
 
 // Fetcher function to get student clocking data
 
@@ -50,6 +51,8 @@ const StudentClockingPage = () => {
                     title="Clock In"
                     item="Dashboard"
                     active_item="Student Clocking In"
+                    upload
+                    onDownload={() => exportStudentClockInRecords()}
                 />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>

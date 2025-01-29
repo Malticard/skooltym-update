@@ -7,6 +7,7 @@ import StudentClockingDataTable from './StudentClockingDatatable';
 import { StudentClockingResponse } from '@/interfaces/StudentClockingModel';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
+import { exportStudentClockOutRecords } from '@/utils/reports';
 
 const StudentClockingPage = () => {
     const [page, setPage] = React.useState(1);
@@ -49,6 +50,8 @@ const StudentClockingPage = () => {
                 <PageHeader
                     title="Students"
                     item="Skooltym"
+                    upload
+                    onDownload={() => exportStudentClockOutRecords()}
                     active_item="Student Clocking"
                 />
                 <DateFilterComponent handleFilter={handleDateChange} />

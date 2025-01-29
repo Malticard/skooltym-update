@@ -5,6 +5,7 @@ import StaffOvertimeDataTable from './StaffOvertimeDataTable';
 import useSWR, { mutate } from 'swr';
 import { getStaffOvertimes } from '@/utils/clocking';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
+import { exportStaffOvertimeRecords } from '@/utils/reports';
 
 const StaffOvertime = () => {
     const [page, setPage] = React.useState(1);
@@ -32,7 +33,10 @@ const StaffOvertime = () => {
         <div className='my-2'>
             <Seo title="Staff Overtime" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-between">
-                <PageHeader title="Staff Overtime" item="Dashboard" active_item='Staff Overtime' />
+                <PageHeader title="Staff Overtime"
+                    upload
+                    onDownload={() => exportStaffOvertimeRecords()}
+                    item="Dashboard" active_item='Staff Overtime' />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
 

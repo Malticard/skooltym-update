@@ -5,6 +5,7 @@ import StaffDataTable from './StaffDatatable';
 import { fetchRoles, fetchStaff } from '@/utils/data_fetch';
 import useSWR from 'swr';
 import Link from 'next/link';
+import { exportStaff } from '@/utils/reports';
 
 const Checkout = () => {
   const [addModalShow, setAddModalShow] = React.useState(false);
@@ -52,6 +53,8 @@ const Checkout = () => {
         link
         buttonText="Add Staff"
         onTap={() => setAddModalShow(true)}
+        upload
+        onDownload={() => exportStaff()}
       >
         <li className='breadcrumb-item'><Link href="/dashboard">Dashboard</Link></li>
         <li className='breadcrumb-item active'>Staff Data</li>

@@ -9,6 +9,7 @@ import LoaderComponent from '@/pages/components/LoaderComponent';
 import StaffClockingInDataTable from './StaffClockingIntable';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
 import Link from 'next/link';
+import { exportStaffClockInRecords } from '@/utils/reports';
 
 // Fetcher function to get staff clocking data
 // const fetchStaffClocking = () => staffClockingIn().then(res => res);
@@ -54,6 +55,8 @@ const StaffClockingPage = () => {
                 <PageHeader
                     title="Staff Clock In"
                     link
+                    upload
+                    onDownload={() => exportStaffClockInRecords()}
                 >
                     <li className="breadcrumb-item"><Link href="/dashboard">Dashboard</Link></li>
                     <li className='breadcrumb-item active'>Staff Clocking In</li>

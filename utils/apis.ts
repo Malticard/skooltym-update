@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "https://backend.skooltym.com/";
+    static devURL: string = "http://localhost:5050/";//"https://backend.skooltym.com/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "https://backend.skooltym.com/image/images/";
@@ -108,6 +108,24 @@ class AppUrls {
     // extra functionality for staff
     static getStaffOvertime: string = `${AppUrls.devURL}clocking/staff_accumulated_overtime`;
     static getStaffLateRecords: string = `${AppUrls.devURL}clocking/staff_accumulated_late`;
+
+    // exports
+    static exportStudentsRecords: string = `${AppUrls.devURL}export/student/`;
+    static exportStaffRecords: string = `${AppUrls.devURL}export/staff/`;
+    static exportGuardianRecords: string = `${AppUrls.devURL}export/guardian/`;
+    static exportDropOffRecords: string = `${AppUrls.devURL}export/drop-offs/`;
+    static exportPickUpRecords: string = `${AppUrls.devURL}export/pick-ups/`;
+    static exportClearedOvertimeRecords: string = `${AppUrls.devURL}export/overtimes/cleared/`;
+    static exportPendingOvertimeRecords: string = `${AppUrls.devURL}export/overtimes/pending/`;
+    static exportPaymentRecords: string = `${AppUrls.devURL}export/payments/`;
+    static exportStaffOvertimeRecords: string = `${AppUrls.devURL}export/staff-overtime/`;
+    static exportStaffLateRecords: string = `${AppUrls.devURL}export/staff-late-records/`;
+    // clocking
+    static exportStaffClockIn = `${AppUrls.devURL}export/staff/clockins/`;
+    static exportStaffClockOut = `${AppUrls.devURL}export/staff/clockouts/`;
+    static exportStudentClockIn = `${AppUrls.devURL}export/student/clockins/`;
+    static exportStudentClockOut = `${AppUrls.devURL}export/student/clockouts/`;
+
 }
 
 export default AppUrls;

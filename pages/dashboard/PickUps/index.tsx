@@ -6,6 +6,7 @@ import PickUpDataTable from './PickUpDataTable';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import useSWR from 'swr';
 import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
+import { exportPickUpRecords } from '@/utils/reports';
 
 const PickUps = () => {
     const [page, setPage] = React.useState(1);
@@ -43,7 +44,7 @@ const PickUps = () => {
         <div className='my-2'>
             <Seo title="PickUps" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-center">
-                <PageHeader title="PickUps" item="Skooltym" active_item="PickUps" />
+                <PageHeader title="PickUps" item="Skooltym" upload onDownload={() => exportPickUpRecords()} active_item="PickUps" />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
             {pickUp && (
@@ -51,7 +52,6 @@ const PickUps = () => {
                     pickUpData={pickUp}
                     updatePage={onChangePage}
                     updateLimit={onChangeLimit}
-
                 />
             )}
         </div>

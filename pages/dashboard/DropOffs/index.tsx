@@ -6,6 +6,7 @@ import DropOffDataTable from './DropOffDataTable';
 import { fetchDropOffs } from '@/utils/data_fetch';
 import useSWR from 'swr';
 import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
+import { exportDropOffRecords } from '@/utils/reports';
 
 const DropOffs = () => {
     const [page, setPage] = React.useState(1);
@@ -40,7 +41,7 @@ const DropOffs = () => {
         <div className='my-2'>
             <Seo title="DropOffs" />
             <div className='flex sm:flex-row flex-col w-4/5 justify-between'>
-                <PageHeader title="Drop Offs" item="Skooltym" active_item="Drop Offs" />
+                <PageHeader title="Drop Offs" item="Skooltym" upload onDownload={() => exportDropOffRecords()} active_item="Drop Offs" />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
             {dropOffs && (

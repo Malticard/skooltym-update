@@ -6,6 +6,7 @@ import React from 'react';
 import ClearedDataTable from './ClearedDatatable';
 import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
 import useSWR from 'swr';
+import { exportClearedRecords } from '@/utils/reports';
 
 const ClearedOvertime = () => {
 
@@ -39,6 +40,8 @@ const ClearedOvertime = () => {
                 <PageHeader
                     title="Cleared Overtime"
                     item="Skooltym"
+                    upload
+                    onDownload={() => exportClearedRecords()}
                     active_item="Cleared Overtime"
                 />
                 <DateFilterComponent handleFilter={handleDateChange} />

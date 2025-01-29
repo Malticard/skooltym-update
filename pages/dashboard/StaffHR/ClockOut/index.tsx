@@ -6,6 +6,7 @@ import React from 'react';
 import StaffClockingOutDataTable from './StaffClockingOuttable';
 import { StaffClockingResponse } from '@/interfaces/StaffClockingModel';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
+import { exportStaffClockOutRecords } from '@/utils/reports';
 
 // Fetcher function to get staff clocking data
 const StaffClockingPage = () => {
@@ -47,6 +48,8 @@ const StaffClockingPage = () => {
                 <PageHeader
                     title="Staff"
                     item="Dashboard"
+                    upload
+                    onDownload={() => exportStaffClockOutRecords()}
                     active_item="Clocking Out"
                 />
                 <DateFilterComponent handleFilter={handleDateChange} />
