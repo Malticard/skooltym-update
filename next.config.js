@@ -12,7 +12,7 @@ const nextConfig = {
     loader: 'imgix',
     path: '/',
     domains: [
-      "skooltym-resources.s3.af-south-1.amazonaws.com",
+      "backend.skooltym.com",
     ],
   },
 
