@@ -1,8 +1,8 @@
 class AppUrls {
-    static devURL: string = "http://127.0.0.1:5050/";
+    static devURL: string = "https://backend.skooltym.com/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
-    static liveImages: string = "http://13.127.169.59:5050/image/images/";
+    static liveImages: string = "https://backend.skooltym.com/image/images/";
 
     // get students in a particular stream
     static studentsInStream: string = `${AppUrls.devURL}get/stream-students`;
