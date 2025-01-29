@@ -46,7 +46,8 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
         setUpdating(true);
 
         const formData = new FormData();
-
+        // capturing school name
+        formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
         Object.entries(studentData as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });

@@ -99,6 +99,7 @@ export default function StaffDataTable({
             await deleteStaffData(currentStaff._id);
             setDeleteModalShow(false);
             handleUpdates();
+            window.location.reload();
         } catch (error) {
             console.error("Error deleting staff:", error);
         } finally {
@@ -118,7 +119,7 @@ export default function StaffDataTable({
                 <LiveImageComponent url={row.staff_profilePic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),

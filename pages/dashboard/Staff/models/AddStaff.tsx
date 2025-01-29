@@ -59,7 +59,7 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
             setPosting(false)
             window.location.reload();
         }).catch((err) => {
-            console.warn(err);
+            console.log(err);
             setMessage(err.toString());
             setPosting(false)
         })

@@ -416,7 +416,7 @@ export async function updateStaffData(data: FormData, id: any): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        console.dir(error);
+        console.log(error);
         throw new Error(error.toString());
     }
 }

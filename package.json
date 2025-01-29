@@ -105,6 +105,7 @@
     "postcss": "^8.4.39",
     "react-nvd3": "^0.5.7",
     "react-searchable-dropdown": "^2.0.3",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.2.2"
   }
