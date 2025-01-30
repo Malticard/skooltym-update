@@ -60,7 +60,7 @@ export default function StudentsDataTable({
                 <LiveImageComponent url={row.student_profile_pic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),

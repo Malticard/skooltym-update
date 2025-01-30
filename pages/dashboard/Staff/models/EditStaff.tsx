@@ -52,18 +52,15 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         setUpdating(true);
 
         const formData = new FormData();
+        formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
+        // }
+        formData.append('staff_key[key]', '');
         Object.entries(currentStaff as any).forEach(([key, value]) => {
             formData.append(key, value as string);
         });
         if (imageFile) {
             formData.append('image', imageFile);
         }
-        // capturing school name
-        if (imageFile) {
-            formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-        }
-        formData.append('staff_key[key]', '');
-
         // posting data
         updateStaffData(formData, currentStaff._id).then((res) => {
             setMessage('Student added successfully');

@@ -50,6 +50,8 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
         const formData = new FormData();
         // capturing school
         // formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
+        // capturing school name
+        formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
 
         // capturing student guardian
         // formData.append('guardians', []);
@@ -60,10 +62,7 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
         if (imageFile) {
             formData.append('image', imageFile);
         }
-        // capturing school name
-        if (imageFile) {
-            formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-        }
+
         // console.log(JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
         // // student username
         // formData.append('username', `${currentStudent?.student_fname.toLowerCase()}${currentStudent?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
