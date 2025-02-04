@@ -71,27 +71,32 @@ export function exportStaffOvertimeRecords() {
 const exportTor = (name: string, url: string) => {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     const docUrl = `${url}${data.school}`;
+    // alert(docUrl);
+    try {
+        fetch(docUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a blob URL
+                const blobUrl = window.URL.createObjectURL(blob);
 
-    fetch(docUrl)
-        .then(response => response.blob())
-        .then(blob => {
-            // Create a blob URL
-            const blobUrl = window.URL.createObjectURL(blob);
+                // Create a temporary anchor element
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `${name}_${Date.now()}.xlsx`; // Name for the downloaded file
 
-            // Create a temporary anchor element
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = `${name}_${Date.now()}.xlsx`; // Name for the downloaded file
+                // Append to document, click, and remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
 
-            // Append to document, click, and remove
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+                // Clean up the blob URL
+                window.URL.revokeObjectURL(blobUrl);
+            })
+            .catch(error => {
+                console.error('Error downloading docs:', error);
+            });
+    } catch (error) {
+        console.log(error);
+    }
 
-            // Clean up the blob URL
-            window.URL.revokeObjectURL(blobUrl);
-        })
-        .catch(error => {
-            console.error('Error downloading docs:', error);
-        });
 }

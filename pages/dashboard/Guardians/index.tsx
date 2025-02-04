@@ -35,6 +35,7 @@ const Guardian = () => {
                 active_item="Guardians"
                 buttonText="Add Guardian"
                 upload
+                typeOfUpload='guardian'
                 onDownload={() => exportGuardianRecords()}
                 onTap={() => {
                     setAddModalShow(true);

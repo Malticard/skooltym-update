@@ -45,16 +45,18 @@ const StudentClockingPage = () => {
     }
     return (
         <div className='my-2'>
-            <Seo title="Student Clocking" />
+            <Seo title="Student Clock Out" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5" >
                 <PageHeader
-                    title="Students"
+                    title="Clock Out"
                     item="Skooltym"
-                    upload
-                    onDownload={() => exportStudentClockOutRecords()}
                     active_item="Student Clocking"
                 />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent
+                    exportData={() => exportStudentClockOutRecords()}
+                    enableActions
+                    handleFilter={handleDateChange}
+                />
             </div>
 
             {clockingData && (<StudentClockingDataTable

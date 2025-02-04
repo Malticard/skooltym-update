@@ -55,13 +55,15 @@ const StaffClockingPage = () => {
                 <PageHeader
                     title="Staff Clock In"
                     link
-                    upload
-                    onDownload={() => exportStaffClockInRecords()}
                 >
                     <li className="breadcrumb-item"><Link href="/dashboard">Dashboard</Link></li>
                     <li className='breadcrumb-item active'>Staff Clocking In</li>
                 </PageHeader>
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent
+                    enableActions
+                    exportData={() => exportStaffClockInRecords()}
+                    handleFilter={handleDateChange}
+                />
             </div>
 
             {

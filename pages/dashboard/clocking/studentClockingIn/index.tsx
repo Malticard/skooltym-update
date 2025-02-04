@@ -45,7 +45,7 @@ const StudentClockingPage = () => {
     }
     return (
         <div className='my-2'>
-            <Seo title="Student Clocking In" />
+            <Seo title="Student Clock In" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5">
                 <PageHeader
                     title="Clock In"

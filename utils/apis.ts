@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "https://backend.skooltym.com/";
+    static devURL: string = "http://localhost:5050/";//"https://backend.skooltym.com/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "https://backend.skooltym.com/image/images/";
@@ -126,6 +126,8 @@ class AppUrls {
     static exportStudentClockIn = `${AppUrls.devURL}export/student/clockins/`;
     static exportStudentClockOut = `${AppUrls.devURL}export/student/clockouts/`;
 
+    // file upload
+    static uploadFile = `${AppUrls.devURL}csv/upload/`;
 }
 
 export default AppUrls;

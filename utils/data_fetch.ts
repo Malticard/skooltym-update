@@ -16,6 +16,7 @@ import { GuardianResponse } from '@/interfaces/GuardiansModel';
 import { DropoffRecordsResponse } from '@/interfaces/DropOff';
 import { PickupResponse } from '@/interfaces/pickUp';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
+import { staffClockingIn, staffClockingOut, studentClockingIn, studentClockingOut } from './clocking';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -159,7 +160,11 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const picks = await fetchPickUps(data.school);
     const pendingOvertimes = await fetchPendingOvertimeData(1, 150);
     const clearedOvertimes = await fetchClearedOvertimeData(1, 150);
-
+    // clocking data
+    const staffClockIn = await staffClockingIn(1, 1000);
+    const staffClockOut = await staffClockingOut(1, 1000);
+    const studentClockIn = await studentClockingIn(1, 1000);
+    const studentClockOut = await studentClockingOut(1, 1000);
     const dashboardData: DashboardItem[] = [
         {
             label: "DROP OFFS",
@@ -187,6 +192,32 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
             page: "/dashboard/PendingOvertime",
 
         },
+        // clocking data
+        {
+            label: "STAFF CLOCK IN",
+            value: staffClockIn.total,
+            icon: "assets/icons/005-overtime.svg",
+            page: "/dashboard/StaffHR/ClockIn",
+
+        }, {
+            label: "STAFF CLOCK OUT",
+            value: staffClockOut.total,
+            icon: "assets/icons/005-overtime.svg",
+            page: "/dashboard/StaffHR/ClockOut",
+
+        }, {
+            label: "STUDENT CLOCK IN",
+            value: studentClockIn.total,
+            icon: "assets/icons/005-overtime.svg",
+            page: "/dashboard/clocking/studentClockingIn/",
+
+        }, {
+            label: "STUDENT CLOCK OUT",
+            value: studentClockOut.total,
+            icon: "assets/icons/005-overtime.svg",
+            page: "/dashboard/clocking/studentClockingOut",
+
+        }
     ];
 
     const financeData: DashboardItem[] = [

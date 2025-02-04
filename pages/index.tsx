@@ -51,7 +51,7 @@ const Home = () => {
         setError("Failed to login");
       }
     }).catch((err) => {
-      console.log(err.toString());
+      console.error(err.toString());
       setError(err.toString());
       setLoading(false);
     });

@@ -30,7 +30,7 @@ const Dashboardecommerce = () => {
 
     // check if user token is still valid
     const isValid = isTokenValid(user._token);
-    // fetch dashcards data
+    // fetch dash-cards data
     setLoading(true);
     fetchDashboardMetaData().then((data) => {
       setData(data);

@@ -50,7 +50,7 @@ export default function StudentClockingDataTable({
     const formatTime = (time: string | Date | null | undefined): string => {
         if (!time) return 'N/A';
         try {
-            return moment(time).format('hh:mm:ss a');
+            return moment(time).format('Do MMM YYYY - HH:mm A');
         } catch (error) {
             console.error('Error formatting time:', error);
             return 'Invalid Time';
@@ -64,7 +64,7 @@ export default function StudentClockingDataTable({
                 <LiveImageComponent url={row.student?.student_profile_pic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "Student".toLocaleUpperCase(),

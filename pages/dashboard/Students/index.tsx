@@ -39,12 +39,13 @@ const Orders = () => {
 
     return (
         <>
-            <Seo title="Students" />
+            <Seo title="Students & Reports" />
             <PageHeader
                 title="Students"
                 item="Skooltym"
                 active_item="Students"
                 buttonText="Add Student"
+                typeOfUpload='student'
                 upload
                 onTap={() => setAddModalShow(true)}
                 onDownload={() => exportStudents()}

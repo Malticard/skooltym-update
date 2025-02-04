@@ -40,7 +40,7 @@ export default function StudentClockingDataTable({
                 <LiveImageComponent url={row.student.student_profile_pic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "Student".toLocaleUpperCase(),
@@ -50,7 +50,7 @@ export default function StudentClockingDataTable({
         },
         {
             name: "Clock Out".toLocaleUpperCase(),
-            selector: (row: StudentClockingResult) => moment(row.clock_out).format('hh:mm a') || 'N/A',
+            selector: (row: StudentClockingResult) => moment(row.clock_out).format('Do MMM YYYY -  hh:mm A') || 'N/A',
             sortable: true
         },
     ];

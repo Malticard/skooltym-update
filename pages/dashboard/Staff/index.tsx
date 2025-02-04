@@ -47,7 +47,7 @@ const Checkout = () => {
 
   return (
     <div className="my-2">
-      <Seo title="Staff" />
+      <Seo title="Staff & Reports" />
       <PageHeader
         title="Staff"
         link

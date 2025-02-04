@@ -38,14 +38,14 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         type: "link",
         active: false,
         selected: false,
-        title: "Students",
+        title: "Students & Reports",
       }, {
         path: "/dashboard/Staff",
         icon: "ti-home",
         type: "link",
         active: false,
         selected: false,
-        title: "Staff",
+        title: "Staff & Reports",
       }, {
         path: "/dashboard/Guardians",
         icon: "ti-user",
@@ -115,14 +115,14 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         type: "link",
         active: false,
         selected: false,
-        title: "Clocking In",
+        title: "Clock In",
       }, {
         path: "/dashboard/clocking/studentClockingOut",
         icon: "ti-timer",
         type: "link",
         active: false,
         selected: false,
-        title: "Clocking Out",
+        title: "Clock Out",
       }
     ]
   },

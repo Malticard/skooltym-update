@@ -113,7 +113,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
                                 <span>Student Profile</span>
                             </Col>
                             <Col className='mx-20'>
-                                <LiveImageComponent url={imageFile == null ? "https://placehold.co/500x500" : URL.createObjectURL(imageFile as Blob)} />
+                                <LiveImageComponent url={imageFile == null ? "https://backend.skooltym.com/uploads/default.png" : URL.createObjectURL(imageFile as Blob)} />
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
