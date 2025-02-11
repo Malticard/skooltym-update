@@ -248,8 +248,8 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
               {localData && (
                 <>
                   <div className="p-2 ">
-                    <span className="sm:d-block sm:block hidden">{localData.fname} {localData.lname}</span>
-                    <small className="sm:d-block hidden">{localData.role}</small>
+                    <span className="sm:d-block sm:block">{localData.fname} {localData.lname}</span> <br />
+                    <small className="sm:d-block">{localData.role}</small>
                   </div>
                   <Dropdown>
                     <Dropdown.Toggle variant="link" id="dropdown-basic">

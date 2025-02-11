@@ -119,7 +119,6 @@ export default function StaffDataTable({
                 <LiveImageComponent url={row.staff_profilePic} />
             ),
             ignoreRowClick: true,
-            // allowOverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),
