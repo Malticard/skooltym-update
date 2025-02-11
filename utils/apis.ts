@@ -81,7 +81,7 @@ class AppUrls {
 
     // dashboard
     static dashboard: string = `${AppUrls.devURL}dashboard/data/`;
-
+    static dashboardStats: string = `${AppUrls.devURL}dashboard/stats/`;
     // searches
     static searchStudents: string = `${AppUrls.devURL}search/search-students/`;
     static searchStaff: string = `${AppUrls.devURL}search/search-staff/`;

@@ -17,6 +17,7 @@ import { DropoffRecordsResponse } from '@/interfaces/DropOff';
 import { PickupResponse } from '@/interfaces/pickUp';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 import { staffClockingIn, staffClockingOut, studentClockingIn, studentClockingOut } from './clocking';
+import { dashboardStats } from './dashboard';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -155,39 +156,36 @@ export async function fetchClearedOvertimeData(page = 1, limit = 10, startDate =
 
 
 export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
-    let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
-    const drops = await fetchDropOffs(data.school);
-    const picks = await fetchPickUps(data.school);
-    const pendingOvertimes = await fetchPendingOvertimeData(1, 150);
-    const clearedOvertimes = await fetchClearedOvertimeData(1, 150);
+    const activity = await dashboardStats();
+    let res = JSON.parse(localStorage.getItem("skooltym_user") as string);
     // clocking data
-    const staffClockIn = await staffClockingIn(1, 1000);
-    const staffClockOut = await staffClockingOut(1, 1000);
-    const studentClockIn = await studentClockingIn(1, 1000);
-    const studentClockOut = await studentClockingOut(1, 1000);
+    const staffClockIn = activity.staffClockIn;
+    const staffClockOut = activity.staffClockOut;
+    const studentClockIn = activity.studentClockIn;
+    const studentClockOut = activity.studentClockOut;
     const dashboardData: DashboardItem[] = [
         {
             label: "DROP OFFS",
-            value: drops.totalDocuments,
+            value: activity.dropOffs,
             icon: "assets/icons/004-playtime.svg",
             page: "/dashboard/DropOffs",
         },
         {
             label: "PICK UPS",
-            value: picks.totalDocuments,
+            value: activity.pickUps,
             icon: "assets/icons/009-student.svg",
             page: "/dashboard/PickUps",
         },
         {
             label: "CLEARED OVERTIME",
-            value: clearedOvertimes.data.totalDocuments,
+            value: activity.clearedOvertime,
             icon: "assets/icons/002-all.svg",
             page: "/dashboard/ClearedOvertime",
 
         },
         {
             label: "PENDING OVERTIME",
-            value: pendingOvertimes.data.totalDocuments,
+            value: activity.pendingOvertime,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/PendingOvertime",
 
@@ -195,25 +193,25 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
         // clocking data
         {
             label: "STAFF CLOCK IN",
-            value: staffClockIn.total,
+            value: staffClockIn,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/StaffHR/ClockIn",
 
         }, {
             label: "STAFF CLOCK OUT",
-            value: staffClockOut.total,
+            value: staffClockOut,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/StaffHR/ClockOut",
 
         }, {
             label: "STUDENT CLOCK IN",
-            value: studentClockIn.total,
+            value: studentClockIn,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/clocking/studentClockingIn/",
 
         }, {
             label: "STUDENT CLOCK OUT",
-            value: studentClockOut.total,
+            value: studentClockOut,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/clocking/studentClockingOut",
 
@@ -223,27 +221,27 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const financeData: DashboardItem[] = [
         {
             label: "CLEARED OVERTIME",
-            value: clearedOvertimes.data.totalDocuments,
+            value: activity.clearedOvertime,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/ClearedOvertime",
         },
         {
             label: "PENDING OVERTIME",
-            value: pendingOvertimes.data.totalDocuments,
+            value: activity.pendingOvertime,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/PendingOvertime",
         },
         // Commented out in the original code
         {
             label: "PAYMENTS",
-            value: pendingOvertimes.data.totalDocuments,
+            value: activity.payments,
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/Payments",
 
         }
     ];
 
-    return data.role === 'Admin' ? dashboardData : financeData;
+    return res.role === 'Admin' ? dashboardData : financeData;
 }
 
 // function to process images
