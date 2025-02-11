@@ -26,18 +26,21 @@ const StaffOvertime = () => {
         setDateChange(data)
         mutate('staff_overtime', await getStaffOvertimes(page, limit, data.startDate, data.endDate));
     }
-    if (error) {
-        return <div>Error loading staff overtime data</div>;
-    }
+    // if (error) {
+    //     return <div>Error loading staff overtime data {error}</div>;
+    // }
     return (
         <div className='my-2'>
             <Seo title="Staff Overtime" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-between">
                 <PageHeader title="Staff Overtime"
-                    upload
-                    onDownload={() => exportStaffOvertimeRecords()}
+                    // download
+                    // onDownload={() => exportStaffOvertimeRecords()}
                     item="Dashboard" active_item='Staff Overtime' />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent
+                    enableActions
+                    exportData={() => exportStaffOvertimeRecords(dateChange.startDate, dateChange.endDate)}
+                    handleFilter={handleDateChange} />
             </div>
 
             {data && (<StaffOvertimeDataTable

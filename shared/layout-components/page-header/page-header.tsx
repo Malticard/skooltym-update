@@ -10,6 +10,7 @@ interface PageHeaderProps {
   active_item?: string
   buttonText?: string
   upload?: boolean
+  download?: boolean
   typeOfUpload?: string
   left?: boolean
   onTap?: () => void
@@ -60,7 +61,7 @@ const PageHeader = (props: PageHeaderProps) => {
           )}
           <div><input type="file" name="upload" onChange={handleFileUpload} className='hidden' id="uploadFile" /></div>
           {
-            props.upload && (
+            props.download && (
               <button type="button"
                 onClick={() => props.onDownload && props.onDownload()}
                 className="btn btn-primary my-2 btn-icon-text d-inline-flex align-items-center">

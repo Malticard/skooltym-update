@@ -48,11 +48,14 @@ const StaffClockingPage = () => {
                 <PageHeader
                     title="Staff"
                     item="Dashboard"
-                    upload
-                    onDownload={() => exportStaffClockOutRecords()}
+                    // download
+                    // onDownload={() => exportStaffClockOutRecords()}
                     active_item="Clocking Out"
                 />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent
+                    enableActions
+                    exportData={() => exportStaffClockOutRecords()}
+                    handleFilter={handleDateChange} />
             </div>
 
             {

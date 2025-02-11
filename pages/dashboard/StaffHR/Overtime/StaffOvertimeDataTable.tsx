@@ -2,9 +2,10 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
 import { StaffOvertimePaginatedResponse, StaffOvertimeResult } from '@/interfaces/StaffOvertimeModel';
-import { Button } from 'react-bootstrap';
-import { IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
+import { Badge, Button } from 'react-bootstrap';
+import { IconEye, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import StaffModel from './StaffModel';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
@@ -20,7 +21,9 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
     const [currentPage, setCurrentPage] = React.useState(1);
     const [pageSize, setPageSize] = React.useState(10);
     const [totalDocuments, setTotalDocuments] = React.useState(0);
-
+    // show hide modal
+    const [show, setShow] = React.useState(false);
+    const [selected, setSelected] = React.useState<StaffOvertimeResult | null>(null);
     // Update state when pendingData changes
     React.useEffect(() => {
         if (pendingData) {
@@ -38,7 +41,7 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
                 <LiveImageComponent url={row.staff.staff_profilePic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "Staff Name".toLocaleUpperCase(),
@@ -65,23 +68,24 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
         },
         {
             name: "Status",
-            selector: (row: StaffOvertimeResult) => `${row.status === 0 ? 'Pending' : 'Cleared'}`,
+            cell: (row: StaffOvertimeResult) => row.status === 0 ? <Badge pill bg='secondary'>Pending</Badge> : <Badge pill bg='success'>Cleared</Badge>,
             sortable: true
-        }, {
-            name: "Actions".toLocaleUpperCase(),
-            cell: (row: StaffOvertimeResult) => (
-                <div className="flex items-center justify-center">
-                    <Button variant="outline-danger" size="sm"
-                        className="p-2 rounded-md"
-                        onClick={() => console.log('Viewing Overtime')}
-                    >
-                        <IconTrash className="w-5 h-5" />
-                    </Button>
-                </div>
-            ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-        }
+        },
+        // {
+        //     name: "Actions".toLocaleUpperCase(),
+        //     cell: (row: StaffOvertimeResult) => (
+        //         <div className="flex items-center justify-center">
+        //             <Button variant="outline-primary" size="sm"
+        //                 className="p-2 rounded-md"
+        //                 onClick={() => { setShow(true); setSelected(row); }}>
+
+        //                 <IconEye className="w-5 h-5" />
+        //             </Button>
+        //         </div>
+        //     ),
+        //     ignoreRowClick: true,
+        //     // allowOverflow: true,
+        // }
     ];
 
     const handlePageChange = (page: number) => {
@@ -95,21 +99,24 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
     };
 
     return (
-        <DataTableExtensions {...tableData}>
-            <DataTable
-                columns={columns}
-                data={data}
-                pagination
-                paginationServer
-                paginationTotalRows={totalDocuments}
-                paginationDefaultPage={currentPage}
-                paginationPerPage={pageSize}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
-                responsive
-                striped
-            />
-        </DataTableExtensions>
+        <>
+            <DataTableExtensions {...tableData}>
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalDocuments}
+                    paginationDefaultPage={currentPage}
+                    paginationPerPage={pageSize}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
+                    responsive
+                    striped
+                />
+            </DataTableExtensions>
+            <StaffModel close={setShow} staff={selected} show={show} size={'lg'} />
+        </>
     );
 }
 

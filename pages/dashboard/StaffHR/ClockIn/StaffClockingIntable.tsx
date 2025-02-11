@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { StaffClockingResponse, StaffClockingResult } from '@/interfaces/StaffClockingModel';
 import moment from 'moment';
 import LiveImageComponent from '../../components/LiveImageComponent';
-import { Form } from 'react-bootstrap';
+import { Badge, Form } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -50,10 +50,13 @@ export default function StaffClockingInDataTable({
         {
             name: "Staff ID".toLocaleUpperCase(),
             cell: (row: StaffClockingResult) => (
-                <LiveImageComponent url={row.staff?.staff_profilePic} />
+                <>
+                    <LiveImageComponent url={row.staff?.staff_profilePic} />
+                </>
+
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+
         },
         {
             name: "Staff".toLocaleUpperCase(),
@@ -69,10 +72,10 @@ export default function StaffClockingInDataTable({
             selector: (row: StaffClockingResult) => row.late?.toString() ?? 'N/A',
             sortable: true,
             cell: (row: StaffClockingResult) => (
-                <span className={`px-2 py-1 rounded-full text-sm ${row.late ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                    }`}>
-                    {row.late ? 'LATE' : 'ON TIME'}
-                </span>
+                <>
+                    {row.late ? <Badge bg="danger">LATE</Badge> :
+                        <Badge bg="success">ON TIME</Badge>}
+                </>
             )
         },
         {
@@ -80,7 +83,7 @@ export default function StaffClockingInDataTable({
             selector: (row: StaffClockingResult) => {
                 if (!row.clock_in) return 'N/A';
                 try {
-                    return moment(row.clock_in).format("hh:mm a");
+                    return moment(row.clock_in).format("ll hh:mm a").toLocaleUpperCase();
                 } catch (error) {
                     console.error('Error formatting date:', error);
                     return 'Invalid Date';

@@ -54,6 +54,7 @@ export const getStaffOvertimes = async (page = 1, limit = 10, startDate = "", en
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
         const response = await axios.get(`${AppUrls.getStaffOvertime}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        console.log(response.data);
         return response.data;
     } catch (error: any) {
         throw new Error(error.response.data.message);
@@ -77,7 +78,7 @@ export const getStaffLateRecords = async (page = 1, limit = 10, startDate = "", 
 export const getStaffOvertimeInfo = async (id: string, startDate = "", endDate = ""): Promise<StaffOvertimeChargeSummary> => {
     try {
 
-        const response = await axios.get(`${AppUrls.getStaffOvertime}/${id}?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axios.get(`${AppUrls.getStaffAccumulatedOvertime}/${id}?startDate=${startDate}&endDate=${endDate}`);
         console.log(response.data);
         return response.data;
     }
@@ -89,7 +90,7 @@ export const getStaffOvertimeInfo = async (id: string, startDate = "", endDate =
 // get staff overtime information
 export const getStaffLateInfo = async (staff: string, startDate = "", endDate = ""): Promise<StaffLateChargesWithDetails> => {
     try {
-        const response = await axios.get(`${AppUrls.getStaffLateRecords}/${staff}?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axios.get(`${AppUrls.getStaffAccumulatedLateRecords}/${staff}?startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     }
     catch (error: any) {

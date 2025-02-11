@@ -1,6 +1,6 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
-import { Button } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import { StaffLatePaginatedResponse, StaffLateResult } from '@/interfaces/StaffLateInterface';
@@ -58,23 +58,24 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
         },
         {
             name: "Status".toLocaleUpperCase(),
-            selector: (row: StaffLateResult) => `${row.status === 1 ? 'Paid' : 'Unpaid'}`,
+            cell: (row: StaffLateResult) => row.status === 1 ? <Badge bg='success'>PAID</Badge> : <Badge bg='danger' >UNPAID</Badge>,
             sortable: true,
-        }, {
-            name: "Actions".toLocaleUpperCase(),
-            cell: (row: StaffLateResult) => (
-                <div className="flex items-center space-x-2">
-                    <Button variant="outline-primary" size="sm">
-                        <IconEdit className="w-5 h-5" />
-                    </Button>
-                    <Button variant="outline-danger" size="sm">
-                        <IconTrash className="w-5 h-5" />
-                    </Button>
-                </div>
-            ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-        }
+        },
+        // {
+        //     name: "Actions".toLocaleUpperCase(),
+        //     cell: (row: StaffLateResult) => (
+        //         <div className="flex items-center space-x-2">
+        //             <Button variant="outline-primary" size="sm">
+        //                 <IconEdit className="w-5 h-5" />
+        //             </Button>
+        //             <Button variant="outline-danger" size="sm">
+        //                 <IconTrash className="w-5 h-5" />
+        //             </Button>
+        //         </div>
+        //     ),
+        //     ignoreRowClick: true,
+        //     // allowOverflow: true,
+        // }
     ];
 
     const handlePageChange = (page: number) => {

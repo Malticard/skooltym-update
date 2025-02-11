@@ -4,7 +4,7 @@ import React from 'react';
 import useSWR from 'swr';
 import LateRecordsDataTable from './LateRecordsDataTable';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
-import LoaderComponent from '@/pages/components/LoaderComponent';
+// import LoaderComponent from '@/pages/components/LoaderComponent';
 import DateFilterComponent, { DateFilterIF } from '../../components/DateFilterComponent';
 import { exportStaffLateRecords } from '@/utils/reports';
 
@@ -39,9 +39,13 @@ const LateRecordsPage = () => {
                 <PageHeader
                     title="Late Records"
                     item="Staff HR"
-                    upload
-                    onDownload={() => exportStaffLateRecords()} active_item='Late Records' />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                    // download
+                    // onDownload={() => exportStaffLateRecords()} 
+                    active_item='Late Records' />
+                <DateFilterComponent
+                    enableActions
+                    exportData={() => exportStaffLateRecords()}
+                    handleFilter={handleDateChange} />
             </div>
 
             {

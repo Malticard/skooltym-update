@@ -63,9 +63,9 @@ export function exportStaffLateRecords() {
     const url = AppUrls.exportStaffLateRecords;
     exportTor("staff_late", url);
 }
-export function exportStaffOvertimeRecords() {
+export function exportStaffOvertimeRecords(startDate?: string, endDate?: string) {
     const url = AppUrls.exportStaffOvertimeRecords;
-    exportTor("staff_overtime", url);
+    exportTor("staff_overtime", url + "startDate=" + startDate + "&endDate=" + endDate);
 }
 // export-or
 const exportTor = (name: string, url: string) => {

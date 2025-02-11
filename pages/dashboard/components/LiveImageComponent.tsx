@@ -11,11 +11,11 @@ const LiveImageComponent: React.FC<ImageIF> = ({ url, props }) => {
                 className="rounded-full m-2 w-12 h-12 object-cover"
                 width={48}
                 height={48}
-                src={url ?? 'https://placehold.co/500x500'}
+                src={url}
                 alt={`Staff profile picture`}
                 onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = 'https://placehold.co/500x500';
+                    target.src = 'https://backend.skooltym.com/uploads/default.png';
                 }}
             />
         </div>

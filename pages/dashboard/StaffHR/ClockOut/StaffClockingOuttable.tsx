@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { StaffClockingResponse, StaffClockingResult } from '@/interfaces/StaffClockingModel';
 import moment from 'moment';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import { Badge } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -53,7 +54,7 @@ export default function StaffClockingOutDataTable({
     const formatTime = (time: string | Date | null | undefined): string => {
         if (!time) return 'N/A';
         try {
-            return moment(time).format('hh:mm a');
+            return moment(time).format('ll - hh:mm A').toUpperCase();
         } catch (error) {
             console.error('Error formatting time:', error);
             return 'Invalid Time';
@@ -84,10 +85,11 @@ export default function StaffClockingOutDataTable({
             name: "LATE".toLocaleUpperCase(),
             sortable: true,
             cell: (row: StaffClockingResult) => (
-                <span className={`px-2 py-1 rounded-full text-sm ${row.late ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                    }`}>
-                    {row.late ? 'LATE' : 'ON TIME'}
-                </span>
+                <>
+                    {
+                        row.late ? <Badge bg="danger">LATE</Badge> : <Badge bg='success'>ON TIME</Badge>
+                    }
+                </>
             )
         },
         {
