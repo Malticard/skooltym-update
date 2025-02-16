@@ -81,8 +81,8 @@ const OvertimePage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>("");
     const [dateRange, setDateRange] = useState({
-        startDate: "2025-01",
-        endDate: "2025-01"
+        startDate: "2025-01-01",
+        endDate: "2025-01-01"
     });
     const param = useParams();
     const id = param?.staff;
@@ -114,7 +114,7 @@ const OvertimePage = () => {
             ['School', data.staffId.staff_school],
             [],
             ['Overtime Summary'],
-            ['Period', `${format(new Date(data.period.from), 'MMMM yyyy')} - ${format(new Date(data.period.to), 'MMMM yyyy')}`],
+            ['Period', `${format(new Date(data.period.from), 'MMMM dddd yyyy')} - ${format(new Date(data.period.to), 'MMMM dddd yyyy')}`],
             ['Total Hours', data.accumulation.hours],
             ['Total Charge', `${data.accumulation.currency} ${data.accumulation.charge}`],
             ['Number of Records', data.accumulation.numberOfRecords]
@@ -158,7 +158,7 @@ const OvertimePage = () => {
                             <Form.Group>
                                 <Form.Label className="text-sm text-gray-600">Start Date</Form.Label>
                                 <Form.Control
-                                    type="month"
+                                    type="date"
                                     value={dateRange.startDate}
                                     onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
                                 />
@@ -166,7 +166,7 @@ const OvertimePage = () => {
                             <Form.Group>
                                 <Form.Label className="text-sm text-gray-600">End Date</Form.Label>
                                 <Form.Control
-                                    type="month"
+                                    type="date"
                                     value={dateRange.endDate}
                                     onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
                                 />
@@ -211,7 +211,7 @@ const OvertimePage = () => {
                                 <Form.Group>
                                     <Form.Label className="text-sm text-gray-600">Start Date</Form.Label>
                                     <Form.Control
-                                        type="month"
+                                        type="date"
                                         value={dateRange.startDate}
                                         onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
                                     />
@@ -219,7 +219,7 @@ const OvertimePage = () => {
                                 <Form.Group>
                                     <Form.Label className="text-sm text-gray-600">End Date</Form.Label>
                                     <Form.Control
-                                        type="month"
+                                        type="date"
                                         value={dateRange.endDate}
                                         onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
                                     />
@@ -293,7 +293,7 @@ const OvertimePage = () => {
                         <StatCard
                             icon={<FiDollarSign size={24} />}
                             title="Total Charge"
-                            value={`${data.accumulation.currency} ${data.accumulation.charge.toLocaleString()}`}
+                            value={`${data.accumulation.currency ?? 'UGX'} ${data.accumulation.charge.toLocaleString() ?? '0'}`}
                             iconColor="text-green-500"
                         />
                     </Col>
@@ -302,7 +302,7 @@ const OvertimePage = () => {
                         <StatCard
                             icon={<FiDollarSign size={24} />}
                             title="Rate per Hour"
-                            value={`${data.accumulation.currency} ${(data.accumulation.charge / data.accumulation.hours).toFixed(0)}`}
+                            value={`${data.accumulation.currency ?? 'UGX'} ${(data.accumulation.charge ?? 0 / data.accumulation.hours ?? 0).toFixed(0) ?? '0'}`}
                             iconColor="text-yellow-500"
                         />
                     </Col>
@@ -325,12 +325,12 @@ const OvertimePage = () => {
                     <Card.Body>
                         <div className="text-center py-4">
                             <h3 className="mb-3 text-gray-800">
-                                {format(new Date(data.period.from), 'MMMM yyyy')} - {format(new Date(data.period.to), 'MMMM yyyy')}
+                                {format(new Date(data.period.from), 'do MMMM yyyy')} - {format(new Date(data.period.to), 'do MMMM yyyy')}
                             </h3>
                             <div className="row justify-content-center">
                                 <div className="col-md-4">
                                     <div className="mb-3">
-                                        <div className="text-gray-600">Total Hours Worked</div>
+                                        <div className="text-gray-600">Total Extra Hours Worked</div>
                                         <div className="text-2xl font-bold text-blue-600">
                                             {data.accumulation.hours.toFixed(2)} hrs
                                         </div>

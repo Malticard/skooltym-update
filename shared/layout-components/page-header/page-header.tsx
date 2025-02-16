@@ -29,8 +29,8 @@ const PageHeader = (props: PageHeaderProps) => {
     // function to handle file upload.
     handleFileUploads(props.typeOfUpload ?? "staff", formData).then((response: any) => {
       setUploadState(false);
-      console.log(response);
-      // window.location.reload();
+      // console.log(response);
+      window.location.reload();
     }).catch((error: any) => {
       console.log(error)
       setUploadState(false);
