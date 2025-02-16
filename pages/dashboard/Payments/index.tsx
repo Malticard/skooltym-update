@@ -6,6 +6,7 @@ import { fetchPayments } from '@/utils/data_fetch';
 import PaymentDataTable from './PaymentDataTable';
 import useSWR from 'swr';
 import DateFilterComponent, { DateFilterIF } from '../components/DateFilterComponent';
+import { exportPaymentRecords } from '@/utils/reports';
 
 const Payments = () => {
     const [page, setPage] = React.useState(1);
@@ -38,7 +39,10 @@ const Payments = () => {
         <div>
             <Seo title="Payments" />
             <PageHeader title={`Payments (${payments?.totalDocuments})`} item="Skooltym" active_item="Payments" />
-            <DateFilterComponent handleFilter={handleDateChange} />
+            <DateFilterComponent
+                enableActions
+                exportData={() => exportPaymentRecords()}
+                handleFilter={handleDateChange} />
             {payments && (
                 <PaymentDataTable
                     clearedData={payments}

@@ -54,6 +54,7 @@ const Checkout = () => {
         buttonText="Add Staff"
         onTap={() => setAddModalShow(true)}
         upload
+        download
         onDownload={() => exportStaff()}
       >
         <li className='breadcrumb-item'><Link href="/dashboard">Dashboard</Link></li>

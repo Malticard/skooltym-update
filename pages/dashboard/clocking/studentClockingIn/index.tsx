@@ -51,10 +51,11 @@ const StudentClockingPage = () => {
                     title={`Clock In (${clockingData?.total})`}
                     item="Dashboard"
                     active_item="Student Clocking In"
-                    upload
-                    onDownload={() => exportStudentClockInRecords()}
+
                 />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent enableActions
+                    exportData={() => exportStudentClockInRecords()}
+                    handleFilter={handleDateChange} />
             </div>
             {clockingData && (<StudentClockingDataTable
                 updatePage={handleChangePage}
