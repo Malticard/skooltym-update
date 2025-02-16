@@ -48,7 +48,7 @@ const StudentClockingPage = () => {
             <Seo title="Student Clock Out" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5" >
                 <PageHeader
-                    title="Clock Out"
+                    title={`Clock Out (${clockingData?.total})`}
                     item="Skooltym"
                     active_item="Student Clocking"
                 />

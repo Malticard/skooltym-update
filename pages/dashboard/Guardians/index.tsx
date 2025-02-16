@@ -30,7 +30,7 @@ const Guardian = () => {
         <div className='my-2'>
             <Seo title="Guardians" />
             <PageHeader
-                title="Guardians"
+                title={`Guardians (${guardians?.totalDocuments})`}
                 item="Skooltym"
                 active_item="Guardians"
                 buttonText="Add Guardian"

@@ -33,7 +33,7 @@ const StaffOvertime = () => {
         <div className='my-2'>
             <Seo title="Staff Overtime" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-between">
-                <PageHeader title="Staff Overtime"
+                <PageHeader title={`"Staff Overtime" (${data?.total})`}
                     // download
                     // onDownload={() => exportStaffOvertimeRecords()}
                     item="Dashboard" active_item='Staff Overtime' />

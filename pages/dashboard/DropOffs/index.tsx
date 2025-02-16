@@ -41,7 +41,7 @@ const DropOffs = () => {
         <div className='my-2'>
             <Seo title="DropOffs" />
             <div className='flex sm:flex-row flex-col w-4/5 justify-between'>
-                <PageHeader title="Drop Offs" item="Skooltym" upload onDownload={() => exportDropOffRecords()} active_item="Drop Offs" />
+                <PageHeader title={`Drop Offs (${dropOffs?.totalDocuments})`} item="Skooltym" upload onDownload={() => exportDropOffRecords()} active_item="Drop Offs" />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
             {dropOffs && (

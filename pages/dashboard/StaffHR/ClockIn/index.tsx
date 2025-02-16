@@ -53,7 +53,7 @@ const StaffClockingPage = () => {
             <Seo title="Staff Clocking" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5">
                 <PageHeader
-                    title="Staff Clock In"
+                    title={`Staff Clock In (${clockingData?.total})`}
                     link
                 >
                     <li className="breadcrumb-item"><Link href="/dashboard">Dashboard</Link></li>

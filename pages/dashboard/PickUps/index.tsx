@@ -44,7 +44,7 @@ const PickUps = () => {
         <div className='my-2'>
             <Seo title="PickUps" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-center">
-                <PageHeader title="PickUps" item="Skooltym" upload onDownload={() => exportPickUpRecords()} active_item="PickUps" />
+                <PageHeader title={`PickUps (${pickUp?.totalDocuments})`} item="Skooltym" upload onDownload={() => exportPickUpRecords()} active_item="PickUps" />
                 <DateFilterComponent handleFilter={handleDateChange} />
             </div>
             {pickUp && (

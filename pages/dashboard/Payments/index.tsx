@@ -37,7 +37,7 @@ const Payments = () => {
     return (
         <div>
             <Seo title="Payments" />
-            <PageHeader title="Payments" item="Skooltym" active_item="Payments" />
+            <PageHeader title={`Payments (${payments.totalDocuments})`} item="Skooltym" active_item="Payments" />
             <DateFilterComponent handleFilter={handleDateChange} />
             {payments && (
                 <PaymentDataTable

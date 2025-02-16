@@ -48,7 +48,7 @@ const StudentClockingPage = () => {
             <Seo title="Student Clock In" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5">
                 <PageHeader
-                    title="Clock In"
+                    title={`Clock In (${clockingData?.total})`}
                     item="Dashboard"
                     active_item="Student Clocking In"
                     upload

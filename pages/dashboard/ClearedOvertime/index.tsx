@@ -38,7 +38,7 @@ const ClearedOvertime = () => {
             <Seo title="Cleared Overtime" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-center">
                 <PageHeader
-                    title="Cleared Overtime"
+                    title={`Cleared Overtime (${cleared?.totalDocuments})`}
                     item="Skooltym"
                     upload
                     onDownload={() => exportClearedRecords()}

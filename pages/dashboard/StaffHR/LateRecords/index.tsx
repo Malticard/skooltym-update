@@ -37,7 +37,7 @@ const LateRecordsPage = () => {
             <Seo title="Late Records" />
             <div className="flex sm:flex-row flex-col w-4/5 justify-between">
                 <PageHeader
-                    title="Late Records"
+                    title={`Late Records (${lateRecords?.total})`}
                     item="Staff HR"
                     // download
                     // onDownload={() => exportStaffLateRecords()} 

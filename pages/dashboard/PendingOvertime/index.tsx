@@ -52,7 +52,7 @@ const PendingOvertime = () => {
             </div>) : (
                 <>
                     <PageHeader
-                        title="Pending Overtime"
+                        title={`Pending Overtime (${pending?.totalDocuments})`}
                         item="Skooltym"
                         active_item="Pending Overtime"
                         buttonText={user.role == 'Admin' ? '' : 'Add Payment'}

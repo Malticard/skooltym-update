@@ -49,7 +49,7 @@ const Checkout = () => {
     <div className="my-2">
       <Seo title="Staff & Reports" />
       <PageHeader
-        title="Staff"
+        title={`Staff (${staff?.totalDocuments})`}
         link
         buttonText="Add Staff"
         onTap={() => setAddModalShow(true)}

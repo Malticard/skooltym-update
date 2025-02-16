@@ -47,7 +47,7 @@ const Classes = () => {
         <div className='my-2'>
             <Seo title='Classes' />
             <PageHeader
-                title='Classes'
+                title={`Classes (${classes?.totalDocuments})`}
                 item='Skooltym'
                 active_item='Classes'
                 buttonText='Add Class'
