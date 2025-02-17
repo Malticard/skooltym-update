@@ -53,7 +53,7 @@ interface OvertimeData {
     accumulation: Accumulation;
 }
 
-const StatCard: React.FC<{
+export const StatCard: React.FC<{
     icon: React.ReactNode;
     title: string;
     value: string;

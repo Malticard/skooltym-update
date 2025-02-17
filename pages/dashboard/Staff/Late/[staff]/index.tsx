@@ -21,6 +21,7 @@ import { getStaffLateInfo } from '@/utils/clocking';
 import React from 'react';
 import * as XLSX from 'xlsx';
 import LiveImageComponent from '@/pages/dashboard/components/LiveImageComponent';
+import { StatCard } from '../../Overtime/[staff]';
 
 const LateChargesPage = () => {
     const [data, setData] = useState<StaffLateChargesWithDetails | null>(null);
@@ -192,29 +193,31 @@ const LateChargesPage = () => {
                 <Row className="g-4 mb-6">
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
+                            icon={<FiClock size={24} />}
+                            title="Total Time Late"
+                            value={`${data.accumulation.totalHrsLate} minutes`}
+                            iconColor="text-blue-500"
+                        />
+                    </Col>
+
+                    <Col xs={12} md={6} lg={3}>
+                        <StatCard
                             icon={<FiDollarSign size={24} />}
-                            title="Total Charges"
-                            value={`${data.accumulation.currency} ${data.accumulation.totalCharges.toLocaleString()}`}
-                            iconColor="text-red-500"
-                        />
-                    </Col>
-                    <Col xs={12} md={6} lg={3}>
-                        <StatCard
-                            icon={<FiAlertCircle size={24} />}
-                            title="Pending Charges"
-                            textColor='red'
-                            value={`${data.accumulation.currency} ${data.accumulation.pendingCharges.toLocaleString()}`}
-                            iconColor="text-red-500"
-                        />
-                    </Col>
-                    <Col xs={12} md={6} lg={3}>
-                        <StatCard
-                            icon={<FiCheckCircle size={24} />}
-                            title="Cleared Charges"
-                            value={`${data.accumulation.currency} ${data.accumulation.clearedCharges.toLocaleString()}`}
+                            title="Total Charge Accumulated"
+                            value={`${data.accumulation.currency ?? 'UGX'} ${data.accumulation.pendingCharges.toLocaleString() ?? '0'}`}
                             iconColor="text-green-500"
                         />
                     </Col>
+
+                    <Col xs={12} md={6} lg={3}>
+                        <StatCard
+                            icon={<FiDollarSign size={24} />}
+                            title="Rate per Hour"
+                            value={`${data.accumulation.currency ?? 'UGX'} ${'0'}`}
+                            iconColor="text-yellow-500"
+                        />
+                    </Col>
+
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiClock size={24} />}

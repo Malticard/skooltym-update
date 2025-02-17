@@ -29,6 +29,7 @@ export interface StaffLateChargesWithDetails {
     };
     accumulation: {
         totalCharges: number;
+        totalHrsLate: number;
         pendingCharges: number;
         clearedCharges: number;
         currency: string;
