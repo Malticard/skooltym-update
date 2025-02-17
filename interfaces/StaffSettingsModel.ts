@@ -3,15 +3,15 @@ export interface IStaffSettings {
     staff_clock_in_start?: string; // Optional, default is an empty string
     staff_clock_in_end?: string; // Optional, default is an empty string
     late_clocking: boolean; // Optional, default is false
-    late_interval?: number; // Optional, default is 0
+    late_interval?: string; // Optional, default is 0
     late_charge_currency?: string; // Optional, default is 0
-    late_charge?: number; // Optional, default is 0
+    late_charge?: string; // Optional, default is 0
     staff_clock_out_start?: string; // Optional, default is an empty string
     staff_clock_out_end?: string; // Optional, default is an empty string
     staff_currency?: string; // Optional, default is "UGX"
-    staff_clock_out_allowance: number; // Optional, default is 0
-    staff_clock_in_allowance: number; // Optional, default is 0
+    staff_clock_out_allowance: string; // Optional, default is 0
+    staff_clock_in_allowance: string; // Optional, default is 0
     staff_overtime: boolean; // Optional, default is false
-    staff_overtime_rate?: number; // Optional, default is 0
-    staff_interval?: number; // Optional, default is 0
+    staff_overtime_rate?: string; // Optional, default is 0
+    staff_interval?: string; // Optional, default is 0
 }

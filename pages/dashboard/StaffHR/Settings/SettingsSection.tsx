@@ -14,17 +14,17 @@ const defaultSettings: IStaffSettings = {
     staff_clock_in_start: '', // Matches default in interface
     staff_clock_in_end: '', // Matches default in interface
     late_clocking: false, // Optional, default is false
-    late_interval: 0, // Optional, default is 0
+    late_interval: '0', // Optional, default is 0
     late_charge_currency: 'UGX', // Optional, default is 0
-    late_charge: 0, // Optional, default is 0
+    late_charge: '0', // Optional, default is 0
     staff_clock_out_start: '', // Matches default in interface
     staff_clock_out_end: '', // Matches default in interface
     staff_currency: 'UGX', // Matches default in interface
-    staff_clock_out_allowance: 0, // Matches default in interface
-    staff_clock_in_allowance: 0, // Matches default in interface
+    staff_clock_out_allowance: '0', // Matches default in interface
+    staff_clock_in_allowance: '0', // Matches default in interface
     staff_overtime: false, // Matches default in interface
-    staff_overtime_rate: 0, // Matches default in interface
-    staff_interval: 0, // Matches default in interface
+    staff_overtime_rate: '0', // Matches default in interface
+    staff_interval: '0', // Matches default in interface
 };
 
 interface SettingsDataProps {
@@ -181,9 +181,9 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
             }} title='Setting clock out allowance time' open={openHalfDayAllowance} setOpen={setOpenHalfDayAllowance}>
                 <div className='p-3 mx-5'>
                     <div>
-                        <SliderComponent min={0} max={100} step={1} defaultValue={updateSettings.staff_clock_out_allowance} onChange={(value) => setUpdateSettings({
+                        <SliderComponent min={0} max={100} step={1} defaultValue={parseInt(updateSettings.staff_clock_out_allowance)} onChange={(value) => setUpdateSettings({
                             ...updateSettings,
-                            staff_clock_out_allowance: value
+                            staff_clock_out_allowance: value.toString()
                         })} />
                         <b>{updateSettings.staff_clock_out_allowance} mins</b>
                     </div>
@@ -196,9 +196,9 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
             }} title='Setting staff clock in allowance time' open={openDropAllowance} setOpen={setOpenDropAllowance}>
                 <div className='p-3 mx-5'>
                     <div>
-                        <SliderComponent min={0} max={100} step={1} defaultValue={updateSettings.staff_clock_in_allowance} onChange={(value) => setUpdateSettings({
+                        <SliderComponent min={0} max={100} step={1} defaultValue={parseInt(updateSettings.staff_clock_in_allowance)} onChange={(value) => setUpdateSettings({
                             ...updateSettings,
-                            staff_clock_in_allowance: value
+                            staff_clock_in_allowance: value.toString(),
                         })} />
                         <b>{updateSettings.staff_clock_in_allowance} mins</b>
                     </div>
@@ -206,7 +206,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                 </div>
             </DropOffDateModal>
 
-            {/* set the ovetime rate */}
+            {/* set the overtime rate */}
             <DropOffDateModal onTap={() => {
                 setOpenOvertimeRate(false);
             }} title='Setting Overtime rate' open={openOvertimeRate} setOpen={setOpenOvertimeRate}>
@@ -216,7 +216,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                             value={`${updateSettings.staff_overtime_rate}`}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings({
                                 ...updateSettings,
-                                staff_overtime_rate: parseInt(e.target.value)
+                                staff_overtime_rate: e.target.value
                             })}
                             label='Overtime rate (UGX)'
                         />
@@ -233,7 +233,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                         <FormElement value={`${updateSettings.staff_interval}`} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings(
                             {
                                 ...updateSettings,
-                                staff_interval: parseInt(e.target.value)
+                                staff_interval: (e.target.value)
                             }
                         )} label='Overtime interval' />
 
@@ -254,7 +254,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                             value={`${updateSettings.late_charge}`}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings({
                                 ...updateSettings,
-                                late_charge: parseInt(e.target.value)
+                                late_charge: (e.target.value)
                             })}
                             label='Late Charge (UGX)'
                         />
@@ -271,7 +271,7 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
                         <FormElement value={`${updateSettings.late_interval}`} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateSettings(
                             {
                                 ...updateSettings,
-                                late_interval: parseInt(e.target.value)
+                                late_interval: (e.target.value)
                             }
                         )} label='Late interval' />
 
