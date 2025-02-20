@@ -56,7 +56,7 @@ const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { stre
                             label='Class Name'
                             onChange={(e) => setClassData({
                                 ...classData,
-                                staff_fname: e.target.value
+                                class_fname: e.target.value
                             })} />
                         <br />
 

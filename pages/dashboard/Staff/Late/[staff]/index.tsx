@@ -202,7 +202,7 @@ const LateChargesPage = () => {
 
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
-                            icon={<FiDollarSign size={24} />}
+                            icon={<FiDollarSign color='green' size={24} />}
                             title="Total Charge Accumulated"
                             value={`${data.accumulation.currency ?? 'UGX'} ${data.accumulation.pendingCharges.toLocaleString() ?? '0'}`}
                             iconColor="text-green-500"
