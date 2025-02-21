@@ -47,6 +47,7 @@ const Orders = () => {
                 buttonText="Add Student"
                 typeOfUpload='student'
                 upload
+                download
                 onTap={() => setAddModalShow(true)}
                 onDownload={() => exportStudents()}
             />

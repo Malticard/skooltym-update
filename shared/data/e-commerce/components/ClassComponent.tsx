@@ -2,10 +2,10 @@ import Link from 'next/link';
 import React from 'react';
 import { Col, Card } from 'react-bootstrap';
 
-const ClassComponent = (props: { title: string; streams: number; students: number; }) => {
+const ClassComponent = (props: { title: string; id: string; streams: number; students: number; }) => {
     return (
         <Col xxl={3} xl={6} md={12} sm={12}>
-            <Link href={`/dashboard/${props.title}`}>
+            <Link href={`/dashboard/${props.id}?class=${props.title}`}>
                 <Card className="custom-card">
                     <Card.Header>
                         <Card.Title>{props.title}</Card.Title>

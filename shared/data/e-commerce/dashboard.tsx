@@ -3,7 +3,7 @@ import React from 'react'
 import { Col, Row } from "react-bootstrap";
 import ClassComponent from './components/ClassComponent';
 import DashCard from './components/DashCard';
-import { fetchDashBoardData, fetchDashboardMetaData } from '@/utils/data_fetch';
+import { fetchDashBoardClasses, fetchDashboardMetaData } from '@/utils/data_fetch';
 import { DashboardItem } from '@/interfaces/DashboardItem';
 import { Skeleton } from '@mui/material';
 import { ClassDataModel } from '@/interfaces/ClassDataModel';
@@ -27,7 +27,6 @@ const Dashboardecommerce = () => {
   const [data, setData] = React.useState<DashboardItem[]>([]);
   const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
   React.useEffect(() => {
-
     // check if user token is still valid
     const isValid = isTokenValid(user._token);
     // fetch dash-cards data
@@ -41,7 +40,7 @@ const Dashboardecommerce = () => {
     });
     // fetch classes data
     setClassLoading(true);
-    fetchDashBoardData().then((res) => {
+    fetchDashBoardClasses().then((res) => {
       setClassLoading(false);
       setClassData(res);
     }).catch((err) => {
@@ -53,14 +52,14 @@ const Dashboardecommerce = () => {
     <div>
       <Row className="row-sm">
         {
-          loading ? Array.from({ length: 4 }).map((x, index) => (
+          loading ? Array.from({ length: 8 }).map((x, index) => (
             <Col sm={12} md={6} lg={6} xl={3}>
               <Skeleton
                 key={index}
-                className='mx-4'
+                className='m-2 rounded-2xl'
                 variant="rounded"
-                width={260}
-                height={140}
+                width={290}
+                height={190}
               />
             </Col>
 
@@ -75,7 +74,7 @@ const Dashboardecommerce = () => {
           </p>
           <Row className="row-lg">
             {
-              classLoading ? Array.from({ length: 10 }).map((x, index) => (<Skeleton key={index} width={200} height={150} variant="rounded" />)) : classData.map((x, index) => (<ClassComponent key={index} title={x.class_name} streams={x.class_streams.length} students={x.class_students.length} />))
+              classLoading ? Array.from({ length: 10 }).map((x, index) => (<Skeleton key={index} width={250} className='m-2' height={150} variant="rounded" />)) : classData.map((x, index) => (<ClassComponent key={index} id={x.class_id} title={x.class_name} streams={x.class_streams} students={x.class_students.length} />))
             }
           </Row>
 

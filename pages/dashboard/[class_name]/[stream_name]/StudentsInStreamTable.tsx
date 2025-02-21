@@ -10,32 +10,25 @@ import { Stream } from '@/interfaces/StreamModel';
 
 import { deleteStudentData } from '@/utils/data_fetch';
 import DeleteStudent from '../../Students/models/DeleteStudent';
+import LiveImageComponent from '../../components/LiveImageComponent';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentsInStreamTable({
     students = { results: [], currentPage: 1, pageSize: 10, totalDocuments: 0, totalPages: 0 }, // Add default value
     handleUpdates,
-    addModalShow,
-    setAddModalShow,
-    streams = [], // Add default value
-    loadingClasses = false, // Add default value
     updatePage,
-    classes = [] // Add default value
+    updateLimit,
 }: {
     students?: StudentsModel; // Make optional
     handleUpdates: () => void;
-    addModalShow: boolean;
-    setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-    streams: Stream[];
-    loadingClasses: boolean;
-    classes: SchoolClass[];
+    updateLimit: (value: number) => void;
     updatePage: (value: number) => void;
 }) {
     const [data, setData] = React.useState<StudentResult[]>(students?.results || []);
     const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
     const [pageSize] = React.useState(students?.pageSize || 10);
     const [totalDocuments, setTotalDocuments] = React.useState(students?.totalDocuments || 0);
-    const [editModalShow, setEditModalShow] = React.useState(false);
+    // const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
@@ -54,16 +47,7 @@ export default function StudentsInStreamTable({
         {
             name: "Student Profile".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
-                <img
-                    className='m-2 rounded-full w-[3em] h-[3em]'
-                    src={row.student_profile_pic}
-                    width={50}
-                    height={50}
-                    alt={`${row.student_fname}'s profile`}
-                    onError={(e: any) => {
-                        e.target.src = '/default-profile.png'; // Add a default profile image
-                    }}
-                />
+                <LiveImageComponent url={row.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -84,28 +68,19 @@ export default function StudentsInStreamTable({
             sortable: true
         },
         {
-            name: "is HalfDay".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isHalfDay ? 'Yes' : 'No'],
+            name: "Nature".toLocaleUpperCase(),
+            selector: (row: StudentResult) => [row.isHalfDay ? 'Half Day Student' : 'Full Day Student'],
             sortable: true,
         },
-        {
-            name: "is Dropped".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
-            sortable: true
-        },
+        // {
+        //     name: "is Dropped".toLocaleUpperCase(),
+        //     selector: (row: StudentResult) => [row.isDropped ? 'Yes' : 'No'],
+        //     sortable: true
+        // },
         {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: StudentResult) => (
                 <>
-                    <Button
-                        variant="primary"
-                        className='mx-1'
-                        size="sm"
-                        onClick={() => handleEdit(row)}
-                        disabled={deleting}
-                    >
-                        <IconEdit className='text-sm w-5 h-5' />
-                    </Button>
                     <Button
                         variant="danger"
                         size="sm"
@@ -134,7 +109,7 @@ export default function StudentsInStreamTable({
             isVanStudent: student.isVanStudent,
             isHalfDay: student.isHalfDay,
         });
-        setEditModalShow(true);
+        // setEditModalShow(true);
     };
 
     const handleDelete = (data: StudentResult) => {
@@ -143,13 +118,13 @@ export default function StudentsInStreamTable({
     };
 
     const handleSave = (dat: StudentResult) => {
-        setAddModalShow(false);
+
         setData([dat, ...data]);
         handleUpdates();
     };
 
     const handleSaveEdit = () => {
-        setEditModalShow(false);
+        // setEditModalShow(false);
         handleUpdates();
     };
 
@@ -202,26 +177,19 @@ export default function StudentsInStreamTable({
                     data={data}
                     pagination
                     pointerOnHover
-                    highlightOnHover
                     paginationServer
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
+                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+                    onChangePage={(page, total) => handlePageChange(page)}
+                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                        updateLimit(currentRowsPerPage);
+                    }}
                     progressPending={deleting}
                 />
             </DataTableExtensions>
 
-            {/* <EditStudent
-                classes={classes}
-                streams={streams}
-                loadingClasses={loadingClasses}
-                editModalShow={editModalShow}
-                studentData={currentStudent}
-                setStudentData={setCurrentStudent}
-                setEditModalShow={setEditModalShow}
-                handleSaveEdit={handleSaveEdit}
-            /> */}
 
             <DeleteStudent
                 deleteModalShow={deleteModalShow}
@@ -230,14 +198,7 @@ export default function StudentsInStreamTable({
                 setDeleteModalShow={setDeleteModalShow}
                 handleSaveDelete={handleSaveDelete}
             />
-            {/* <AddStudent
-                loadingClasses={loadingClasses}
-                addModalShow={addModalShow}
-                setAddModalShow={setAddModalShow}
-                streams={streams}
-                classes={classes}
-                handleSave={handleSave}
-            /> */}
+
         </>
     );
 }

@@ -245,7 +245,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
 }
 
 // function to process images
-export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
+export async function fetchDashBoardClasses(): Promise<ClassDataModel[]> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.dashboard + data.school);
@@ -257,7 +257,16 @@ export async function fetchDashBoardData(): Promise<ClassDataModel[]> {
     }
 
 }
-
+// fetch streams in a class
+export async function fetchClassStreams(id: string) {
+    // let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    try {
+        let response = await axios.get(AppUrls.classStreams + id);
+        return response;
+    } catch (e: any) {
+        throw new Error(e.toString());
+    }
+}
 // ----------------------  students
 export async function fetchStudents(page = 1, limit = 10, startDate = "", endDate = ""): Promise<StudentsModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);

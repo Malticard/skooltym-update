@@ -5,8 +5,9 @@ class AppUrls {
     static liveImages: string = "https://backend.skooltym.com/image/images/";
 
     // get students in a particular stream
-    static studentsInStream: string = `${AppUrls.devURL}get/stream-students`;
-
+    static studentsInStream: string = `${AppUrls.devURL}stream-students`;
+    // class streams
+    static classStreams: string = `${AppUrls.devURL}dashboard/class-streams/`
     // post urls
     static login: string = `${AppUrls.devURL}post/staff-login`;
     static addClass: string = `${AppUrls.devURL}post/class/create`;

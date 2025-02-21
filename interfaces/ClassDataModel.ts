@@ -5,8 +5,9 @@
 //   const classDataModel = Convert.toClassDataModel(json);
 
 export interface ClassDataModel {
+    class_id: string;
     class_name: string;
-    class_streams: ClassStream[];
+    class_streams: number;
     class_students: ClassStudent[];
 }
 
@@ -19,6 +20,7 @@ export interface ClassStream {
     createdAt: Date;
     updatedAt: Date;
     __v: number;
+    studentCount: number;
 }
 
 export interface ClassStudent {
