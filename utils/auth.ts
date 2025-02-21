@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sign, verify } from 'jsonwebtoken';
 import { serialize, parse } from 'cookie';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import AppUrls from './apis';
+import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY || '02_5k001tym_3202';
 const JWT_EXPIRES_IN = '1h';
@@ -75,21 +76,31 @@ export function withAuth(handler: (req: NextApiRequest, res: NextApiResponse, us
 
 export async function forgotPassword(data: FormData) {
     try {
-        const response = await axios.post(AppUrls.forgotPassword, data);
-        return response.data
+        const response = await axios.post(AppUrls.forgotPassword, { staff_contact: data.get('staff_contact') });
+        return response;
+    } catch (error: any) {
+        console.log(error);
+        throw new Error(error.response.data.toString());
+    }
+}
+// handle opt verification
+export async function handleOtpVerification(formData: FormData): Promise<AxiosResponse<any, any>> {
+    // const userData = JSON.parse(localStorage.getItem('skooltym_user') as string) as AuthenticatedUserModel;
+    try {
+        const response = await axios.post(AppUrls.verifyOtp + formData.get("id"), { new_otp: formData.get('new_otp') });
+        return response;
     } catch (error: any) {
         throw new Error(error.response.data.toString());
     }
 }
 // reset password
 export async function resetPassword(data: FormData) {
-    const user = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        const response = await axios.post(AppUrls.setPassword + user.id, {
+        const response = await axios.post(AppUrls.setPassword + data.get("id"), {
             new_password: data.get("new_password"),
             confirm_password: data.get("confirm_password")
         });
-        return response.data
+        return response;
     } catch (error: any) {
         console.log(error)
         throw new Error(error.response.data.toString());

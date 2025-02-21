@@ -3,7 +3,7 @@ import Seo from '@/shared/layout-components/seo/seo'
 import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import Link from "next/link"
 import { forgotPassword } from '@/utils/auth';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router'
 
 
 
@@ -12,6 +12,7 @@ const ForgotPassword = () => {
     interface DemoChangerElement extends HTMLElement {
         style: CSSStyleDeclaration;
     }
+    const navigate = useRouter();
     const [phone, setPhone] = React.useState("");
     const [errorText, setErrorText] = React.useState("");
     const [loading, setLoading] = React.useState(false);
@@ -21,15 +22,23 @@ const ForgotPassword = () => {
         const formData = new FormData();
         if (phone.length > 0) {
             setLoading(true);
-            formData.append('scontact', `${parseInt(phone)}`);
+            formData.append('staff_contact', `${parseInt(phone)}`);
             forgotPassword(formData).then((res) => {
-                useRouter().replace('/reset-password');
+                if (res.status == 200) {
+                    console.log(res.data)
+                    navigate.replace('/auth/otp-verify', { query: res.data });
+                    setLoading(false);
+                }
+
                 setLoading(false);
             }).catch((err) => {
                 setErrorText(err.toString())
                 console.log(err)
                 setLoading(false);
             })
+        } else if ((phone.length > 0) && ((phone.length) < 11)) {
+            setErrorText("Phone number must have 10 characters");
+            setLoading(false);
         } else {
             setErrorText("Phone number is required");
             setLoading(false);
@@ -94,7 +103,7 @@ const ForgotPassword = () => {
                                                     <Form onSubmit={handleForgotPassword}>
                                                         <div className="form-group text-start">
                                                             <label className="form-label">Phone number</label>
-                                                            <input className={`form-control ${errorText ? "is-invalid" : ""}`} placeholder="2567-xxx-xxx" type="phone" onChange={(e) => setPhone(e.target.value)} value={phone} />
+                                                            <input className={`form-control ${errorText ? "is-invalid" : ""}`} placeholder="07-xxx-xxx" type="phone" onChange={(e) => setPhone(e.target.value)} value={phone} />
                                                             {errorText && <div className="invalid-feedback">{errorText}</div>}
                                                         </div>
                                                         <div className="d-grid">
@@ -107,7 +116,7 @@ const ForgotPassword = () => {
                                                         <p className="mb-0">
                                                             Try to
                                                             <Link
-                                                                href={`/`}> Signin
+                                                                href="/"> Signin
                                                             </Link>
                                                         </p>
                                                     </div>

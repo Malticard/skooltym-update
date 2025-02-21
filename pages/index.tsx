@@ -132,7 +132,7 @@ const Home = () => {
                             <div className="text-end mt-1 mb-2 ms-0">
                               <div className="mb-1">
                                 <Link
-                                  href="/forgot-password"
+                                  href="/auth/forgot-password"
                                 > Forgot password ?
                                 </Link>
                               </div>

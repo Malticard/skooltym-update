@@ -75,7 +75,7 @@ const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { stre
                             {posting == false ? `Add Class` : `Saving...`}
                         </Button>
                     </Modal.Footer>
-                    {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>}
+                    {message && <p className="mt-4 bg-[#20adeecb] p-2 text-white font-semibold text-center">{message}</p>}
                 </Form>
             </Modal>
         </>

@@ -1,6 +1,6 @@
 import { StudentsModel } from '@/interfaces/StudentsModel';
-import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
-import { data } from '@/shared/data/crypto-currencies/transcationdetails';
+// import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
+// import { data } from '@/shared/data/crypto-currencies/transcationdetails';
 import { fetchStudentsInStream } from '@/utils/helpers';
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';

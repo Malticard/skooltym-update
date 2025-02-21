@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react'
-import Seo from '../shared/layout-components/seo/seo'
-
+import Seo from '@/shared/layout-components/seo/seo'
+import { useRouter } from 'next/router'
 import Link from "next/link"
 import { Row, Col, Card, Container, Form, Button } from "react-bootstrap";
 import { resetPassword } from '@/utils/auth';
+import { useSearchParams } from 'next/navigation';
 
 const ResetPassword = () => {
   interface DemoChangerElement extends HTMLElement {
     style: CSSStyleDeclaration;
   }
+  const queryParams = useSearchParams();
+  const navigate = useRouter();
   // state management
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -37,6 +40,7 @@ const ResetPassword = () => {
       // start loader
       setLoading(true);
       const formData = new FormData();
+      formData.append("id", queryParams.get("id") as string);
       formData.append("new_password", password);
       formData.append("confirm_password", confirmPassword),
 
@@ -44,7 +48,10 @@ const ResetPassword = () => {
           // stop loader
           setLoading(false);
           // redirect to login page
-          window.location.href = "/";
+          if (res.status == 200) {
+            navigate.replace("/");
+          }
+
         }).catch((err) => {
           // stop loader
           setLoading(false);
