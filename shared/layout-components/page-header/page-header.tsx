@@ -39,7 +39,7 @@ const PageHeader = (props: PageHeaderProps) => {
   return (
     <div className="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
       <div>
-        <h2 className="main-content-title fs-24 mb-1">{props.title}</h2>
+        <h2 className="main-content-title text-xl line-clamp-1 mb-1">{props.title}</h2>
         {
           props.link ? (
             <ol className="breadcrumb mb-0">

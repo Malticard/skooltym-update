@@ -69,6 +69,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
             setMessage('Student added successfully');
             handleSave(res);
             setPosting(false)
+            window.location.reload();
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
@@ -172,7 +173,7 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
                             {posting == false ? `Save Changes` : `Saving...`}
                         </Button>
                     </Modal.Footer>
-                    {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>}
+                    {message && <p className="mt-4 bg-[#5eee20cb] p-2 text-white font-semibold text-center">{message}</p>}
                 </Form>
             </Modal>
         </>

@@ -18,7 +18,7 @@ const DashCard = (props: { label: string; value: number; url: string; }) => {
                                 <div className='text-9xl w-10 h-10 flex justify-center items-center bg-primary rounded-full'>
                                     <TbClockHour4 size={20} className="float-start" />
                                 </div>
-                                <span className="fw-bold text-xl">{props.value}</span>
+                                <span className="fw-bold text-xl">Today: {props.value}</span>
                             </h2>
                             <div className="mb-0 mt-2 text-muted">
                                 <b className="float-end">Records</b>

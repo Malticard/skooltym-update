@@ -39,9 +39,9 @@ const DropOffs = () => {
 
     return (
         <div className='my-2'>
-            <Seo title="DropOffs" />
+            <Seo title="All Time Drop Offs" />
             <div className='flex sm:flex-row flex-col w-4/5 justify-between'>
-                <PageHeader title={`Drop Offs (${dropOffs?.totalDocuments})`} item="Skooltym" active_item="Drop Offs" />
+                <PageHeader title={`All Time Drop Offs (${dropOffs?.totalDocuments})`} item="Skooltym" active_item="Drop Offs" />
                 <DateFilterComponent enableActions exportData={() => exportDropOffRecords()} handleFilter={handleDateChange} />
             </div>
             {dropOffs && (
