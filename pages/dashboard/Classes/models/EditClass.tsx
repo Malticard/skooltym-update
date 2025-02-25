@@ -72,42 +72,39 @@ const EditClass = ({
                     <Modal.Title>Edit Class</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentClass ? (
-                        <Form onSubmit={handleEditData}>
-                            <FormElement
-                                label='Class Name'
-                                value={currentClass.class_name || ''}
-                                onChange={(e) => setCurrentClass({
+
+                    <Form onSubmit={handleEditData}>
+                        <FormElement
+                            label='Class Name'
+                            value={currentClass.class_name || ''}
+                            onChange={(e: any) => setCurrentClass({
+                                ...currentClass,
+                                class_name: e.target.value
+                            })}
+                        />
+                        <br />
+                        <SelectComponent
+                            multiSelect
+                            defaultData={defaultData}
+                            options={streamsOptions}
+                            label='Streams'
+                            onSelect={(selected) => {
+                                setCurrentClass({
                                     ...currentClass,
-                                    class_name: e.target.value
-                                })}
-                            />
-                            <br />
-                            <SelectComponent
-                                multiSelect
-                                defaultData={defaultData}
-                                options={streamsOptions}
-                                label='Streams'
-                                onSelect={(selected) => {
-                                    setCurrentClass({
-                                        ...currentClass,
-                                        class_streams: selected,
-                                    })
-                                }}
-                            />
-                            <Modal.Footer>
-                                <Button variant="secondary" disabled={updating} onClick={() => setEditModalShow(false)}>
-                                    Close
-                                </Button>
-                                <Button variant="primary" type='submit' disabled={updating}>
-                                    {updating ? 'Updating...' : 'Update'}
-                                </Button>
-                            </Modal.Footer>
-                            {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>}
-                        </Form>
-                    ) : (
-                        <p>Loading class data...</p>
-                    )}
+                                    class_streams: selected,
+                                })
+                            }}
+                        />
+                        <Modal.Footer>
+                            <Button variant="secondary" disabled={updating} onClick={() => setEditModalShow(false)}>
+                                Close
+                            </Button>
+                            <Button variant="primary" type='submit' disabled={updating}>
+                                {updating ? 'Updating...' : 'Update'}
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+
                 </Modal.Body>
             </Modal>
         </>
