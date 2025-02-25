@@ -9,7 +9,7 @@ import FormElement from '../../Staff/models/FormElement';
 const EditClass = ({
     editModalShow,
     streams,
-    currentClass,
+    currentClass = {} as SchoolClass,
     setCurrentClass,
     setEditModalShow,
     handleSaveEdit
@@ -17,7 +17,7 @@ const EditClass = ({
     streams: Stream[];
     loadingClasses: boolean;
     editModalShow: boolean;
-    currentClass: SchoolClass | any;
+    currentClass: any;
     setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>,
     setCurrentClass: React.Dispatch<React.SetStateAction<SchoolClass>>;
     handleSaveEdit: () => void
@@ -33,8 +33,8 @@ const EditClass = ({
 
     // Safely create default data with null checks
     const defaultData: Option[] = [];
-    if (currentClass && currentClass.class_streams) {
-        currentClass.class_streams.map((c: ClassStream) => defaultData.push({ name: c.stream_name, value: c._id }));
+    if (currentClass && currentClass?.class_streams) {
+        currentClass?.class_streams.map((c: ClassStream) => defaultData.push({ name: c.stream_name, value: c._id }));
     }
 
     // Function to handle submission
@@ -76,7 +76,7 @@ const EditClass = ({
                     <Form onSubmit={handleEditData}>
                         <FormElement
                             label='Class Name'
-                            value={currentClass.class_name || ''}
+                            value={currentClass?.class_name || ''}
                             onChange={(e: any) => setCurrentClass({
                                 ...currentClass,
                                 class_name: e.target.value
