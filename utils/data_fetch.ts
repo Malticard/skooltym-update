@@ -18,6 +18,7 @@ import { PickupResponse } from '@/interfaces/pickUp';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 import { staffClockingIn, staffClockingOut, studentClockingIn, studentClockingOut } from './clocking';
 import { dashboardStats } from './dashboard';
+import { GuardianStudent } from '@/interfaces/GuardianStudents';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -485,6 +486,15 @@ export async function fetchGuardians(page = 1, limit = 10, startDate = "", endDa
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(`${AppUrls.getGuardians}${data.school}?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.toString());
+    }
+}
+// fetch guardian students
+export async function fetchGuardianStudents(id: string): Promise<GuardianStudent[]> {
+    try {
+        const response = await axios.get(AppUrls.guardianStudents + id);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());

@@ -41,7 +41,7 @@ const Orders = () => {
         <>
             <Seo title="Students & Reports" />
             <PageHeader
-                title={`Students (${students?.totalDocuments})`}
+                title={`Students (${students?.totalDocuments ?? 0})`}
                 item="Skooltym"
                 active_item="Students"
                 buttonText="Add Student"

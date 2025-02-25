@@ -8,7 +8,7 @@ import { Guardian } from '@/interfaces/GuardiansModel';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 
-const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
+const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
 
     const [guardianData, setGuardianData] = React.useState({} as any);
     const [imageFile, setImageFile] = React.useState<File | null>(null);
@@ -48,11 +48,7 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        // if (!imageFile) {
-        //     setPosting(false)
-        //     setMessage('Please select an image file');
-        //     return;
-        // }
+
         const formData = new FormData();
         // capturing school
         formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -67,14 +63,12 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
         }
         // posting data
         postGuardianData(formData).then((res) => {
-            setMessage('Staff added successfully');
+            // setMessage('Staff added successfully');
             handleSave(res);
-            // setPosting(false)
-            window.location.reload();
+            setGuardianData({});
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
-            // setPosting(false)
         })
     }
     return (
@@ -99,13 +93,7 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
                                 ...guardianData,
                                 guardian_lname: e.target.value
                             })} />
-                        {/* <br />
-                        <FormElement label='Email'
-                            value={guardianData.guardian_email}
-                            onChange={(e) => setGuardianData({
-                                ...guardianData,
-                                guardian_email: e.target.value
-                            })} /> */}
+
                         <br />
                         <FormElement label='Phone Number'
                             value={guardianData?.guardian_contact}
@@ -149,17 +137,20 @@ const AddGuardian = ({ addModalShow, students, loadingClasses = false, setAddMod
                                 ...guardianData,
                                 type: selected,
                             })
-                        }} /><br /> <SelectComponent multiSelect options={studentsOptions} label='Students' onSelect={(selected) => {
-                            setGuardianData({
-                                ...guardianData,
-                                students: selected,
-                            })
-                        }} /><br /> <SelectComponent options={relationship} label='Relationship' onSelect={(selected) => {
-                            setGuardianData({
-                                ...guardianData,
-                                relationship: selected,
-                            })
-                        }} />
+                        }} /><br /> <SelectComponent multiSelect
+                            options={studentsOptions}
+                            label='Students'
+                            onSelect={(selected) => {
+                                setGuardianData({
+                                    ...guardianData,
+                                    students: selected,
+                                })
+                            }} /><br /> <SelectComponent options={relationship} label='Relationship' onSelect={(selected) => {
+                                setGuardianData({
+                                    ...guardianData,
+                                    relationship: selected,
+                                })
+                            }} />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" disabled={posting} onClick={() => setAddModalShow(false)}>

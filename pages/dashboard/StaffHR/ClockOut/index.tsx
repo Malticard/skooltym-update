@@ -46,7 +46,7 @@ const StaffClockingPage = () => {
             <Seo title="Staff Clocking Out" />
             <div className="flex sm:flex-row flex-col justify-between w-4/5">
                 <PageHeader
-                    title={`Staff (${clockingData?.total})`}
+                    title={`Staff (${clockingData?.total ?? 0})`}
                     item="Dashboard"
                     // download
                     // onDownload={() => exportStaffClockOutRecords()}

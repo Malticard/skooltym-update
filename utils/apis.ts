@@ -131,6 +131,8 @@ class AppUrls {
 
     // file upload
     static uploadFile = `${AppUrls.devURL}csv/upload/`;
+    // guardian's students
+    static guardianStudents = `${AppUrls.devURL}guardianStudents/guardian-students/`;
 }
 
 export default AppUrls;

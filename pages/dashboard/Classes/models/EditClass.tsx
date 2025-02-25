@@ -2,17 +2,22 @@
 import React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { Stream } from '@/interfaces/StreamModel';
-import { SchoolClass } from '@/interfaces/ClassModel';
+import { ClassStream, SchoolClass } from '@/interfaces/ClassModel';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { updateClassData } from '@/utils/data_fetch';
 import FormElement from '../../Staff/models/FormElement';
-const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; editModalShow: boolean; currentClass: any | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentClass: React.Dispatch<React.SetStateAction<SchoolClass | null>>; handleSaveEdit: () => void }) => {
+const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; editModalShow: boolean; currentClass: SchoolClass | any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentClass: React.Dispatch<React.SetStateAction<SchoolClass>>; handleSaveEdit: () => void }) => {
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
+    // const [defaultData, setDefaultData] = React.useState<Option[]>([])
     // streams
     const streamsOptions: Option[] = [];
     if (streams) {
         streams.map((r) => streamsOptions.push({ name: r.stream_name, value: r._id }));
+    }
+    const defaultData: Option[] = []
+    if (currentClass.class_streams && currentClass.class_streams !== undefined) {
+        currentClass.class_streams.map((c: ClassStream) => defaultData.push({ name: c.stream_name, value: c._id }));
     }
     // function to handle submission
     const handleEditData = (e: React.FormEvent) => {
@@ -30,11 +35,11 @@ const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setE
         // posting data
         updateClassData(formData, currentClass?._id).then((res) => {
             setMessage('Class added successfully');
-            console.log(res);
+            // console.log(res);
             handleSaveEdit();
             setUpdating(false)
         }).catch((err) => {
-            console.warn(err);
+            // console.warn(err);
             setMessage(err.toString());
             setUpdating(false)
         });
@@ -57,7 +62,7 @@ const EditClass = ({ editModalShow, streams, currentClass, setCurrentClass, setE
                                 })} />
                             {/* {currentClass.class_streams} */}
                             <br />
-                            <SelectComponent multiSelect defaultData={currentClass.class_streams} options={streamsOptions} label='Streams' onSelect={(selected) => {
+                            <SelectComponent multiSelect defaultData={defaultData} options={streamsOptions} label='Streams' onSelect={(selected) => {
                                 setCurrentClass({
                                     ...currentClass,
                                     class_streams: selected,

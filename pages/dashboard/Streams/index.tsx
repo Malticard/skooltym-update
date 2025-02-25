@@ -39,7 +39,7 @@ const Streams = () => {
             <Seo title='Streams' />
 
             <PageHeader
-                title={`Streams (${streams?.totalDocuments})`}
+                title={`Streams (${streams?.totalDocuments ?? 0})`}
                 item='Skooltym'
                 active_item='Streams'
                 buttonText='Add Stream'

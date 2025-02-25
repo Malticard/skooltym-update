@@ -5,9 +5,9 @@ import { updateGuardianData } from '@/utils/data_fetch';
 import { Guardian } from '@/interfaces/GuardiansModel';
 import FormElement from './FormElement';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
-import SelectComponent from '../../Staff/models/SelectComponent';
-import type { Option } from '../../Staff/models/SelectComponent';
-const EditGuardian = ({ editModalShow, students, loadingClasses = false, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; loadingClasses: boolean; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
+import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
+import { GuardianStudent } from '@/interfaces/GuardianStudents';
+const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; guardianStudent: GuardianStudent[] | null; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
@@ -26,7 +26,15 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
             value: 'Female'
         }
     ]
-    // const currentStudent = 
+    const defaultStudentData: Option[] = [];
+    React.useEffect(() => {
+        // guardian students
+        if (guardianStudent && (guardianStudent !== undefined) && (guardianStudent.length > 0)) {
+            guardianStudent.map(student => defaultStudentData.push({ name: `${student.student_fname} ${student.student_lname}`, value: student._id }));
+            console.log("Guardian students", defaultStudentData);
+        }
+    })
+
     // relationship options
     const relationship: Option[] = [
         { name: "Select relationship", value: "" },
@@ -48,9 +56,6 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
         setUpdating(true);
 
         const formData = new FormData();
-        // capturing school
-        // formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
-        // capturing school name
         formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
 
         // capturing student guardian
@@ -62,16 +67,10 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
         if (imageFile) {
             formData.append('image', imageFile);
         }
-
-        // console.log(JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-        // // student username
-        // formData.append('username', `${currentStudent?.student_fname.toLowerCase()}${currentStudent?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
-        // student key
         formData.append('guardian_key[key]', '');
         // posting data
         updateGuardianData(formData, currentGuardian?._id).then((res) => {
-            setMessage('Guardian added successfully');
-            console.log(res);
+            // console.log(res);
             handleSaveEdit();
             setUpdating(false)
         }).catch((err) => {
@@ -107,12 +106,7 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
                                     guardian_lname: e.target.value
                                 })} />
                             <br />
-                            {/* <FormElement label='Email'
-                                value={currentGuardian.guardian_email}
-                                onChange={(e) => setCurrentGuardian({
-                                    ...currentGuardian,
-                                    guardian_email: e.target.value
-                                })} /> */}
+
                             <br /> <FormElement label='Contact'
                                 value={currentGuardian.guardian_contact.toString()}
                                 onChange={(e) => setCurrentGuardian({
@@ -159,13 +153,18 @@ const EditGuardian = ({ editModalShow, students, loadingClasses = false, current
                                     type: selected as string,
                                 });
                             }} />
-
-                            <SelectComponent options={studentsOptions} label='Students' onSelect={(selected) => {
-                                setCurrentGuardian({
-                                    ...currentGuardian,
-                                    students: selected as string[]
-                                });
-                            }} />
+                            {/* updating guardian students */}
+                            <SelectComponent
+                                multiSelect
+                                defaultData={defaultStudentData}
+                                options={studentsOptions}
+                                label='Students'
+                                onSelect={(selected) => {
+                                    setCurrentGuardian({
+                                        ...currentGuardian,
+                                        students: selected as string[]
+                                    });
+                                }} />
 
                             <SelectComponent options={relationship} defaultData={[{ name: currentGuardian.relationship, value: currentGuardian.relationship }]} label='Relationship' onSelect={(selected) => {
                                 setCurrentGuardian({

@@ -4,12 +4,13 @@ import { Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import DeleteStudent from './models/DeleteGuardian';
-import { deleteGuardianData } from '@/utils/data_fetch';
+import { deleteGuardianData, fetchGuardianStudents } from '@/utils/data_fetch';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import { Guardian, GuardianResponse } from '@/interfaces/GuardiansModel';
 import EditGuardian from './models/EditGuardian';
 import AddGuardian from './models/AddGuardian';
 import LiveImageComponent from '../components/LiveImageComponent';
+import { GuardianStudent } from '@/interfaces/GuardianStudents';
 
 // Define proper types for DataTableExtensions
 interface DataTableExtensionsProps {
@@ -62,9 +63,11 @@ export default function GuardianDataTable({
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentGuardian, setCurrentGuardian] = React.useState<Guardian | null>(null);
-
+    const [guardianStudent, setGuardianStudent] = React.useState<GuardianStudent[] | null>([]);
     const handleEdit = (guardian: Guardian) => {
         setCurrentGuardian(guardian);
+        fetchGuardianStudents(guardian._id).then((sts) => setGuardianStudent(sts));
+        console.log(guardianStudent);
         setEditModalShow(true);
     };
 
@@ -191,7 +194,7 @@ export default function GuardianDataTable({
 
             <EditGuardian
                 students={students}
-                loadingClasses={loadingClasses ?? false}
+                guardianStudent={guardianStudent}
                 editModalShow={editModalShow}
                 currentGuardian={currentGuardian}
                 setCurrentGuardian={setCurrentGuardian}
@@ -209,7 +212,6 @@ export default function GuardianDataTable({
 
             <AddGuardian
                 students={students}
-                loadingClasses={loadingClasses ?? false}
                 addModalShow={addModalShow}
                 setAddModalShow={setAddModalShow}
                 handleSave={handleSave}

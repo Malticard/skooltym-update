@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { postStreamData } from '@/utils/data_fetch';
 import { Stream } from '@/interfaces/StreamModel';
@@ -28,8 +28,9 @@ const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handl
         console.log(formData.get('school'));
         // posting data
         postStreamData(formData).then((res) => {
-            setMessage('Stream added successfully');
+            // setMessage('Stream added successfully');
             handleSave(res);
+            setStreamData({} as Stream);
             setPosting(false)
         }).catch((err) => {
             console.warn(err);

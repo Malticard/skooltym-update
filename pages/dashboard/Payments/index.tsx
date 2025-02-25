@@ -38,7 +38,7 @@ const Payments = () => {
     return (
         <div>
             <Seo title="Payments" />
-            <PageHeader title={`Payments (${payments?.totalDocuments})`} item="Skooltym" active_item="Payments" />
+            <PageHeader title={`Payments (${payments?.totalDocuments ?? 0})`} item="Skooltym" active_item="Payments" />
             <DateFilterComponent
                 enableActions
                 exportData={() => exportPaymentRecords()}

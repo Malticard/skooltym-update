@@ -52,7 +52,7 @@ export default function ClassDataTable({
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
-    const [currentClass, setCurrentClass] = React.useState<SchoolClass | null>(null);
+    const [currentClass, setCurrentClass] = React.useState<SchoolClass>({} as SchoolClass);
 
     // Update state when classData changes
     React.useEffect(() => {

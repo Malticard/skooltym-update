@@ -12,6 +12,7 @@ const Guardian = () => {
     const [limit, setLimit] = React.useState(10);
     const { data: guardians, error, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit));
     const { data: students, mutate: mutateStudent } = useSWR("students", async () => await fetchStudentsNoPaginate());
+    // fetch guardian students
     const [addModalShow, setAddModalShow] = React.useState(false);
 
     // methods for change of page
@@ -30,7 +31,7 @@ const Guardian = () => {
         <div className='my-2'>
             <Seo title="Guardians" />
             <PageHeader
-                title={`Guardians (${guardians?.totalDocuments})`}
+                title={`Guardians (${guardians?.totalDocuments ?? 0})`}
                 item="Skooltym"
                 active_item="Guardians"
                 buttonText="Add Guardian"
