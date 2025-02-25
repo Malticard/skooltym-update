@@ -33,7 +33,7 @@ interface GuardianDataTableProps {
     students: StudentsNotPaginated[];
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-    loadingClasses?: boolean;
+    guardianStudents: GuardianStudent[] | undefined;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }
@@ -42,8 +42,8 @@ export default function GuardianDataTable({
     guardians,
     students,
     addModalShow,
+    guardianStudents,
     setAddModalShow,
-    loadingClasses,
     updatePage,
     updateLimit
 }: GuardianDataTableProps) {
@@ -63,11 +63,16 @@ export default function GuardianDataTable({
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentGuardian, setCurrentGuardian] = React.useState<Guardian | null>(null);
-    const [guardianStudent, setGuardianStudent] = React.useState<GuardianStudent[] | null>([]);
+    const [guardianStudent, setGuardianStudent] = React.useState<GuardianStudent[]>([]);
     const handleEdit = (guardian: Guardian) => {
         setCurrentGuardian(guardian);
-        fetchGuardianStudents(guardian._id).then((sts) => setGuardianStudent(sts));
-        console.log(guardianStudent);
+
+        if (guardianStudents && guardianStudents !== undefined) {
+            const results = guardianStudents.filter(student => student.guardian_id === guardian._id);
+            // console.log(results);
+            setGuardianStudent(results);
+        }
+        // console.log(guardianStudent);
         setEditModalShow(true);
     };
 
@@ -112,7 +117,7 @@ export default function GuardianDataTable({
                 <LiveImageComponent url={row.guardian_profile_pic} />
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
+            // allowOverflow: true,
         },
         {
             name: "First Name".toLocaleUpperCase(),

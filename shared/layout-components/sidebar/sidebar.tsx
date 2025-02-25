@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Finance, MENUITEMS, MenuItem } from "./nav";
+import { Finance, MenuItem, MENUITEMS, NestedMenuItem } from "./nav";
 import Link from "next/link";
 import { useRouter } from "next/router";
 let history: string[] = [];
@@ -22,7 +22,8 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
     const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
     if (user) {
       if (user.role == 'Admin') {
-        setMenuitems(MENUITEMS);
+        setMenuitems(MENUITEMS)
+
       } else {
         setMenuitems(Finance);
       }
@@ -203,7 +204,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
 
 
   function clearMenuActive() {
-    MENUITEMS.filter((mainlevel) => {
+    menuitems.filter((mainlevel) => {
       if (mainlevel.Items) {
         mainlevel.Items.filter((sublevel) => {
           sublevel.active = false;

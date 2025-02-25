@@ -1,6 +1,6 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
-import { Button } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconEye, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import EditStaff from './models/EditStaff';
@@ -134,7 +134,7 @@ export default function StaffDataTable({
         },
         {
             name: "Role".toLocaleUpperCase(),
-            selector: (row: Staff) => row.staff_role?.role_type || '',
+            cell: (row: Staff) => (<Badge bg='success'>{row.staff_role?.role_type || ''}</Badge>),
             sortable: true
         },
         {

@@ -2,7 +2,7 @@ import React from 'react'
 import PageHeader from '@/shared/layout-components/page-header/page-header'
 import Seo from '@/shared/layout-components/seo/seo';
 import GuardianDataTable from './GuardiansDataTable';
-import { fetchGuardians, fetchStudentsNoPaginate } from '@/utils/data_fetch';
+import { fetchGuardians, fetchGuardianStudents, fetchStudentsNoPaginate } from '@/utils/data_fetch';
 import useSWR from 'swr';
 import { exportGuardianRecords } from '@/utils/reports';
 
@@ -10,9 +10,10 @@ import { exportGuardianRecords } from '@/utils/reports';
 const Guardian = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
-    const { data: guardians, error, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit));
-    const { data: students, mutate: mutateStudent } = useSWR("students", async () => await fetchStudentsNoPaginate());
+    const { data: guardians, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit));
+    const { data: students } = useSWR("students", async () => await fetchStudentsNoPaginate());
     // fetch guardian students
+    const { data: guardianStudents } = useSWR("guardianStudents", async () => await fetchGuardianStudents());
     const [addModalShow, setAddModalShow] = React.useState(false);
 
     // methods for change of page
@@ -46,6 +47,7 @@ const Guardian = () => {
             {guardians && (<GuardianDataTable
                 addModalShow={addModalShow}
                 setAddModalShow={setAddModalShow}
+                guardianStudents={guardianStudents}
                 students={students ?? []}
                 updatePage={onChangePage}
                 updateLimit={onChangeLimit}

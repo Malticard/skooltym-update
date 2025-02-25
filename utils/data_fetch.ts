@@ -159,6 +159,8 @@ export async function fetchClearedOvertimeData(page = 1, limit = 10, startDate =
 export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const activity = await dashboardStats();
     let res = JSON.parse(localStorage.getItem("skooltym_user") as string);
+    const settings = await fetchSettings();
+    console.log(settings);
     // clocking data
     const staffClockIn = activity.staffClockIn;
     const staffClockOut = activity.staffClockOut;
@@ -204,21 +206,23 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
             icon: "assets/icons/005-overtime.svg",
             page: "/dashboard/StaffHR/ClockOut",
 
-        }, {
-            label: "STUDENT CLOCK IN",
-            value: studentClockIn,
-            icon: "assets/icons/005-overtime.svg",
-            page: "/dashboard/clocking/studentClockingIn/",
+        },
 
-        }, {
-            label: "STUDENT CLOCK OUT",
-            value: studentClockOut,
-            icon: "assets/icons/005-overtime.svg",
-            page: "/dashboard/clocking/studentClockingOut",
-
-        }
     ];
+    const newDashData = settings.clock_in_clock_out == true ? [...dashboardData,
+    {
+        label: "STUDENT CLOCK IN",
+        value: studentClockIn,
+        icon: "assets/icons/005-overtime.svg",
+        page: "/dashboard/clocking/studentClockingIn/",
 
+    }, {
+        label: "STUDENT CLOCK OUT",
+        value: studentClockOut,
+        icon: "assets/icons/005-overtime.svg",
+        page: "/dashboard/clocking/studentClockingOut",
+
+    }] : [...dashboardData]
     const financeData: DashboardItem[] = [
         {
             label: "CLEARED OVERTIME",
@@ -242,7 +246,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
         }
     ];
 
-    return res.role === 'Admin' ? dashboardData : financeData;
+    return res.role === 'Admin' ? newDashData : financeData;
 }
 
 // function to process images
@@ -492,9 +496,9 @@ export async function fetchGuardians(page = 1, limit = 10, startDate = "", endDa
     }
 }
 // fetch guardian students
-export async function fetchGuardianStudents(id: string): Promise<GuardianStudent[]> {
+export async function fetchGuardianStudents(): Promise<GuardianStudent[]> {
     try {
-        const response = await axios.get(AppUrls.guardianStudents + id);
+        const response = await axios.get(AppUrls.guardianStudents);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());

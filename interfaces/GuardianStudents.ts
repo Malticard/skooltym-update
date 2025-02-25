@@ -1,4 +1,4 @@
-export interface GuardianStudent {
+interface Student {
     _id: string;
     school: string;
     _class: string;
@@ -16,6 +16,16 @@ export interface GuardianStudent {
     student_key: { key: string | null; _id: string }[];
     isComplete: boolean;
     isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
+export interface GuardianStudent {
+    _id: string;
+    guardian_id: string;
+    student_id: Student;
+    school: string;
     createdAt: string;
     updatedAt: string;
     __v: number;

@@ -1,3 +1,5 @@
+import { fetchSettings } from "@/utils/data_fetch";
+
 export interface MenuItem {
   path?: string;
   icon?: string;
@@ -19,8 +21,7 @@ export interface NestedMenuItem extends MenuItem {
   children: (MenuItem | NestedMenuItem)[];
 }
 
-
-export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
+const sidebarLinks: Array<MenuItem | NestedMenuItem> = [
   {
     menutitle: "DASHBOARD",
     Items: [
@@ -106,7 +107,8 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
         title: "Drop Offs",
       },
     ],
-  }, {
+  },
+  {
     menutitle: "STUDENT CLOCKING",
     Items: [
       {
@@ -187,6 +189,36 @@ export const MENUITEMS: (MenuItem | NestedMenuItem)[] = [
     ]
   }
 ];
+
+let MENUITEMS: (MenuItem | NestedMenuItem)[] = sidebarLinks;
+
+// fetchSettings().then((settings) => {
+//   console.log("settings loaded");
+//   if (settings.clock_in_clock_out) {
+//     MENUITEMS = sidebarLinks.splice(2, 0, {
+//       menutitle: "STUDENT CLOCKING",
+//       Items: [
+//         {
+//           path: "/dashboard/clocking/studentClockingIn",
+//           icon: "ti-timer",
+//           type: "link",
+//           active: false,
+//           selected: false,
+//           title: "Clock In",
+//         }, {
+//           path: "/dashboard/clocking/studentClockingOut",
+//           icon: "ti-timer",
+//           type: "link",
+//           active: false,
+//           selected: false,
+//           title: "Clock Out",
+//         }
+//       ]
+//     },)
+//   }
+// });
+export { MENUITEMS };
+
 
 export const Finance: (MenuItem | NestedMenuItem)[] = [
   {

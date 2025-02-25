@@ -7,7 +7,7 @@ import FormElement from './FormElement';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
-const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; guardianStudent: GuardianStudent[] | null; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
+const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; guardianStudent: GuardianStudent[]; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
@@ -27,13 +27,13 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
         }
     ]
     const defaultStudentData: Option[] = [];
-    React.useEffect(() => {
-        // guardian students
-        if (guardianStudent && (guardianStudent !== undefined) && (guardianStudent.length > 0)) {
-            guardianStudent.map(student => defaultStudentData.push({ name: `${student.student_fname} ${student.student_lname}`, value: student._id }));
-            console.log("Guardian students", defaultStudentData);
-        }
-    })
+    // React.useEffect(() => {
+    // guardian students
+    if (guardianStudent) {
+        guardianStudent.map(student => defaultStudentData.push({ name: `${student.student_id.student_fname} ${student.student_id.student_lname}`, value: student._id }));
+        // console.log("Guardian students", defaultStudentData);
+    }
+    // })
 
     // relationship options
     const relationship: Option[] = [

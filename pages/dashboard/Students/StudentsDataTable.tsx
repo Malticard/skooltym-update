@@ -1,7 +1,7 @@
 import { StudentResult, StudentsModel } from '@/interfaces/StudentsModel';
 import React from 'react';
 import DataTable from 'react-data-table-component';
-import { Button } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import EditStudent from './models/EditStudent';
@@ -79,7 +79,12 @@ export default function StudentsDataTable({
         },
         {
             name: "Nature".toLocaleUpperCase(),
-            selector: (row: StudentResult) => [row.isHalfDay ? 'Half Day Student' : 'Full Day Student'],
+            cell: (row: StudentResult) => (
+                <>
+                    {row.isHalfDay ? <Badge bg='primary'>Half Day</Badge> : <Badge bg='secondary'>Full Day</Badge>}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {row.isVanStudent && <Badge bg='success'>Van</Badge>}
+                </>),
             sortable: true,
         },
         {
@@ -195,6 +200,7 @@ export default function StudentsDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
+                    paginationRowsPerPageOptions={[5, 10, 15, 30, 50, 100]}
                     onChangePage={(page, total) => handlePageChange(page)}
                     onChangeRowsPerPage={(page, rows) => updateLimit(page)}
                     progressPending={deleting}

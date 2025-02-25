@@ -117,17 +117,22 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                     <LiveImageComponent url={selectedImage == null ? studentData.student_profile_pic : selectedImage} />
                                 </Col>
                                 <Col className='my-auto'>
-                                    <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) {
-                                            setImageFile(file);
-                                            selectedImage = URL.createObjectURL(file);
-                                            setStudentData({
-                                                ...studentData,
-                                                student_profile_pic: selectedImage
-                                            });
-                                        }
-                                    }} />
+
+                                    <input type="file"
+                                        className="hidden"
+                                        accept='image/*'
+                                        id="photo"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                setImageFile(file);
+                                                selectedImage = URL.createObjectURL(file);
+                                                setStudentData({
+                                                    ...studentData,
+                                                    student_profile_pic: selectedImage
+                                                });
+                                            }
+                                        }} />
                                     <Button onClick={() => {
                                         document.getElementById('photo')?.click();
                                     }} variant='primary'>Upload</Button>
