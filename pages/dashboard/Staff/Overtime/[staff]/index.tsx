@@ -21,6 +21,7 @@ import { StaffOvertimeChargeSummary } from '@/interfaces/StaffAccumulatedOvertim
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Link from 'next/link';
 import Seo from '@/shared/layout-components/seo/seo';
+import moment from 'moment';
 
 interface StaffMember {
     _id: string;
@@ -81,8 +82,8 @@ const OvertimePage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>("");
     const [dateRange, setDateRange] = useState({
-        startDate: "2025-01-01",
-        endDate: "2025-01-01"
+        startDate: moment().format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD")
     });
     const param = useParams();
     const id = param?.staff;
@@ -116,7 +117,7 @@ const OvertimePage = () => {
             ['Overtime Summary'],
             ['Period', `${format(new Date(data.period.from), 'MMMM dddd yyyy')} - ${format(new Date(data.period.to), 'MMMM dddd yyyy')}`],
             ['Total Hours', data.accumulation.hours],
-            ['Total Charge', `${data.accumulation.currency} ${data.accumulation.charge}`],
+            ['Total Charge', `UGX ${data.accumulation.charge}`],
             ['Number of Records', data.accumulation.numberOfRecords]
         ];
 
@@ -256,13 +257,10 @@ const OvertimePage = () => {
                                     {data.staffId.staff_fname} {data.staffId.staff_lname}
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
-                                    {/* <div className="flex items-center text-gray-600">
-                                    <FiMail className="mr-2" />
-                                    {data.staffId.staff_email}
-                                </div> */}
+
                                     <div className="flex items-center text-gray-600">
                                         <FiPhone className="mr-2" />
-                                        {data.staffId.staff_contact}
+                                        0{data.staffId.staff_contact}
                                     </div>
                                     <div className="flex items-center text-gray-600">
                                         <FiMapPin className="mr-2" />
@@ -283,8 +281,8 @@ const OvertimePage = () => {
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiClock size={24} />}
-                            title="Total Hours"
-                            value={`${data.accumulation.hours.toFixed(2)} hrs`}
+                            title="Total times (in minutes)"
+                            value={`${data.accumulation.minutes.toFixed(2)} mins`}
                             iconColor="text-blue-500"
                         />
                     </Col>
@@ -293,7 +291,7 @@ const OvertimePage = () => {
                         <StatCard
                             icon={<FiDollarSign size={24} />}
                             title="Total Charge"
-                            value={`${data.accumulation.currency ?? 'UGX'} ${data.accumulation.charge.toLocaleString() ?? '0'}`}
+                            value={`UGX ${data.accumulation.charge.toLocaleString() ?? '0'}`}
                             iconColor="text-green-500"
                         />
                     </Col>
@@ -301,8 +299,8 @@ const OvertimePage = () => {
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiDollarSign size={24} />}
-                            title="Rate per Hour"
-                            value={`${data.accumulation.currency ?? 'UGX'} ${(data.accumulation.charge ?? 0 / data.accumulation.hours ?? 0).toFixed(0) ?? '0'}`}
+                            title="Overtime rate"
+                            value={`UGX ${(data.accumulation.overtime_rate ?? 0).toFixed(0) ?? '0'}`}
                             iconColor="text-yellow-500"
                         />
                     </Col>
@@ -310,8 +308,8 @@ const OvertimePage = () => {
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiClock size={24} />}
-                            title="Total Records"
-                            value={data.accumulation.numberOfRecords.toString()}
+                            title="Overtime Interval (minutes)"
+                            value={data.accumulation.overtime_interval.toString()}
                             iconColor="text-purple-500"
                         />
                     </Col>
@@ -340,7 +338,7 @@ const OvertimePage = () => {
                                     <div className="mb-3">
                                         <div className="text-gray-600">Total Earnings</div>
                                         <div className="text-2xl font-bold text-green-600">
-                                            {data.accumulation.currency} {data.accumulation.charge.toLocaleString()}
+                                            UGX {data.accumulation.charge.toLocaleString()}
                                         </div>
                                     </div>
                                 </div>

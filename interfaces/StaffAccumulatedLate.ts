@@ -5,7 +5,7 @@ interface StaffDetails {
     staff_lname: string;
     staff_contact: number;
     staff_email: string;
-    staff_role: string;
+    staff_role: { role_type: string };
     staff_gender: string;
     staff_profilePic: string;
     staff_password: string;
@@ -30,14 +30,9 @@ export interface StaffLateChargesWithDetails {
     accumulation: {
         totalCharges: number;
         totalHrsLate: number;
-        pendingCharges: number;
-        clearedCharges: number;
-        currency: string;
+        totalMinsLate: number;
+        late_rate: number;
+        late_interval: number;
         numberOfRecords: number;
     };
-    lateEntries: {
-        date: string; // ISO date string
-        time: string; // Time string
-        charge: number;
-    }[];
 }

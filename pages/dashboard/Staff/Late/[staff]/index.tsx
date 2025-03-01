@@ -10,7 +10,8 @@ import {
     FiDownload,
     FiPhone,
     FiMapPin,
-    FiCalendar
+    FiCalendar,
+    FiFilter
 } from 'react-icons/fi';
 import { useParams } from 'next/navigation';
 import Seo from '@/shared/layout-components/seo/seo';
@@ -59,8 +60,8 @@ const LateChargesPage = () => {
             [],
             ['Overtime Summary'],
             ['Period', `${format(new Date(data.period.from), 'MMMM dddd yyyy')} - ${format(new Date(data.period.to), 'MMMM dddd yyyy')}`],
-            // ['Total Hours', data.accumulation.hours],
-            // ['Total Charge', `${data.accumulation.currency} ${data.accumulation.charge}`],
+            ['Total Hours', data.accumulation.totalHrsLate],
+            ['Total Charge', `UGX ${data.accumulation.totalCharges}`],
             ['Number of Records', data.accumulation.numberOfRecords]
         ];
 
@@ -139,6 +140,19 @@ const LateChargesPage = () => {
                                         onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
                                     />
                                 </Form.Group>
+                                {/* <Form.Group>
+                                    <Form.Label className="text-sm text-gray-600 pt-4.5"></Form.Label>
+
+                                    <Button
+                                        variant="outline-primary"
+                                        className="d-flex align-items-center gap-2"
+                                        onClick={handleExport}
+                                    >
+                                        <FiFilter />
+                                        Filter Records
+                                    </Button>
+                                </Form.Group> */}
+
                             </div>
                             <Button
                                 variant="primary"
@@ -163,17 +177,13 @@ const LateChargesPage = () => {
                                         className: 'rounded-full'
                                     }}
                                 />
-                                {/* <Badge bg="primary" className="mb-2">{data.staffId.staff_role}</Badge> */}
+                                <Badge bg="primary" className="mb-2">{data.staffId.staff_role.role_type}</Badge>
                             </Col>
                             <Col md={9}>
                                 <h2 className="text-2xl font-bold text-gray-800 mb-3">
                                     {data.staffId.staff_fname} {data.staffId.staff_lname}
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
-                                    {/* <div className="flex items-center text-gray-600">
-                                    <FiMail className="mr-2" />
-                                    {data.staffId.staff_email}
-                                </div> */}
                                     <div className="flex items-center text-gray-600">
                                         <FiPhone className="mr-2" />
                                         0{data.staffId.staff_contact}
@@ -195,7 +205,7 @@ const LateChargesPage = () => {
                         <StatCard
                             icon={<FiClock size={24} />}
                             title="Total Time Late"
-                            value={`${data.accumulation.totalHrsLate} minutes`}
+                            value={`${data.accumulation.totalMinsLate} minutes`}
                             iconColor="text-blue-500"
                         />
                     </Col>
@@ -204,7 +214,7 @@ const LateChargesPage = () => {
                         <StatCard
                             icon={<FiDollarSign color='green' size={24} />}
                             title="Total Charge Accumulated"
-                            value={`${data.accumulation.currency ?? 'UGX'} ${data.accumulation.pendingCharges.toLocaleString() ?? '0'}`}
+                            value={`UGX ${data.accumulation.totalCharges.toLocaleString() ?? '0'}`}
                             iconColor="text-green-500"
                         />
                     </Col>
@@ -212,8 +222,8 @@ const LateChargesPage = () => {
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiDollarSign size={24} />}
-                            title="Rate per Hour"
-                            value={`${data.accumulation.currency ?? 'UGX'} ${'0'}`}
+                            title="Late Rate"
+                            value={`${data.accumulation.late_rate}`}
                             iconColor="text-yellow-500"
                         />
                     </Col>
@@ -221,8 +231,8 @@ const LateChargesPage = () => {
                     <Col xs={12} md={6} lg={3}>
                         <StatCard
                             icon={<FiClock size={24} />}
-                            title="Total Records"
-                            value={data.accumulation.numberOfRecords.toString()}
+                            title="Late Interval (minutes)"
+                            value={data.accumulation.late_interval.toString()}
                             iconColor="text-purple-500"
                         />
                     </Col>
@@ -243,7 +253,7 @@ const LateChargesPage = () => {
                                     <div className="mb-3">
                                         <div className="text-gray-600">Total Hours Late</div>
                                         <div className="text-2xl font-bold text-red-600">
-                                            {data.accumulation.numberOfRecords.toFixed(2)} hrs
+                                            {data.accumulation.totalHrsLate.toFixed(2)} hrs
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +261,7 @@ const LateChargesPage = () => {
                                     <div className="mb-3">
                                         <div className="text-gray-600">Total Charge</div>
                                         <div className="text-2xl font-bold text-red-600">
-                                            {data.accumulation.totalCharges === 0 ? '' : '-'} {data.accumulation.currency} {data.accumulation.totalCharges}
+                                            {data.accumulation.totalCharges === 0 ? '' : '-'} UGX {data.accumulation.totalCharges}
                                         </div>
                                     </div>
                                 </div>

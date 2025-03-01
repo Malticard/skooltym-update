@@ -29,8 +29,11 @@ interface StaffDetails {
 
 interface StaffAccumulation {
     hours: number;
+    minutes: number;
+    overtime_rate: number,
+    overtime_interval: number;
     charge: number;
-    currency: string;
+    // currency: string;
     numberOfRecords: number;
 }
 
