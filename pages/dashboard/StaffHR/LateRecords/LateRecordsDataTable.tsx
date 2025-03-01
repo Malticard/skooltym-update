@@ -95,10 +95,10 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
                 data={data}
                 pagination
                 paginationServer
-                paginationTotalRows={totalDocuments}
-                paginationDefaultPage={currentPage}
-                paginationPerPage={pageSize}
-                onChangePage={(page, total) => handlePageChange(page)}
+                paginationTotalRows={pendingData?.total ?? 0}
+                paginationDefaultPage={pendingData?.limit}
+                paginationPerPage={pendingData?.pages ?? 1}
+                onChangePage={(page, total) => updatePage(page)}
                 onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
                 responsive
                 striped

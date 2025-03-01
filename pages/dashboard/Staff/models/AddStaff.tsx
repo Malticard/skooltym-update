@@ -7,6 +7,7 @@ import { postStaffData } from '@/utils/data_fetch';
 import { Staff } from '@/interfaces/StaffModel';
 import { Role } from '@/interfaces/RolesModel';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import { toast } from 'react-toastify';
 
 const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow, handleSave }: { roles: Role[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Staff) => void }) => {
     const options = [] as Option[];
@@ -35,11 +36,7 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        // if (!imageFile) {
-        //     setPosting(false)
-        //     setMessage('Please select an image file');
-        //     return;
-        // }
+
         const formData = new FormData();
         // capturing school
         formData.append('staff_school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -54,13 +51,13 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
         }
         // posting data
         postStaffData(formData).then((res) => {
-            setMessage('Staff added successfully');
+            toast.success('Staff added successfully');
             handleSave(res);
             setPosting(false)
-            window.location.reload();
+            // window.location.reload();
         }).catch((err) => {
             console.log(err);
-            setMessage(err.toString());
+            toast.error(err.toString());
             setPosting(false)
         })
     }

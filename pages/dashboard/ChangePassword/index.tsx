@@ -1,16 +1,14 @@
-import SuccessMessage from '@/pages/components/pages/success-message';
-import { Toastbasic } from '@/shared/data/elements/toasts/Toastbasic';
-import { Toastright } from '@/shared/data/elements/toasts/Toastright';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
-import { resetPassword } from '@/utils/auth';
-import { Snackbar } from '@mui/material';
+import { resetAuthenticatedUserPassword } from '@/utils/auth';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { Row, Col, Card, Container, Form, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 const ChangePassword = () => {
     const [loading, setLoading] = React.useState(false);
-    const [success, setSuccess] = React.useState(false);
+    const router = useRouter();
     // handle change password
     const [passwordData, setPasswordData] = React.useState({
         newPassword: "",
@@ -23,32 +21,35 @@ const ChangePassword = () => {
         // ensure all fields are filled
         if (!passwordData.newPassword || !passwordData.confirmPassword) {
             setLoading(false);
+            toast.error("All fields are required");
             setError("All fields are required");
         }
         // ensure password and confirm password match
         else if (passwordData.newPassword !== passwordData.confirmPassword) {
             setLoading(false);
-            setError("Password and Confirm Password do not match");
+            toast.error("Password mismatch.");
+            setError("Password mismatch");
         }
         else {
             setError("");
             // send data to backend
             const formData = new FormData();
-            console.log("data", passwordData);
             formData.append("new_password", passwordData.newPassword);
             formData.append("confirm_password", passwordData.confirmPassword);
 
             // handle success and error
-            resetPassword(formData).then((res) => {
+            resetAuthenticatedUserPassword(formData).then((res) => {
                 setLoading(false);
                 setError("");
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                }, 3000);
+                toast.success("Password changed successfully..");
+                router.push("/dashboard", "dashboard", {
+                    shallow: true,
+                }).then((value) => {
+                    console.log(value);
+                });
             }).catch((error) => {
                 setLoading(false);
-                setError(error.message);
+
             });
         }
     }
@@ -143,17 +144,6 @@ const ChangePassword = () => {
                     </Card>
                 </Col>
             </Row>
-            {/* end of ui for change password */}
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={success}
-                autoHideDuration={6000}
-                message="Password changed."
-                onClose={() => setError("")}
-            />
         </div>
     );
 };

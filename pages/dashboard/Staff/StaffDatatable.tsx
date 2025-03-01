@@ -195,9 +195,9 @@ export default function StaffDataTable({
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
+                    paginationTotalRows={staff.totalDocuments}
+                    paginationDefaultPage={staff.currentPage}
+                    paginationPerPage={staff.pageSize}
                     onChangePage={(page, tt) => handlePageChange(page)}
                     onChangeRowsPerPage={(perPage, tt) => updateLimit(perPage)}
                     responsive
@@ -210,14 +210,14 @@ export default function StaffDataTable({
                     customStyles={{
                         rows: {
                             style: {
-                                minHeight: '72px',
+                                minHeight: '10px',
                             },
                         },
                         headCells: {
                             style: {
                                 paddingLeft: '8px',
                                 paddingRight: '8px',
-                                fontWeight: 'bold',
+                                fontWeight: 'light',
                             },
                         },
                         cells: {

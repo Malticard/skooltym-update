@@ -7,6 +7,7 @@ import FormElement from './FormElement';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
+import { toast } from 'react-toastify';
 const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardian, setCurrentGuardian, setEditModalShow, handleSaveEdit }: { students: StudentsNotPaginated[]; guardianStudent: GuardianStudent[]; editModalShow: boolean; currentGuardian: Guardian | null; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentGuardian: React.Dispatch<React.SetStateAction<Guardian | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
@@ -29,9 +30,9 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
     const defaultStudentData: Option[] = [];
     // React.useEffect(() => {
     // guardian students
-    if (guardianStudent) {
-        guardianStudent.map(student => defaultStudentData.push({ name: `${student.student_id.student_fname} ${student.student_id.student_lname}`, value: student._id }));
-        // console.log("Guardian students", defaultStudentData);
+    if (guardianStudent && guardianStudent.length > 0) {
+        guardianStudent?.map(student => defaultStudentData.push({ name: `${student.student_id?.student_fname} ${student.student_id?.student_lname}`, value: student?.student_id?._id }));
+        // console.log("Guardian students", guardianStudent);
     }
     // })
 
@@ -72,10 +73,12 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
         updateGuardianData(formData, currentGuardian?._id).then((res) => {
             // console.log(res);
             handleSaveEdit();
+            toast.success("Guardian updated successfully");
             setUpdating(false)
         }).catch((err) => {
             console.warn(err);
-            setMessage(err.toString());
+            toast.error("Error while updating Guardian");
+            // setMessage(err.toString());
             setUpdating(false)
         })
         // console.log(currentStudent);

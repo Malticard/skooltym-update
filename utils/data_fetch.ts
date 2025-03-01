@@ -19,6 +19,7 @@ import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 import { staffClockingIn, staffClockingOut, studentClockingIn, studentClockingOut } from './clocking';
 import { dashboardStats } from './dashboard';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
+import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -53,7 +54,8 @@ export async function fetchSettings(): Promise<SettingsModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     // console.log("user login data", data);
     const response = await axios.get(`${AppUrls.settings}${data.school}`);
-    return (response.data[0]);
+    console.log(response.data)
+    return (response.data);
 }
 export async function fetchStaffSettings(): Promise<IStaffSettings> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
@@ -68,9 +70,10 @@ export async function fetchStaffSettings(): Promise<IStaffSettings> {
 // function to update settings
 export async function saveSettings(data: FormData): Promise<any> {
     try {
+        let userData = JSON.parse(localStorage.getItem("skooltym_user") as string) as AuthenticatedUserModel;
         const plainObject = Object.fromEntries(data.entries());
         // console.log(plainObject);
-        let response = await axios.post(AppUrls.addSettings, plainObject, {
+        let response = await axios.post(AppUrls.addSettings + userData.school + "/create", plainObject, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -116,7 +119,7 @@ export function greetUser(): string {
 export async function fetchDropOffs(page = 1, limit = 10, startDate = "", endDate = ""): Promise<DropoffRecordsResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getDropOffs + data.school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        let response = await axios.get(AppUrls.getDropOffs + data.school + `?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -126,7 +129,7 @@ export async function fetchDropOffs(page = 1, limit = 10, startDate = "", endDat
 export async function fetchPickUps(page = 1, limit = 10, startDate = "", endDate = ""): Promise<PickupResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
-        let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -520,7 +523,7 @@ export async function postGuardianData(data: FormData): Promise<any> {
         }
 
     } catch (error: any) {
-        return (error.toString());
+        return (error.response.data.message.toString());
     }
 }
 // update guardian data

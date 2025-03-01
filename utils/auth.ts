@@ -106,3 +106,18 @@ export async function resetPassword(data: FormData) {
         throw new Error(error.response.data.toString());
     }
 }
+
+//authenticated reset password
+export async function resetAuthenticatedUserPassword(data: FormData) {
+    const userData = JSON.parse(localStorage.getItem('skooltym_user') as string) as AuthenticatedUserModel;
+    try {
+        const response = await axios.post(AppUrls.setPassword + userData.id, {
+            new_password: data.get("new_password"),
+            confirm_password: data.get("confirm_password")
+        });
+        return response;
+    } catch (error: any) {
+        console.log(error)
+        throw new Error(error.response.data.toString());
+    }
+}

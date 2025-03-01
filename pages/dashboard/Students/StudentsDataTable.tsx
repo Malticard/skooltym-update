@@ -11,6 +11,7 @@ import { Stream } from '@/interfaces/StreamModel';
 import AddStudent from './models/AddStudent';
 import { deleteStudentData } from '@/utils/data_fetch';
 import LiveImageComponent from '../components/LiveImageComponent';
+import { toast } from 'react-toastify';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentsDataTable({
@@ -35,9 +36,9 @@ export default function StudentsDataTable({
     updateLimit: (value: number) => void;
 }) {
     const [data, setData] = React.useState<StudentResult[]>(students?.results || []);
-    const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
-    const [pageSize] = React.useState(students?.pageSize || 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(students?.totalDocuments || 0);
+    // const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
+    // const [pageSize] = React.useState(students?.pageSize || 10);
+    // const [totalDocuments, setTotalDocuments] = React.useState(students?.totalDocuments || 0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -47,9 +48,9 @@ export default function StudentsDataTable({
     // Update state when students prop changes
     React.useEffect(() => {
         if (students) {
-            setData(students.results || []);
-            setCurrentPage(students.currentPage || 1);
-            setTotalDocuments(students.totalDocuments || 0);
+            // setData(students.results || []);
+            // setCurrentPage(students.currentPage || 1);
+            // setTotalDocuments(students.totalDocuments || 0);
         }
     }, [students]);
 
@@ -139,11 +140,13 @@ export default function StudentsDataTable({
     const handleSave = (dat: StudentResult) => {
         setAddModalShow(false);
         setData([dat, ...data]);
+        toast.success("Student data updated successfully")
         handleUpdates();
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
+        toast.success("Student data updated successfully");
         handleUpdates();
     };
 
@@ -154,17 +157,18 @@ export default function StudentsDataTable({
         try {
             await deleteStudentData(currentStudent?._id as string);
             setDeleteModalShow(false);
+            toast.success("Student deleted successfully");
             handleUpdates();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred while deleting the student');
-            console.error("Error deleting student:", err);
+            toast.error("Error deleting student");
         } finally {
             setDeleting(false);
         }
     };
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        // setCurrentPage(page);
         updatePage(page);
     };
 
@@ -195,11 +199,10 @@ export default function StudentsDataTable({
                     columns={columns}
                     data={data}
                     pagination
-                    noHeader={false}
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
+                    paginationTotalRows={students.totalDocuments}
+                    paginationDefaultPage={students.currentPage}
+                    paginationPerPage={students.pageSize}
                     paginationRowsPerPageOptions={[5, 10, 15, 30, 50, 100]}
                     onChangePage={(page, total) => handlePageChange(page)}
                     onChangeRowsPerPage={(page, rows) => updateLimit(page)}

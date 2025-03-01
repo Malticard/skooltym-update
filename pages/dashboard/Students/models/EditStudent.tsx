@@ -9,6 +9,7 @@ import { Stream } from '@/interfaces/StreamModel';
 import { updateStudentData } from '@/utils/data_fetch';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import { toast } from 'react-toastify';
 
 const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, studentData, setStudentData, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; editModalShow: boolean; studentData: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setStudentData: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
@@ -58,8 +59,6 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
         if (imageFile) {
             formData.append('name', JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
         }
-        // console.log(JSON.parse(localStorage.getItem('skooltym_user') as string).schoolName);
-
         formData.append('username', `${studentData?.student_fname.toLowerCase()}${studentData?.student_lname.toLowerCase()}${Math.floor(Math.random() * 1000)}`);
         // student key
         formData.append('student_key[key]', '');
@@ -70,7 +69,7 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
             handleSaveEdit();
             setUpdating(false)
         }).catch((err) => {
-            setMessage(err.toString());
+            toast.error(err.toString());
             setUpdating(false)
         });
     }

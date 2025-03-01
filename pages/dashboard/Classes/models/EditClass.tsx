@@ -82,7 +82,7 @@ const EditClass = ({
                                 class_name: e.target.value
                             })}
                         />
-                        <br />
+
                         <SelectComponent
                             multiSelect
                             defaultData={defaultData}

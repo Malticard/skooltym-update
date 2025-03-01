@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "https://backend.skooltym.com/";
+    static devURL: string = "http://127.0.0.1:5050/";//"https://backend.skooltym.com/";
     static imageUrl: string = "assets/images/";
     static iconUrl: string = "assets/icons/";
     static liveImages: string = "https://backend.skooltym.com/image/images/";
@@ -15,7 +15,7 @@ class AppUrls {
     static addSchool: string = `${AppUrls.devURL}post/schools/create`;
     static addStudent: string = `${AppUrls.devURL}post/students/create`;
     static addGuardian: string = `${AppUrls.devURL}post/guardians/create`;
-    static addSettings: string = `${AppUrls.devURL}post/settings/create`;
+    static addSettings: string = `${AppUrls.devURL}post/settings/`;
     static addStaffSettings: string = `${AppUrls.devURL}staff/`;
     static addPickUp: string = `${AppUrls.devURL}post/pickup/create`;
     static addDropOff: string = `${AppUrls.devURL}post/dropoff/create`;

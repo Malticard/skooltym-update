@@ -8,13 +8,6 @@ import { Badge } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-// interface StaffClockingResponse {
-//     results: StaffClockingResult[];
-//     page: number;
-//     pageSize: number;
-//     totalDocuments: number;
-// }
-
 interface StaffClockingOutDataTableProps {
     clockingData: StaffClockingResponse;
     updatePage: (value: number) => void;
@@ -106,7 +99,7 @@ export default function StaffClockingOutDataTable({
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        updatePage(page);
+
     };
 
     const tableData = {
@@ -122,12 +115,12 @@ export default function StaffClockingOutDataTable({
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={(page, total) => handlePageChange(page)}
-                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-                        updateLimit(currentRowsPerPage);
+                    paginationTotalRows={clockingData.total}
+                    paginationDefaultPage={clockingData.page}
+                    paginationPerPage={clockingData.limit}
+                    onChangePage={(page, total) => updatePage(page)}
+                    onChangeRowsPerPage={(limit, currentPage) => {
+                        updateLimit(limit);
                     }}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">

@@ -106,11 +106,11 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={handlePageChange}
-                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
+                    paginationTotalRows={pendingData?.total ?? 0}
+                    paginationDefaultPage={pendingData?.page ?? 1}
+                    paginationPerPage={pendingData?.limit ?? 0}
+                    onChangePage={(page, tt) => handlePageChange(page)}
+                    onChangeRowsPerPage={(currentRowsPerPage, tt) => updateLimit(currentRowsPerPage)}
                     responsive
                     striped
                 />

@@ -25,6 +25,7 @@ const DropOffs = () => {
     // Handle rows per page change
     const onChangeRowsPerPage = async (lm: number) => {
         setRowsPerPage(lm); // SWR will automatically refetch when rowsPerPage changes
+        console.log(`limit ${lm}`);
         const result = await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate);
         mutate(result);
     };
@@ -42,7 +43,7 @@ const DropOffs = () => {
             <Seo title="All Time Drop Offs" />
             <div className='flex sm:flex-row flex-col w-4/5 justify-between'>
                 <PageHeader title={`All Time Drop Offs (${dropOffs?.totalDocuments ?? 0})`} item="Skooltym" active_item="Drop Offs" />
-                <DateFilterComponent enableActions exportData={() => exportDropOffRecords()} handleFilter={handleDateChange} />
+                <DateFilterComponent enableActions exportData={(data) => exportDropOffRecords(data.startDate, data.endDate)} handleFilter={handleDateChange} />
             </div>
             {dropOffs && (
                 <DropOffDataTable

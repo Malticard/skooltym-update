@@ -11,6 +11,7 @@ import EditGuardian from './models/EditGuardian';
 import AddGuardian from './models/AddGuardian';
 import LiveImageComponent from '../components/LiveImageComponent';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
+import { toast } from 'react-toastify';
 
 // Define proper types for DataTableExtensions
 interface DataTableExtensionsProps {
@@ -34,6 +35,7 @@ interface GuardianDataTableProps {
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     guardianStudents: GuardianStudent[] | undefined;
+    handleSync: () => void;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }
@@ -45,7 +47,8 @@ export default function GuardianDataTable({
     guardianStudents,
     setAddModalShow,
     updatePage,
-    updateLimit
+    updateLimit,
+    handleSync
 }: GuardianDataTableProps) {
     const defaultData: GuardianResponse = {
         results: [],
@@ -83,11 +86,13 @@ export default function GuardianDataTable({
 
     const handleSave = (newGuardian: Guardian) => {
         setData(prevData => [newGuardian, ...prevData]);
+        handleSync();
         setAddModalShow(false);
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
+        handleSync()
     };
 
     const handleSaveDelete = async () => {
@@ -97,7 +102,8 @@ export default function GuardianDataTable({
         try {
             await deleteGuardianData(currentGuardian._id);
             setDeleteModalShow(false);
-            window.location.reload();
+            handleSync();
+            toast.success("Deleted guardian successfully");
         } catch (error) {
             console.error("Error deleting guardian:", error);
         } finally {
@@ -189,6 +195,22 @@ export default function GuardianDataTable({
                     paginationPerPage={pageSize}
                     onChangePage={(page, ttt) => handlePageChange(page)}
                     onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
+                    customStyles={
+                        {
+                            rows: {
+                                style: {
+                                    minHeight: '0px',
+                                },
+                            },
+                            headCells: {
+                                style: {
+                                    paddingLeft: '8px',
+                                    paddingRight: '8px',
+                                    fontWeight: 'light',
+                                },
+                            },
+                        }
+                    }
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No guardians found

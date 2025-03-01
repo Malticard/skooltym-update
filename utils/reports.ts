@@ -1,5 +1,4 @@
 import AppUrls from "./apis";
-
 // export students
 export function exportStudents() {
     const url = `${AppUrls.exportStudentsRecords}`;
@@ -16,61 +15,61 @@ export function exportGuardianRecords() {
     exportTor("guardians", url);
 }
 // drop offs
-export function exportDropOffRecords() {
+export function exportDropOffRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportDropOffRecords;
-    exportTor("dropOffs", url);
+    exportTor("dropOffs", url, startDate, endDate);
 }
-export function exportPickUpRecords() {
+export function exportPickUpRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportPickUpRecords;
-    exportTor("pickUp", url);
+    exportTor("pickUp", url, startDate, endDate);
 }
 // pending overtimes
-export function exportPendingOvertimeRecords() {
+export function exportPendingOvertimeRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportPendingOvertimeRecords;
-    exportTor("pending_overtime", url);
+    exportTor("pending_overtime", url, startDate, endDate);
 }
 
-export function exportClearedRecords() {
+export function exportClearedRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportClearedOvertimeRecords;
-    exportTor("cleared_overtime", url);
+    exportTor("cleared_overtime", url, startDate, endDate);
 }
 // payment
-export function exportPaymentRecords() {
+export function exportPaymentRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportPaymentRecords;
-    exportTor("payments", url);
+    exportTor("payments", url, startDate, endDate);
 }
 // student clocking
-export function exportStudentClockInRecords() {
+export function exportStudentClockInRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportStudentClockIn;
-    exportTor("student_clock_in", url);
+    exportTor("student_clock_in", url, startDate, endDate);
 }
 
-export function exportStudentClockOutRecords() {
+export function exportStudentClockOutRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportStudentClockOut;
-    exportTor("student_clock_out", url);
+    exportTor("student_clock_out", url, startDate, endDate);
 }
 
-export function exportStaffClockInRecords() {
+export function exportStaffClockInRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportStaffClockIn;
-    exportTor("staff_clock_in", url);
+    exportTor("staff_clock_in", url, startDate, endDate);
 }
 
-export function exportStaffClockOutRecords() {
+export function exportStaffClockOutRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportStaffClockOut;
-    exportTor("staff_clock_out", url);
+    exportTor("staff_clock_out", url, startDate, endDate);
 }
-export function exportStaffLateRecords() {
+export function exportStaffLateRecords(startDate = "", endDate = "") {
     const url = AppUrls.exportStaffLateRecords;
-    exportTor("staff_late", url);
+    exportTor("staff_late", url, startDate, endDate);
 }
 export function exportStaffOvertimeRecords(startDate?: string, endDate?: string) {
     const url = AppUrls.exportStaffOvertimeRecords;
-    exportTor("staff_overtime", url + "startDate=" + startDate + "&endDate=" + endDate);
+    exportTor("staff_overtime", url, startDate, endDate);
 }
 // export-or
-const exportTor = (name: string, url: string) => {
+const exportTor = (name: string, url: string, startDate = "", endDate = "") => {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
-    const docUrl = `${url}${data.school}`;
+    const docUrl = `${url}${data.school}?startDate=${startDate}&endDate=${endDate}`;
     // alert(docUrl);
     try {
         fetch(docUrl)

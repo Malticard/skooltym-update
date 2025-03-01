@@ -7,6 +7,7 @@ import { Guardian } from '@/interfaces/GuardiansModel';
 
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
+import { toast } from 'react-toastify';
 
 const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { students: StudentsNotPaginated[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Guardian) => void }) => {
 
@@ -66,8 +67,10 @@ const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { 
             // setMessage('Staff added successfully');
             handleSave(res);
             setGuardianData({});
+            toast.success("Added guardian successfully..")
         }).catch((err) => {
             console.warn(err);
+            toast.error("Error while posting guardian..")
             setMessage(err.toString());
         })
     }

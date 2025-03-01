@@ -9,6 +9,7 @@ import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
 import { postStudentData } from '@/utils/data_fetch';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import { toast } from 'react-toastify';
 
 const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: StudentResult) => void }) => {
     const options = [] as Option[];
@@ -66,10 +67,10 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
         formData.append('student_key[key]', ``);
         // posting data
         postStudentData(formData).then((res) => {
-            setMessage('Student added successfully');
+            toast.success('Student added successfully');
             handleSave(res);
             setPosting(false)
-            window.location.reload();
+
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());

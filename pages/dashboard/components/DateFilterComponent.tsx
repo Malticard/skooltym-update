@@ -11,10 +11,13 @@ interface DateFilterComponentProps {
     enableActions?: boolean;
     typeOfUpload?: string;
     handleFilter: (data: DateFilterIF) => void;
-    exportData?: () => void;
+    exportData?: (data: DateFilterIF) => void;
 }
 const DateFilterComponent: React.FC<DateFilterComponentProps> = ({ handleFilter, exportData, enableActions, typeOfUpload = "staff" }) => {
-
+    const [dateFilter, setDateFilter] = React.useState<DateFilterIF>({
+        startDate: new Date().toISOString(),
+        endDate: new Date().toISOString(),
+    });
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -34,7 +37,7 @@ const DateFilterComponent: React.FC<DateFilterComponentProps> = ({ handleFilter,
 
                 <div></div>
                 <button className='btn btn-primary btn-icon-text mx-5 p-2 d-inline-flex align-items-center'
-                    onClick={() => exportData && exportData()} >
+                    onClick={() => exportData && exportData(dateFilter)} >
                     <IconDownload className="sm:visible w-5 h-5" /><span className='mx-2 text-md'>Download</span>
                 </button>
             </div>)}

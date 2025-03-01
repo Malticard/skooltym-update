@@ -40,18 +40,7 @@ export default function PickUpDataTable({
     updateLimit
 }: PickUpDataTableProps) {
     const [data, setData] = React.useState<PickupRecord[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
 
-    React.useEffect(() => {
-        if (pickUpData) {
-            setData(pickUpData.results || []);
-            setCurrentPage(pickUpData.currentPage || 1);
-            setPageSize(pickUpData.pageSize || 10);
-            setTotalDocuments(pickUpData.totalDocuments || 0);
-        }
-    }, [pickUpData]);
 
     const columns = [
         {
@@ -96,10 +85,7 @@ export default function PickUpDataTable({
         },
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
+
 
     const tableData: DataTableExtensionsProps = {
         columns,
@@ -115,13 +101,14 @@ export default function PickUpDataTable({
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
-                    data={data}
+                    data={pickUpData.results}
                     pagination
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={(page, tt) => handlePageChange(page)}
+                    paginationTotalRows={pickUpData.totalDocuments}
+                    paginationDefaultPage={pickUpData.currentPage}
+                    paginationPerPage={pickUpData.pageSize}
+                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+                    onChangePage={(page, tt) => updatePage(page)}
                     onChangeRowsPerPage={(limit, tt) => updateLimit(limit)}
                     responsive
                     striped

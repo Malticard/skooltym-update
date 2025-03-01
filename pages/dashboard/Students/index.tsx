@@ -24,12 +24,10 @@ const Orders = () => {
 
     // Update student data and revalidate
     const handleUpdateStudent = async () => {
-        try {
-            await fetchStudents();
-            mutate(fetchStudents()); // Re-fetch data after update
-        } catch (error) {
-            console.error("Error updating student:", error);
-        }
+
+        const result = await fetchStudents(page, limit);
+        mutate(result); // Re-fetch data after update
+
     };
     const onChangeLimit = async (lm: number) => {
         setLimit(lm);

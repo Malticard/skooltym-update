@@ -22,6 +22,10 @@ const Guardian = () => {
         const result = await fetchGuardians(page, limit);
         mutateGuardians(result);
     }
+    const handleUpdatesSync = async () => {
+        const result = await fetchGuardians(page, limit);
+        mutateGuardians(result);
+    }
     // handle limit
     const onChangeLimit = async (newLimit: number) => {
         setLimit(newLimit)
@@ -49,6 +53,7 @@ const Guardian = () => {
                 setAddModalShow={setAddModalShow}
                 guardianStudents={guardianStudents}
                 students={students ?? []}
+                handleSync={handleUpdatesSync}
                 updatePage={onChangePage}
                 updateLimit={onChangeLimit}
                 guardians={guardians}

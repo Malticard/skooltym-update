@@ -38,13 +38,13 @@ export default function StaffClockingInDataTable({
     const [totalDocuments, setTotalDocuments] = React.useState(safeData.total);
 
     // Update state when clockingData changes
-    React.useEffect(() => {
-        if (clockingData) {
-            setData(clockingData.results);
-            setCurrentPage(clockingData.page);
-            setTotalDocuments(clockingData.total);
-        }
-    }, [clockingData]);
+    // React.useEffect(() => {
+    //     if (clockingData) {
+    //         setData(clockingData.results);
+    //         setCurrentPage(clockingData.page);
+    //         setTotalDocuments(clockingData.total);
+    //     }
+    // }, [clockingData]);
 
     const columns = [
         {
@@ -93,11 +93,6 @@ export default function StaffClockingInDataTable({
         },
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
-
     const tableData = {
         columns,
         data,
@@ -131,20 +126,18 @@ export default function StaffClockingInDataTable({
                     paginationServer
                     fixedHeader
                     fixedHeaderScrollHeight="400px"
-                    // subHeader
-                    // subHeaderComponent={headerFilters}
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
-                    onChangePage={(page, total) => handlePageChange(page)}
+                    paginationTotalRows={clockingData.total}
+                    paginationDefaultPage={clockingData.page}
+                    paginationPerPage={clockingData.limit}
+                    onChangePage={(page, total) => updatePage(page)}
                     keyField='id'
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clocking records found
                         </div>
                     }
-                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-                        updateLimit(currentRowsPerPage);
+                    onChangeRowsPerPage={(limit, tc) => {
+                        updateLimit(limit);
                     }}
                 />
             </DataTableExtensions>

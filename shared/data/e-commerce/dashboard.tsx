@@ -11,8 +11,8 @@ import useSWR from 'swr';
 const Dashboardecommerce = () => {
 
   const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
-  const { data, isLoading: dashDataLoading } = useSWR("DashboardData", async () => fetchDashboardMetaData())
-  const { data: classData, isLoading: classLoading } = useSWR("ClassData", async () => fetchDashBoardClasses());
+  const { data, isLoading: dashDataLoading } = useSWR("DashboardData", async () => await fetchDashboardMetaData())
+  const { data: classData, isLoading: classLoading } = useSWR("ClassData", async () => await fetchDashBoardClasses());
   return (
     <div>
       <Row className="row-sm">

@@ -29,7 +29,6 @@ const Settings = () => {
     function update() {
         mutate();
         setIsSnackbarVisible(true);
-        setTimeout(() => setIsSnackbarVisible(false), 3000);
     }
     // Handle loading and error states
     if (error) return <div className='p-3 mx-auto bg-danger rounded-md'>Error loading settings: {error.message}</div>;
@@ -38,12 +37,6 @@ const Settings = () => {
             <PageHeader title="Staff Clocking Settings" item="Skooltym" active_item="Staff Settings" />
             <Seo title="Staff Settings" />
             {isValidating ? <LoaderComponent /> : settings && (<SettingsSection handleUpdates={update} settings={settings} />)}
-
-            <Snackbar
-                message="Settings saved successfully!"
-                isVisible={isSnackbarVisible}
-                onClose={() => setIsSnackbarVisible(false)}
-            />
         </>
     );
 };

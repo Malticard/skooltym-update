@@ -8,6 +8,7 @@ import Seo from '@/shared/layout-components/seo/seo';
 import { loginUser } from '@/utils/data_fetch';
 import React from 'react';
 import { StaffLogin } from '@/interfaces/StaffLogin';
+import { toast } from 'react-toastify';
 
 
 const Home = () => {
@@ -40,18 +41,22 @@ const Home = () => {
           // console.log(`Current session for first time is ${context.read<FirstTimeUserController>().state}`);
           if (loginData.isNewUser === true) {
             navigate.replace('/dashboard/ChangePassword');
+            toast.info("Logged in successfully, but first change your password..");
           } else {
             navigate.replace('/dashboard');
+            toast.success("Logged in successfully..");
           }
         } else {
+          toast.error("You are not authorized to access this page");
           setError("You are not authorized to access this page");
         }
 
       } else {
-        setError("Failed to login");
+        toast.error("Failed to login");
+        setError("Failed to login")
       }
     }).catch((err) => {
-      console.error(err.toString());
+      toast.error(err.toString());
       setError(err.toString());
       setLoading(false);
     });
@@ -107,10 +112,11 @@ const Home = () => {
                               placeholder="Enter your registered contact"
                               name="email"
                               type='phone'
+                              isInvalid={err.length > 0 ? true : false}
                               value={email}
                               disabled={loading}
                               onChange={changeHandler}
-                              required
+
                             />
                           </Form.Group>
                           <Form.Group
@@ -123,10 +129,11 @@ const Home = () => {
                               placeholder="Enter your password"
                               name="password"
                               type='password'
+                              isInvalid={err.length > 0 ? true : false}
                               value={password}
                               onChange={changeHandler}
                               disabled={loading}
-                              required
+
                             />
                           </Form.Group><div className="d-grid">
                             <div className="text-end mt-1 mb-2 ms-0">

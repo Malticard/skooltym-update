@@ -40,11 +40,11 @@ const ClearedOvertime = () => {
                 <PageHeader
                     title={`Cleared Overtime (${cleared?.totalDocuments ?? 0})`}
                     item="Skooltym"
-                    upload
-                    onDownload={() => exportClearedRecords()}
+                    // upload
+                    // onDownload={() => exportClearedRecords()}
                     active_item="Cleared Overtime"
                 />
-                <DateFilterComponent handleFilter={handleDateChange} />
+                <DateFilterComponent enableActions exportData={() => exportClearedRecords()} handleFilter={handleDateChange} />
             </div>
 
 

@@ -31,15 +31,15 @@ export default function DropOffDataTable({
     updatePage, updateLimit
 }: DropOffDataTableProps) {
     const [data, setData] = React.useState<DropoffRecord[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
+    // const [currentPage, setCurrentPage] = React.useState(1);
+    // const [pageSize, setPageSize] = React.useState(10);
     const [totalDocuments, setTotalDocuments] = React.useState(0);
 
     React.useEffect(() => {
         if (dropOffData) {
             setData(dropOffData.results || []);
-            setCurrentPage(dropOffData.currentPage || 1);
-            setPageSize(dropOffData.pageSize || 10);
+            // setCurrentPage(dropOffData.currentPage || 1);
+            // setPageSize(dropOffData.pageSize || 10);
             setTotalDocuments(dropOffData.totalDocuments || 0);
         }
     }, [dropOffData]);
@@ -82,7 +82,8 @@ export default function DropOffDataTable({
     ];
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        // setCurrentPage(page);
+        console.log(`Page ${page}`);
         updatePage(page);
     };
 
@@ -105,12 +106,13 @@ export default function DropOffDataTable({
                     fixedHeader
                     paginationServer
                     paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
+                    paginationDefaultPage={dropOffData.totalPages}
+                    paginationPerPage={dropOffData.pageSize}
                     onChangePage={(page, total) => handlePageChange(page)}
                     onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive
                     striped
+                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No drop-off records found

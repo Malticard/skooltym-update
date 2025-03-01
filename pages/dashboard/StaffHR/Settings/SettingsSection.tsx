@@ -7,6 +7,7 @@ import SwitchComponent from '@/pages/components/SwitchComponent';
 import { saveSettings, saveStaffSettings } from '@/utils/data_fetch';
 import FormElement from '../../Staff/models/FormElement';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
+import { toast } from 'react-toastify';
 
 // Default settings to use when props.settings is undefined
 const defaultSettings: IStaffSettings = {
@@ -66,7 +67,9 @@ const SettingsSection: React.FC<SettingsDataProps> = ({ settings, handleUpdates 
 
             await saveStaffSettings(form);
             handleUpdates();
+            toast.success("Saved settings successfully..");
         } catch (err) {
+            toast.success('Error saving settings:');
             console.error('Error saving settings:', err);
         } finally {
             setProcess(false);
