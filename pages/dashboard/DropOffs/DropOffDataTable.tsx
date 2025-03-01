@@ -105,9 +105,9 @@ export default function DropOffDataTable({
                     pagination
                     fixedHeader
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={dropOffData.totalPages}
-                    paginationPerPage={dropOffData.pageSize}
+                    paginationTotalRows={dropOffData?.totalDocuments ?? 0}
+                    paginationDefaultPage={dropOffData?.totalPages ?? 1}
+                    paginationPerPage={dropOffData?.pageSize ?? 1}
                     onChangePage={(page, total) => handlePageChange(page)}
                     onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive

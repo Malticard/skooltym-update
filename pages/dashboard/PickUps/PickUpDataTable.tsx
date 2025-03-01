@@ -101,12 +101,12 @@ export default function PickUpDataTable({
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
-                    data={pickUpData.results}
+                    data={pickUpData?.results ?? []}
                     pagination
                     paginationServer
-                    paginationTotalRows={pickUpData.totalDocuments}
-                    paginationDefaultPage={pickUpData.currentPage}
-                    paginationPerPage={pickUpData.pageSize}
+                    paginationTotalRows={pickUpData?.totalDocuments ?? 0}
+                    paginationDefaultPage={pickUpData?.currentPage ?? 1}
+                    paginationPerPage={pickUpData?.pageSize ?? 1}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
                     onChangePage={(page, tt) => updatePage(page)}
                     onChangeRowsPerPage={(limit, tt) => updateLimit(limit)}

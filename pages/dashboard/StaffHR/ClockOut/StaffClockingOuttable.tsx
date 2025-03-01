@@ -115,9 +115,9 @@ export default function StaffClockingOutDataTable({
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={clockingData.total}
-                    paginationDefaultPage={clockingData.page}
-                    paginationPerPage={clockingData.limit}
+                    paginationTotalRows={clockingData?.total ?? 0}
+                    paginationDefaultPage={clockingData?.page ?? 1}
+                    paginationPerPage={clockingData?.limit ?? 1}
                     onChangePage={(page, total) => updatePage(page)}
                     onChangeRowsPerPage={(limit, currentPage) => {
                         updateLimit(limit);

@@ -195,9 +195,9 @@ export default function StaffDataTable({
                     data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={staff.totalDocuments}
-                    paginationDefaultPage={staff.currentPage}
-                    paginationPerPage={staff.pageSize}
+                    paginationTotalRows={staff?.totalDocuments ?? 0}
+                    paginationDefaultPage={staff?.currentPage ?? 1}
+                    paginationPerPage={staff?.pageSize ?? 1}
                     onChangePage={(page, tt) => handlePageChange(page)}
                     onChangeRowsPerPage={(perPage, tt) => updateLimit(perPage)}
                     responsive
