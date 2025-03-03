@@ -115,6 +115,9 @@ const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { 
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+
                                     const file = e.target.files?.[0];
                                     if (file) {
                                         if (e.target.files && e.target.files[0]) {

@@ -1,6 +1,7 @@
 export interface SettingsModel {
     _id: string;
     school_id: string;
+    enable_drop_offs: boolean;
     drop_off_start_time: string;
     drop_off_end_time: string;
     drop_off_allowance: string;

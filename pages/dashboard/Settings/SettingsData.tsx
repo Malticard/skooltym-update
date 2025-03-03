@@ -10,6 +10,7 @@ import FormElement from '../Staff/models/FormElement';
 
 // Default settings to use when props.settings is undefined
 const defaultSettings: SettingsModel = {
+    enable_drop_offs: true,
     drop_off_start_time: '08:00',
     drop_off_end_time: '09:00',
     drop_off_allowance: '15',
@@ -91,23 +92,33 @@ const SettingsData: React.FC<SettingsDataProps> = ({ settings, handleUpdates }) 
     return (
         <div className='sm:mx-25 xsm:mx-2'>
             <Form method='POST' onSubmit={handleForm}>
+                {updateSettings.enable_drop_offs}
+                {/*  enable or disable drop offs */}
+                <SettingComponent title='Drop Off Switch' subTitle='Enable or disable drop offs' trailing={<SwitchComponent defaultChecked={updateSettings.enable_drop_offs} onChange={(b) => setUpdateSettings({
+                    ...updateSettings,
+                    enable_drop_offs: b
+                })} />} />
                 {/* drop offs */}
-                <SettingComponent
-                    onTap={() => setOpen(true)}
-                    title='Drop Off Time'
-                    subTitle='Set the start time  and end time for drop offs'
-                    trailing={`${getSettingValue(updateSettings.drop_off_start_time, '00:00')} - ${getSettingValue(updateSettings.drop_off_end_time, '00:00')}`}
-                />
-                <SettingComponent onTap={() => setOpenDropAllowance(true)} title='Drop off time allowance' subTitle='Set the allowance time student drop offs' trailing={`${updateSettings.drop_off_allowance} mins`} />
+                {updateSettings.enable_drop_offs &&
+                    (
+                        <>
+                            <SettingComponent
+                                onTap={() => setOpen(true)}
+                                title='Drop Off Time'
+                                subTitle='Set the start time  and end time for drop offs'
+                                trailing={`${getSettingValue(updateSettings.drop_off_start_time, '00:00')} - ${getSettingValue(updateSettings.drop_off_end_time, '00:00')}`}
+                            />
+                            <SettingComponent onTap={() => setOpenDropAllowance(true)} title='Drop off time allowance' subTitle='Set the allowance time student drop offs' trailing={`${updateSettings.drop_off_allowance} mins`} />
+                        </>
+                    )
+                }
                 {/* half day */}
                 <SettingComponent onTap={() => setOpenHalfDay(true)} title='Half Day PickUps' subTitle='Set the start and end time for half day pickups.' trailing={`${updateSettings.halfDay_pick_up_start_time} - ${updateSettings.halfDay_pick_up_end_time}`} />
                 <SettingComponent onTap={() => setOpenHalfDayAllowance(true)} title='Half Day pick up allowance time' subTitle='Set the time for half day pickup.' trailing={`${updateSettings.halfDay_pick_up_allowance} mins`} />
                 {/* full day */}
                 <SettingComponent onTap={() => setOpenFullDay(true)} title='Full Day Pickups' subTitle='Set the start and end time for full day pickups' trailing={`${updateSettings.pick_up_start_time} - ${updateSettings.pick_up_end_time}`} />
                 <SettingComponent onTap={() => setOpenFullDayAllowance(true)} title='PickUp allowance' subTitle='Set the allowance time for pickup.' trailing={`${updateSettings.pick_up_allowance} mins`} />
-                {/* staff clock in / clock out */}
-                <SettingComponent onTap={() => setOpenStaffClocking(true)} title='Clock in Time' subTitle='Set the start and end time for  clocking in' trailing={`${updateSettings.clock_in_start_time} - ${updateSettings.clock_in_end_time}`} />
-                <SettingComponent onTap={() => setOpenStaffClockingOut(true)} title='Clock out Time' subTitle='Set the start and end time for staff clocking out' trailing={`${updateSettings.clock_out_start_time} - ${updateSettings.clock_out_end_time}`} />
+
                 {/* clocking */}
                 <SettingComponent title='Clock in / Clock out' subTitle='Clock in / Clock out' trailing={<SwitchComponent defaultChecked={updateSettings.clock_in_clock_out} onChange={(b) => setUpdateSettings({
                     ...updateSettings,
@@ -115,6 +126,7 @@ const SettingsData: React.FC<SettingsDataProps> = ({ settings, handleUpdates }) 
                 })} />} />
                 {
                     !updateSettings.clock_in_clock_out ? (<>
+
                         <SettingComponent title='Overtime' subTitle={updateSettings.allow_overtime ? 'enabled' : 'disabled'} trailing={<SwitchComponent defaultChecked={updateSettings.allow_overtime} onChange={(b) => setUpdateSettings({
                             ...updateSettings,
                             allow_overtime: b
@@ -128,7 +140,12 @@ const SettingsData: React.FC<SettingsDataProps> = ({ settings, handleUpdates }) 
                                     <SettingComponent onTap={() => setOpenOvertimeRate(true)} title='Overtime rate' subTitle='Set the amount of money to be charge every after the set interval e.g 10min.' trailing={`UGX ${updateSettings.overtime_rate}`} />
                                 </>
                             ) : (<></>)
-                        }</>) : (<></>)
+                        }</>) : (<>
+                            {/* staff clock in / clock out */}
+                            <SettingComponent onTap={() => setOpenStaffClocking(true)} title='Clock in Time' subTitle='Set the start and end time for  clocking in' trailing={`${updateSettings.clock_in_start_time} - ${updateSettings.clock_in_end_time}`} />
+                            <SettingComponent onTap={() => setOpenStaffClockingOut(true)} title='Clock out Time' subTitle='Set the start and end time for staff clocking out' trailing={`${updateSettings.clock_out_start_time} - ${updateSettings.clock_out_end_time}`} />
+
+                        </>)
                 }
                 <br />
                 <Button type='submit' disabled={process} variant='primary' className='w-full mb-10'>{process ? 'Saving...' : 'Save Settings'}</Button>

@@ -211,6 +211,7 @@ export default function GuardianDataTable({
                             },
                         }
                     }
+                    persistTableHead
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No guardians found

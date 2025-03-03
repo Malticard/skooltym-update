@@ -95,6 +95,7 @@ export default function PaymentDataTable({
                             No payment records found
                         </div>
                     }
+                    persistTableHead
                 />
             </DataTableExtensions>
         </div>

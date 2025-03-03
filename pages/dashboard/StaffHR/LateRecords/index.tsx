@@ -32,6 +32,7 @@ const LateRecordsPage = () => {
         const late = await getStaffLateRecords(page, limit, data.startDate, data.endDate);
         mutate(late);
     }
+    if (isValidating) { }
     return (
         <div className='my-2'>
             <Seo title="Late Records" />

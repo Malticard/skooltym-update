@@ -21,6 +21,7 @@ export const staffClockingOut = async (page = 1, limit = 10, startDate = "", end
     try {
         const school = JSON.parse(localStorage.getItem("skooltym_user") as string).school;
         const response = await axios.get(`${AppUrls.clockingStaffOut}/${school}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        console.log(response.data);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());

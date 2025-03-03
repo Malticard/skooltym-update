@@ -181,6 +181,7 @@ export default function StreamDataTable({
                     responsive
                     striped
                     fixedHeader
+                    persistTableHead
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No streams found

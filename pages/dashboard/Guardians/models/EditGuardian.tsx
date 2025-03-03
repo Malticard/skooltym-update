@@ -97,10 +97,15 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
                             <FormElement
                                 value={currentGuardian.guardian_fname}
                                 label='First name'
-                                onChange={(e) => setCurrentGuardian({
-                                    ...currentGuardian,
-                                    guardian_fname: e.target.value
-                                })} />
+                                onChange={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+
+                                    setCurrentGuardian({
+                                        ...currentGuardian,
+                                        guardian_fname: e.target.value
+                                    });
+                                }} />
                             <br />
                             <FormElement label='Last Name'
                                 value={currentGuardian.guardian_lname}

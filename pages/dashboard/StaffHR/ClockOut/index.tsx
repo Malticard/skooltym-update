@@ -14,7 +14,7 @@ const StaffClockingPage = () => {
     const [limit, setLimit] = React.useState(10);
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
     // Using SWR with automatic revalidation for staff clocking data
-    const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StaffClockingResponse>(
+    const { data: clockingData, error: clockingError, mutate: mutateClockingData } = useSWR<StaffClockingResponse>(
         'fetchStaffClocking',
         async () => await staffClockingOut(page, limit, dateChange.startDate, dateChange.endDate),
 

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { StaffClockingResponse, StaffClockingResult } from '@/interfaces/StaffClockingModel';
 import moment from 'moment';
 import LiveImageComponent from '../../components/LiveImageComponent';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button, Container, Modal } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -30,19 +30,8 @@ export default function StaffClockingOutDataTable({
     // Use nullish coalescing to handle undefined clockingData
     const safeData = clockingData ?? defaultData;
 
-    const [data, setData] = React.useState<StaffClockingResult[]>(safeData.results);
-    const [currentPage, setCurrentPage] = React.useState(safeData.page);
-    const [pageSize] = React.useState(safeData.limit);
-    const [totalDocuments, setTotalDocuments] = React.useState(safeData.total);
-
-    // Update state when clockingData changes
-    React.useEffect(() => {
-        if (clockingData) {
-            setData(clockingData.results);
-            setCurrentPage(clockingData.page);
-            setTotalDocuments(clockingData.total);
-        }
-    }, [clockingData]);
+    const [clockOutReason, setClockOutReason] = React.useState<string>("");
+    const [reasonModel, showReasonModel] = React.useState<boolean>(false);
 
     const formatTime = (time: string | Date | null | undefined): string => {
         if (!time) return 'N/A';
@@ -53,6 +42,7 @@ export default function StaffClockingOutDataTable({
             return 'Invalid Time';
         }
     };
+
 
     const columns = [
         {
@@ -84,7 +74,18 @@ export default function StaffClockingOutDataTable({
                     }
                 </>
             )
+        }, {
+            name: "clocked reason".toLocaleUpperCase(),
+            sortable: true,
+            cell: (row: StaffClockingResult) => (
+                <>
+                    {
+                        row.clock_out_with_reason ? <Button onClick={() => { showReasonModel(true), setClockOutReason(row.clock_out_reason) }} variant='outline-success'>View Reason</Button> : <Badge bg="danger">No</Badge>
+                    }
+                </>
+            )
         },
+
         {
             name: "Clock Out".toLocaleUpperCase(),
             selector: (row: StaffClockingResult) => formatTime(row.clock_out),
@@ -97,11 +98,45 @@ export default function StaffClockingOutDataTable({
         },
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
 
+    interface StaffDetailsComponentIF {
+        reason: string;
+        showStaffReason: boolean;
+        setStaffReason: React.Dispatch<React.SetStateAction<boolean>>;
+    }
+
+    const StaffClockOutReasonComponent: React.FC<StaffDetailsComponentIF> = ({
+        reason,
+        setStaffReason,
+        showStaffReason,
+    }) => {
+        return (
+            <Modal
+                show={showStaffReason}
+                onHide={() => setStaffReason(false)}
+                size="lg"
+                centered
+                backdrop="static"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Reason for clocking out.
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container className='p-5'>
+                        {reason}
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setStaffReason(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
     };
-
+    const data = safeData.results;
     const tableData = {
         columns,
         data,
@@ -119,15 +154,13 @@ export default function StaffClockingOutDataTable({
                     paginationDefaultPage={clockingData?.page ?? 1}
                     paginationPerPage={clockingData?.limit ?? 1}
                     onChangePage={(page, total) => updatePage(page)}
-                    onChangeRowsPerPage={(limit, currentPage) => {
-                        updateLimit(limit);
-                    }}
+                    onChangeRowsPerPage={(limit, currentPage) => updateLimit(limit)}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clock-out records found
                         </div>
                     }
-
+                    persistTableHead
                     customStyles={{
                         rows: {
                             style: {
@@ -150,6 +183,8 @@ export default function StaffClockingOutDataTable({
                     }}
                 />
             </DataTableExtensions>
+            {/* model for showing staff clocking reason */}
+            <StaffClockOutReasonComponent reason={clockOutReason} showStaffReason={reasonModel} setStaffReason={showReasonModel} />
         </div>
     );
 }

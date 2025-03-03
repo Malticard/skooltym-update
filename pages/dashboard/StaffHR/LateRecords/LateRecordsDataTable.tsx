@@ -5,32 +5,29 @@ import dynamic from "next/dynamic";
 import { IconEdit, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import { StaffLatePaginatedResponse, StaffLateResult } from '@/interfaces/StaffLateInterface';
 import LiveImageComponent from '../../components/LiveImageComponent';
+import moment from 'moment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
 });
 interface LateRecordsIR {
-    pendingData: StaffLatePaginatedResponse | undefined;
+    pendingData: StaffLatePaginatedResponse;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }
 const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage, updateLimit }) => {
     // Initialize states with safe default values
-    const [data, setData] = React.useState<StaffLateResult[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+    // const [data, setData] = React.useState<StaffLateResult[]>(pendingData?.results ?? []);
 
-    // Update state when pendingData changes
-    React.useEffect(() => {
-        if (pendingData) {
-            setData(pendingData.results || []);
-            setCurrentPage(pendingData.page || 1);
-            setPageSize(pendingData.limit || 10);
-            setTotalDocuments(pendingData.total || 0);
+    function formatTime(time: string) {
+        if (!time) return 'N/A';
+        try {
+            return moment(time).format('ll - hh:mm A').toUpperCase();
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
         }
-    }, [pendingData]);
-
+    }
     const columns = [
         {
             name: "Staff Picture".toLocaleUpperCase(),
@@ -47,7 +44,7 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
         },
         {
             name: "Time".toLocaleUpperCase(),
-            selector: (row: StaffLateResult) => `${row.time_in}`,
+            selector: (row: StaffLateResult) => formatTime(row.time_in),
             sortable: true
         },
         {
@@ -77,12 +74,7 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
         //     // allowOverflow: true,
         // }
     ];
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
-
+    const data = pendingData?.results;
     const tableData = {
         columns,
         data,
@@ -99,9 +91,10 @@ const LateRecordsDataTable: React.FC<LateRecordsIR> = ({ pendingData, updatePage
                 paginationDefaultPage={pendingData?.limit}
                 paginationPerPage={pendingData?.pages ?? 1}
                 onChangePage={(page, total) => updatePage(page)}
-                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => updateLimit(currentRowsPerPage)}
+                onChangeRowsPerPage={(currentRowsPerPage, cp) => updateLimit(currentRowsPerPage)}
                 responsive
                 striped
+                persistTableHead
             />
         </DataTableExtensions>
     );

@@ -5,17 +5,25 @@ import GuardianDataTable from './GuardiansDataTable';
 import { fetchGuardians, fetchGuardianStudents, fetchStudentsNoPaginate } from '@/utils/data_fetch';
 import useSWR from 'swr';
 import { exportGuardianRecords } from '@/utils/reports';
+import LoaderComponent from '@/pages/components/LoaderComponent';
 
 
 const Guardian = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
-    const { data: guardians, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit));
+    const { data: guardians, isValidating, isLoading, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit), {
+        refreshInterval: 0, // Disable polling as we'll use WebSocket
+        revalidateOnFocus: true, // Still revalidate on focus
+        dedupingInterval: 2000, // Prevent duplicate requests
+    });
     const { data: students } = useSWR("students", async () => await fetchStudentsNoPaginate());
     // fetch guardian students
     const { data: guardianStudents } = useSWR("guardianStudents", async () => await fetchGuardianStudents());
     const [addModalShow, setAddModalShow] = React.useState(false);
-
+    if (isLoading) {
+        // return <LoaderComponent />
+        return
+    }
     // methods for change of page
     const onChangePage = async (page: number) => {
         setPage(page)
@@ -23,8 +31,9 @@ const Guardian = () => {
         mutateGuardians(result);
     }
     const handleUpdatesSync = async () => {
-        const result = await fetchGuardians(page, limit);
+        const result = await fetchGuardians(page, limit,);
         mutateGuardians(result);
+        console.info("Updated data");
     }
     // handle limit
     const onChangeLimit = async (newLimit: number) => {
@@ -32,6 +41,7 @@ const Guardian = () => {
         const result = await fetchGuardians(page, limit);
         mutateGuardians(result);
     }
+
     return (
         <div className='my-2'>
             <Seo title="Guardians" />

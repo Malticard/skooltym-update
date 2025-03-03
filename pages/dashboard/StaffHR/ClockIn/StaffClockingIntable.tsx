@@ -8,8 +8,6 @@ import { Badge, Form } from 'react-bootstrap';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
-
-
 interface StaffClockingInDataTableProps {
     clockingData: StaffClockingResponse;
     updatePage: (value: number) => void;
@@ -33,19 +31,15 @@ export default function StaffClockingInDataTable({
     const safeData = clockingData ?? defaultData;
 
     const [data, setData] = React.useState<StaffClockingResult[]>(safeData.results);
-    const [currentPage, setCurrentPage] = React.useState(safeData.page);
-    const [pageSize] = React.useState(safeData.limit);
-    const [totalDocuments, setTotalDocuments] = React.useState(safeData.total);
-
-    // Update state when clockingData changes
-    // React.useEffect(() => {
-    //     if (clockingData) {
-    //         setData(clockingData.results);
-    //         setCurrentPage(clockingData.page);
-    //         setTotalDocuments(clockingData.total);
-    //     }
-    // }, [clockingData]);
-
+    function formatTime(time: string) {
+        if (!time) return 'N/A';
+        try {
+            return moment(time).format('ll - hh:mm A').toUpperCase();
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
+        }
+    }
     const columns = [
         {
             name: "Staff ID".toLocaleUpperCase(),
@@ -80,15 +74,7 @@ export default function StaffClockingInDataTable({
         },
         {
             name: "Clock In".toLocaleUpperCase(),
-            selector: (row: StaffClockingResult) => {
-                if (!row.clock_in) return 'N/A';
-                try {
-                    return moment(row.clock_in).format("ll hh:mm a").toLocaleUpperCase();
-                } catch (error) {
-                    console.error('Error formatting date:', error);
-                    return 'Invalid Date';
-                }
-            },
+            selector: (row: StaffClockingResult) => formatTime(row.clock_in),
             sortable: true,
         },
     ];
@@ -121,16 +107,17 @@ export default function StaffClockingInDataTable({
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
-                    data={data}
+                    data={safeData.results}
                     pagination
                     paginationServer
                     fixedHeader
                     fixedHeaderScrollHeight="400px"
-                    paginationTotalRows={clockingData.total}
-                    paginationDefaultPage={clockingData.page}
-                    paginationPerPage={clockingData.limit}
+                    paginationTotalRows={safeData.total}
+                    paginationDefaultPage={safeData.page}
+                    paginationPerPage={safeData.limit}
                     onChangePage={(page, total) => updatePage(page)}
                     keyField='id'
+                    persistTableHead
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
                             No clocking records found

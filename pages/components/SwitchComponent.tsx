@@ -26,11 +26,11 @@ const SwitchComponent = ({ defaultChecked = false, onChange }: { defaultChecked:
           transition-colors duration-300 ease-in-out
           peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300
         `}>
-                    {/* <div className={`
+                    <div className={`
             w-5 h-5 rounded-full
             // ${isChecked ? 'bg-white ml-1' : 'bg-[#787878] ml-1'}
             transition-all duration-300 ease-in-out
-          `}></div> */}
+          `}></div>
                     <div className={`
             absolute w-6 h-6 rounded-full
             ${isChecked

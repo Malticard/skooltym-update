@@ -187,6 +187,7 @@ export default function StudentsInStreamTable({
                         updateLimit(currentRowsPerPage);
                     }}
                     progressPending={deleting}
+                    persistTableHead
                 />
             </DataTableExtensions>
 

@@ -6,6 +6,7 @@ import { Badge, Button } from 'react-bootstrap';
 import { IconEye, IconTrash } from '@/public/assets/icon-fonts/tabler-icons/icons-react';
 import LiveImageComponent from '../../components/LiveImageComponent';
 import StaffModel from './StaffModel';
+import moment from 'moment';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
@@ -18,21 +19,19 @@ interface OvertimeIR {
 const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage, updateLimit }) => {
     // Initialize states with safe default values
     const [data, setData] = React.useState<StaffOvertimeResult[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+
     // show hide modal
     const [show, setShow] = React.useState(false);
     const [selected, setSelected] = React.useState<StaffOvertimeResult | null>(null);
-    // Update state when pendingData changes
-    React.useEffect(() => {
-        if (pendingData) {
-            setData(pendingData.results || []);
-            setCurrentPage(pendingData.page || 1);
-            setPageSize(pendingData.limit || 10);
-            setTotalDocuments(pendingData.total || 0);
+    function formatTime(time: string) {
+        if (!time) return 'N/A';
+        try {
+            return moment(time).format('ll - hh:mm A').toUpperCase();
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
         }
-    }, [pendingData]);
+    }
 
     const columns = [
         {
@@ -50,7 +49,7 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
         },
         {
             name: "Actual Time".toLocaleUpperCase(),
-            selector: (row: StaffOvertimeResult) => `${row.actual_time}`,
+            selector: (row: StaffOvertimeResult) => formatTime(row.actual_time),
             sortable: true
         },
         {
@@ -88,10 +87,6 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
         // }
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
 
     const tableData = {
         columns,
@@ -109,10 +104,11 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
                     paginationTotalRows={pendingData?.total ?? 0}
                     paginationDefaultPage={pendingData?.page ?? 1}
                     paginationPerPage={pendingData?.limit ?? 0}
-                    onChangePage={(page, tt) => handlePageChange(page)}
-                    onChangeRowsPerPage={(currentRowsPerPage, tt) => updateLimit(currentRowsPerPage)}
+                    onChangePage={(page, tt) => updatePage(page)}
+                    onChangeRowsPerPage={(limit, tt) => updateLimit(limit)}
                     responsive
                     striped
+                    persistTableHead
                 />
             </DataTableExtensions>
             <StaffModel close={setShow} staff={selected} show={show} size={'lg'} />
@@ -121,3 +117,5 @@ const StaffOvertimeDataTable: React.FC<OvertimeIR> = ({ pendingData, updatePage,
 }
 
 export default StaffOvertimeDataTable;
+
+

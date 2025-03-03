@@ -207,6 +207,7 @@ export default function StudentsDataTable({
                     onChangePage={(page, total) => handlePageChange(page)}
                     onChangeRowsPerPage={(page, rows) => updateLimit(page)}
                     progressPending={deleting}
+                    persistTableHead
                 />
             </DataTableExtensions>
 

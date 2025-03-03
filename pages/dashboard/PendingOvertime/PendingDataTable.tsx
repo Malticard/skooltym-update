@@ -93,6 +93,7 @@ export default function PendingDataTable({
                     onChangeRowsPerPage={(lm, page) => updateLimit(lm)}
                     responsive
                     striped
+                    persistTableHead
                     fixedHeader
                 />
 

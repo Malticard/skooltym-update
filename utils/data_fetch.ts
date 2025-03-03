@@ -163,7 +163,6 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const activity = await dashboardStats();
     let res = JSON.parse(localStorage.getItem("skooltym_user") as string);
     const settings = await fetchSettings();
-    console.log(settings);
     // clocking data
     const staffClockIn = activity.staffClockIn;
     const staffClockOut = activity.staffClockOut;

@@ -112,6 +112,7 @@ export default function DropOffDataTable({
                     onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
                     responsive
                     striped
+                    persistTableHead
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">

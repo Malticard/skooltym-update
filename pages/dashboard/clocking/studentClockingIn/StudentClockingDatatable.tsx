@@ -33,24 +33,10 @@ export default function StudentClockingDataTable({
     // Use nullish coalescing to handle undefined clockingData
     const safeData = clockingData ?? defaultData;
 
-    const [data, setData] = React.useState<StudentClockingResult[]>(safeData.results);
-    const [currentPage, setCurrentPage] = React.useState(safeData.page);
-    const [pageSize] = React.useState(safeData.limit);
-    const [totalDocuments, setTotalDocuments] = React.useState(safeData.total);
-
-    // Update state when clockingData changes
-    React.useEffect(() => {
-        if (clockingData) {
-            setData(clockingData.results ?? []);
-            setCurrentPage(clockingData.page ?? 1);
-            setTotalDocuments(clockingData.total ?? 0);
-        }
-    }, [clockingData]);
-
     const formatTime = (time: string | Date | null | undefined): string => {
         if (!time) return 'N/A';
         try {
-            return moment(time).format('Do MMM YYYY - HH:mm A');
+            return moment(time).format('ll - hh:mm A').toUpperCase();
         } catch (error) {
             console.error('Error formatting time:', error);
             return 'Invalid Time';
@@ -91,6 +77,7 @@ export default function StudentClockingDataTable({
             // )
         },
     ];
+    const data = safeData.results;
 
     const tableData = {
         columns,
@@ -105,13 +92,14 @@ export default function StudentClockingDataTable({
                     data={data}
                     pagination
                     fixedHeader
+                    persistTableHead
                     paginationServer
-                    paginationTotalRows={totalDocuments}
-                    paginationDefaultPage={currentPage}
-                    paginationPerPage={pageSize}
+                    paginationTotalRows={safeData.total}
+                    paginationDefaultPage={safeData.page}
+                    paginationPerPage={safeData.pages}
                     onChangePage={(x, total) => {
                         updatePage(x);
-                        setCurrentPage(x);
+                        // setCurrentPage(x);
                     }}
                     onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
                         updateLimit(currentRowsPerPage)

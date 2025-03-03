@@ -161,6 +161,7 @@ export default function ClassDataTable({
                         selectAllRowsItem: true,
                         selectAllRowsItemText: 'All',
                     }}
+                    persistTableHead
                     noDataComponent={<div className="p-4">No classes found</div>}
                 />
             </DataTableExtensions>

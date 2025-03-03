@@ -19,19 +19,15 @@ export default function StudentClockingDataTable({
     updatePage,
     updateLimit,
 }: StudentClockingDataTableProps) {
-    const [data, setData] = React.useState<any[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
-
-    React.useEffect(() => {
-        if (clockingData) {
-            setData(clockingData.results || []);
-            setCurrentPage(clockingData.page || 1);
-            setPageSize(clockingData.limit || 10);
-            setTotalDocuments(clockingData.total || 0);
+    const formatTime = (time: string | Date | null | undefined): string => {
+        if (!time) return 'N/A';
+        try {
+            return moment(time).format('ll - hh:mm A').toUpperCase();
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
         }
-    }, [clockingData]);
+    };
 
     const columns = [
         {
@@ -50,16 +46,11 @@ export default function StudentClockingDataTable({
         },
         {
             name: "Clock Out".toLocaleUpperCase(),
-            selector: (row: StudentClockingResult) => moment(row.clock_out).format('Do MMM YYYY -  hh:mm A') || 'N/A',
+            selector: (row: StudentClockingResult) => formatTime(row.clock_out),
             sortable: true
         },
     ];
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
-
+    const data = clockingData?.results ?? [];
     const tableData = {
         columns,
         data,
@@ -73,13 +64,11 @@ export default function StudentClockingDataTable({
                 pagination
                 fixedHeader
                 paginationServer
-                paginationTotalRows={totalDocuments}
-                paginationDefaultPage={currentPage}
-                paginationPerPage={pageSize}
-
-                onChangePage={(x, total) => {
-                    handlePageChange(x);
-                }}
+                paginationTotalRows={clockingData?.total ?? 0}
+                paginationDefaultPage={clockingData.page}
+                paginationPerPage={clockingData.pages}
+                persistTableHead
+                onChangePage={(x, total) => updatePage(x)}
                 onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
                     updateLimit(currentRowsPerPage)
                 }}
