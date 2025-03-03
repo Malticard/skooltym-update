@@ -65,8 +65,8 @@ export default function StudentClockingDataTable({
                 fixedHeader
                 paginationServer
                 paginationTotalRows={clockingData?.total ?? 0}
-                paginationDefaultPage={clockingData.page}
-                paginationPerPage={clockingData.pages}
+                paginationDefaultPage={clockingData?.page ?? 1}
+                paginationPerPage={clockingData?.pages ?? 1}
                 persistTableHead
                 onChangePage={(x, total) => updatePage(x)}
                 onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
