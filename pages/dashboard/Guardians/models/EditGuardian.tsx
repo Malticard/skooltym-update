@@ -125,7 +125,7 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
                             {/* student profile pic */}
                             <Row className='my-0'>
                                 <Col className='text-center my-auto'>
-                                    <span>Student Profile</span>
+                                    <span>Guardian Profile</span>
                                 </Col>
                                 <Col className='mx-10'>
                                     <img className='rounded-full w-20 h-20' src={selectedImage == null ? currentGuardian.guardian_profile_pic : selectedImage} alt="student profile" />

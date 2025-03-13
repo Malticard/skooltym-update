@@ -69,9 +69,7 @@ export default function StudentClockingDataTable({
                 paginationPerPage={clockingData?.pages ?? 1}
                 persistTableHead
                 onChangePage={(x, total) => updatePage(x)}
-                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-                    updateLimit(currentRowsPerPage)
-                }}
+                onChangeRowsPerPage={(currentRowsPerPage, cP) => updateLimit(currentRowsPerPage)}
                 noDataComponent={
                     <div className="p-4 text-center text-gray-500">
                         No clocking records found

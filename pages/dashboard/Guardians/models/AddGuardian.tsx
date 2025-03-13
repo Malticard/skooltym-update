@@ -108,10 +108,10 @@ const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { 
                         {/* student profile pic */}
                         <Row className='my-0'>
                             <Col className='text-center my-auto'>
-                                <span>Student Profile</span>
+                                <span>Guardian Profile</span>
                             </Col>
                             <Col className='mx-20'>
-                                <img className='rounded-full w-20 h-20' src={imageFile == null ? "https://via.placeholder.com/500" : URL.createObjectURL(imageFile as Blob)} alt="student profile" />
+                                <img className='rounded-full w-20 h-20' src={imageFile == null ? "https://backend.skooltym.com/uploads/default.png" : URL.createObjectURL(imageFile as Blob)} alt="student profile" />
                             </Col>
                             <Col className='my-auto'>
                                 <input type="file" accept='image/*' id="photo" className='hidden' onChange={(e) => {
