@@ -44,7 +44,7 @@ const ClearedOvertime = () => {
                     // onDownload={() => exportClearedRecords()}
                     active_item="Cleared Overtime"
                 />
-                <DateFilterComponent enableActions exportData={() => exportClearedRecords()} handleFilter={handleDateChange} />
+                <DateFilterComponent enableActions exportData={() => exportClearedRecords(dataChange.startDate, dataChange.endDate)} handleFilter={handleDateChange} />
             </div>
 
 

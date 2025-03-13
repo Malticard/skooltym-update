@@ -41,7 +41,7 @@ const Payments = () => {
             <PageHeader title={`Payments (${payments?.totalDocuments ?? 0})`} item="Skooltym" active_item="Payments" />
             <DateFilterComponent
                 enableActions
-                exportData={() => exportPaymentRecords()}
+                exportData={() => exportPaymentRecords(dateChange.startDate, dateChange.endDate)}
                 handleFilter={handleDateChange} />
             {payments && (
                 <PaymentDataTable

@@ -47,7 +47,7 @@ const PickUps = () => {
                 <PageHeader title={`PickUps (${pickUp?.totalDocuments ?? 0})`} item="Skooltym" active_item="PickUps" />
                 <DateFilterComponent
                     enableActions
-                    exportData={(data) => exportPickUpRecords(data.startDate, data.endDate)}
+                    exportData={(data) => exportPickUpRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
             {pickUp && (

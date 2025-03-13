@@ -53,7 +53,7 @@ const StudentClockingPage = () => {
                     active_item="Student Clocking"
                 />
                 <DateFilterComponent
-                    exportData={() => exportStudentClockOutRecords()}
+                    exportData={() => exportStudentClockOutRecords(dateChange.startDate, dateChange.endDate)}
                     enableActions
                     handleFilter={handleDateChange}
                 />

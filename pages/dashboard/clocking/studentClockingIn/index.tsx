@@ -54,7 +54,7 @@ const StudentClockingPage = () => {
 
                 />
                 <DateFilterComponent enableActions
-                    exportData={() => exportStudentClockInRecords()}
+                    exportData={() => exportStudentClockInRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
             {clockingData && (<StudentClockingDataTable

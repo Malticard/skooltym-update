@@ -61,7 +61,7 @@ const StaffClockingPage = () => {
                 </PageHeader>
                 <DateFilterComponent
                     enableActions
-                    exportData={() => exportStaffClockInRecords()}
+                    exportData={() => exportStaffClockInRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange}
                 />
             </div>

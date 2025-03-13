@@ -45,7 +45,7 @@ const LateRecordsPage = () => {
                     active_item='Late Records' />
                 <DateFilterComponent
                     enableActions
-                    exportData={() => exportStaffLateRecords()}
+                    exportData={() => exportStaffLateRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
 

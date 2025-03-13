@@ -32,7 +32,8 @@ const DropOffs = () => {
     // Handle date change
     const handleDateChange = async (data: DateFilterIF) => {
         setDateChange(data)
-        const result = await fetchDropOffs(page, rowsPerPage, data.startDate, data.endDate);
+        console.log(dateChange)
+        const result = await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate);
         mutate(result);
     }
 
@@ -43,14 +44,13 @@ const DropOffs = () => {
             <Seo title="All Time Drop Offs" />
             <div className='flex sm:flex-row flex-col w-4/5 justify-between'>
                 <PageHeader title={`All Time Drop Offs (${dropOffs?.totalDocuments ?? 0})`} item="Skooltym" active_item="Drop Offs" />
-                <DateFilterComponent enableActions exportData={(data) => exportDropOffRecords(data.startDate, data.endDate)} handleFilter={handleDateChange} />
+                <DateFilterComponent enableActions exportData={(data) => exportDropOffRecords(dateChange.startDate, dateChange.endDate)} handleFilter={handleDateChange} />
             </div>
             {dropOffs && (
                 <DropOffDataTable
                     dropOffData={dropOffs}
                     updateLimit={onChangeRowsPerPage}
                     updatePage={onChangePage}
-                // updateRows={onChangeRowsPerPage}
                 />
             )}
         </div>

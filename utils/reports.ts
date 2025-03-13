@@ -16,6 +16,7 @@ export function exportGuardianRecords() {
 }
 // drop offs
 export function exportDropOffRecords(startDate = "", endDate = "") {
+    console.log("exportDropOffRecords", startDate, endDate);
     const url = AppUrls.exportDropOffRecords;
     exportTor("dropOffs", url, startDate, endDate);
 }
