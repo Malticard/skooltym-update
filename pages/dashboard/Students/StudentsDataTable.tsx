@@ -140,7 +140,7 @@ export default function StudentsDataTable({
     const handleSave = (dat: StudentResult) => {
         setAddModalShow(false);
         setData([dat, ...data]);
-        toast.success("Student data updated successfully")
+        // toast.success("Student data updated successfully")
         handleUpdates();
     };
 
@@ -148,6 +148,7 @@ export default function StudentsDataTable({
         setEditModalShow(false);
         toast.success("Student data updated successfully");
         handleUpdates();
+        window.location.reload();
     };
 
     const handleSaveDelete = async () => {

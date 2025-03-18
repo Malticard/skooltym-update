@@ -247,10 +247,10 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
               {/* mobile view image */}
               {localData && (
                 <>
-                  <div className="p-2 ">
+                  {/* <div className="p-2 ">
                     <span className="sm:d-block sm:block">{localData.fname} {localData.lname}</span> <br />
                     <small className="sm:d-block">{localData.role}</small>
-                  </div>
+                  </div> */}
                   <Dropdown>
                     <Dropdown.Toggle variant="link" id="dropdown-basic">
                       {/* <img src={localData.profile_pic} className="rounded" alt={localData.schoolName} width={40} />
