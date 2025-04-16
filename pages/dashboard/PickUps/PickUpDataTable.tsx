@@ -39,7 +39,7 @@ export default function PickUpDataTable({
     updatePage,
     updateLimit
 }: PickUpDataTableProps) {
-    const [data, setData] = React.useState<PickupRecord[]>([]);
+    const [data, setData] = React.useState<PickupRecord[]>(pickUpData?.results);
 
 
     const columns = [

@@ -17,7 +17,7 @@ const PickUps = () => {
     });
 
     // Use SWR for data fetching
-    const { data: pickUp, error, isValidating, mutate } = useSWR([page, limit, dateChange.endDate, dateChange.startDate], async () => await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate));
+    const { data: pickUp, error, isValidating, mutate } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], async () => await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate));
 
     // Handle page change
     const onChangePage = async (newPage: number) => {
@@ -31,10 +31,11 @@ const PickUps = () => {
         const result = await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate);
         mutate(result);
     };
+    console.log(pickUp);
     // handle date change
     const handleDateChange = async (data: DateFilterIF) => {
         setDateChange(data)
-        const result = await fetchPickUps(page, limit, data.startDate, data.endDate);
+        const result = await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate);
         mutate(result);
     }
 
@@ -50,13 +51,16 @@ const PickUps = () => {
                     exportData={(data) => exportPickUpRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
-            {pickUp && (
-                <PickUpDataTable
-                    pickUpData={pickUp}
-                    updatePage={onChangePage}
-                    updateLimit={onChangeLimit}
-                />
-            )}
+            {isValidating ? (<LoaderComponent />) : (<>
+                {pickUp && (
+                    <PickUpDataTable
+                        pickUpData={pickUp}
+                        updatePage={onChangePage}
+                        updateLimit={onChangeLimit}
+                    />
+                )}
+            </>)}
+
         </div>
     );
 };

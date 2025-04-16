@@ -130,6 +130,7 @@ export async function fetchPickUps(page = 1, limit = 10, startDate = "", endDate
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
+        console.log(response.data);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
