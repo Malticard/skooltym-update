@@ -170,12 +170,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
     const studentClockIn = activity.studentClockIn;
     const studentClockOut = activity.studentClockOut;
     const dashboardData: DashboardItem[] = [
-        {
-            label: "DROP OFFS",
-            value: activity.dropOffs,
-            icon: "assets/icons/004-playtime.svg",
-            page: "/dashboard/DropOffs",
-        },
+
         {
             label: "PICK UPS",
             value: activity.pickUps,
@@ -212,6 +207,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
         },
 
     ];
+
     const newDashData = settings.clock_in_clock_out == true ? [...dashboardData,
     {
         label: "STUDENT CLOCK IN",
@@ -226,6 +222,14 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
         page: "/dashboard/clocking/studentClockingOut",
 
     }] : [...dashboardData]
+
+    const modified = settings.enable_drop_offs == true ?
+        [{
+            label: "DROP OFFS",
+            value: activity.dropOffs,
+            icon: "assets/icons/004-playtime.svg",
+            page: "/dashboard/DropOffs",
+        }, ...newDashData] : [...newDashData];
     const financeData: DashboardItem[] = [
         {
             label: "CLEARED OVERTIME",
@@ -249,7 +253,7 @@ export async function fetchDashboardMetaData(): Promise<DashboardItem[]> {
         }
     ];
 
-    return res.role === 'Admin' ? newDashData : financeData;
+    return res.role === 'Admin' ? modified : financeData;
 }
 
 // function to process images

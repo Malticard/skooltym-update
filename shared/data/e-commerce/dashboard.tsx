@@ -6,13 +6,14 @@ import { fetchDashBoardClasses, fetchDashboardMetaData } from '@/utils/data_fetc
 import { Skeleton } from '@mui/material';
 import { StaffLogin } from '@/interfaces/StaffLogin';
 import useSWR from 'swr';
+import AppUrls from '@/utils/apis';
 
 
 const Dashboardecommerce = () => {
 
   const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
-  const { data, isLoading: dashDataLoading } = useSWR("DashboardData", async () => await fetchDashboardMetaData())
-  const { data: classData, isLoading: classLoading } = useSWR("ClassData", async () => await fetchDashBoardClasses());
+  const { data: dashData, isLoading: dashDataLoading } = useSWR(AppUrls.dashboardStats + user.school, async () => await fetchDashboardMetaData())
+  const { data: classData, isLoading: classLoading } = useSWR(AppUrls.dashboard + user.school, async () => await fetchDashBoardClasses());
   return (
     <div>
       <Row className="row-sm">
@@ -28,7 +29,7 @@ const Dashboardecommerce = () => {
               />
             </Col>
 
-          )) : data && data.map((item, index) => (<DashCard key={index} label={item?.label} value={item.value} url={item.page} />))
+          )) : dashData && dashData.map((item, index) => (<DashCard key={index} label={item?.label} value={item.value} url={item.page} />))
         }
 
       </Row>
