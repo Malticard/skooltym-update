@@ -54,7 +54,7 @@ export async function fetchSettings(): Promise<SettingsModel> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     // console.log("user login data", data);
     const response = await axios.get(`${AppUrls.settings}${data.school}`);
-    console.log(response.data)
+    localStorage.setItem('skooltym_settings', JSON.stringify(response.data))
     return (response.data);
 }
 export async function fetchStaffSettings(): Promise<IStaffSettings> {

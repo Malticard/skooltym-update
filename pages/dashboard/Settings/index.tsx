@@ -6,6 +6,7 @@ import { fetchSettings } from '@/utils/data_fetch';
 import LoaderComponent from '@/pages/components/LoaderComponent';
 import useSWR from 'swr';
 import Snackbar from '../components/SnackBar';
+import { toast } from 'react-toastify';
 // import { Snackbar } from '@mui/material';
 
 const Settings = () => {
@@ -21,8 +22,9 @@ const Settings = () => {
     });
     function update() {
         mutate();
-        setIsSnackbarVisible(true);
-        setTimeout(() => setIsSnackbarVisible(false), 3000);
+        // setIsSnackbarVisible(true);
+        toast.success("Settings updated successfully...")
+        setTimeout(() => window.location.reload(), 2000);
     }
     // Handle loading and error states
     // if (isValidating) return <LoaderComponent />;
@@ -40,11 +42,11 @@ const Settings = () => {
                 onClose={() => setIsSnackbarVisible(false)}
                 message="Settings updated successfully"
             /> */}
-            <Snackbar
+            {/* <Snackbar
                 message="Settings saved successfully!"
                 isVisible={isSnackbarVisible}
                 onClose={() => setIsSnackbarVisible(false)}
-            />
+            /> */}
         </>
     );
 };

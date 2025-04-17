@@ -1,3 +1,4 @@
+import { SettingsModel } from "@/interfaces/SettingsModel";
 import { fetchSettings } from "@/utils/data_fetch";
 
 export interface MenuItem {
@@ -190,33 +191,36 @@ const sidebarLinks: Array<MenuItem | NestedMenuItem> = [
   }
 ];
 
-let MENUITEMS: (MenuItem | NestedMenuItem)[] = sidebarLinks;
+// Initialize MENUITEMS with the default sidebar links
+let MENUITEMS: (MenuItem | NestedMenuItem)[] = [...sidebarLinks];
 
-// fetchSettings().then((settings) => {
-//   console.log("settings loaded");
-//   if (settings.clock_in_clock_out) {
-//     MENUITEMS = sidebarLinks.splice(2, 0, {
-//       menutitle: "STUDENT CLOCKING",
-//       Items: [
-//         {
-//           path: "/dashboard/clocking/studentClockingIn",
-//           icon: "ti-timer",
-//           type: "link",
-//           active: false,
-//           selected: false,
-//           title: "Clock In",
-//         }, {
-//           path: "/dashboard/clocking/studentClockingOut",
-//           icon: "ti-timer",
-//           type: "link",
-//           active: false,
-//           selected: false,
-//           title: "Clock Out",
-//         }
-//       ]
-//     },)
-//   }
-// });
+// Check for settings synchronously if available, otherwise use default
+try {
+  if (typeof window !== 'undefined') {
+    const settings = localStorage.getItem("skooltym_settings");
+    if (settings) {
+      const parsedSettings = JSON.parse(settings) as SettingsModel;
+
+      // Handle student clocking menu
+      if (parsedSettings.clock_in_clock_out == false) {
+        // Remove student clocking menu if it exists
+        MENUITEMS = MENUITEMS.filter(item => item.menutitle !== "STUDENT CLOCKING");
+      }
+
+      // Handle drop offs menu item
+      if (parsedSettings.enable_drop_offs == false) {
+        // Find the monitoring section
+        const monitoringSection = MENUITEMS.find(item => item.menutitle === "MONITORING SECTION");
+        if (monitoringSection && monitoringSection.Items) {
+          // Remove drop offs from monitoring section
+          monitoringSection.Items = monitoringSection.Items.filter(item => item.path !== "/dashboard/DropOffs");
+        }
+      }
+    }
+  }
+} catch (error) {
+  console.error("Error loading settings:", error);
+}
 export { MENUITEMS };
 
 
