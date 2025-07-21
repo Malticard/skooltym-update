@@ -35,9 +35,12 @@ const EditStudent = ({ editModalShow, classes, studentData, setStudentData, setE
     ]
     // streams
     React.useEffect(() => {
-        classStreams(studentData?.class_name).then((res) => {
-            setStudentClassStreams(res);
-        });
+        if (studentData) {
+            classStreams(studentData?.class_name).then((res) => {
+                setStudentClassStreams(res);
+            });
+        }
+
     }, [])
 
     // pickup subtitle
