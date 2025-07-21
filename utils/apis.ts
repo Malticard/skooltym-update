@@ -1,13 +1,13 @@
 class AppUrls {
-    static devURL: string = "https://backend.skooltym.com/";
-    static imageUrl: string = "assets/images/";
-    static iconUrl: string = "assets/icons/";
+    static devURL: string = "http://127.0.0.1:5050/";//"https://backend.skooltym.com/";
+    static imageUrl: string = "asss/icons/";
     static liveImages: string = "https://backend.skooltym.com/image/images/";
 
     // get students in a particular stream
     static studentsInStream: string = `${AppUrls.devURL}stream-students`;
     // class streams
     static classStreams: string = `${AppUrls.devURL}dashboard/class-streams/`
+
     // post urls
     static login: string = `${AppUrls.devURL}post/staff-login`;
     static addClass: string = `${AppUrls.devURL}post/class/create`;
@@ -39,6 +39,8 @@ class AppUrls {
     static getClasses: string = `${AppUrls.devURL}get/class/`;
     static getStreams: string = `${AppUrls.devURL}get/stream/`;
     static getPayment: string = `${AppUrls.devURL}get/payments/`;
+    // for students
+    static studentClassStreams = `${AppUrls.devURL}get/class/class-streams/`
 
     // fetch specific
     static specificOvertime: string = `${AppUrls.devURL}specific/overtime/`;

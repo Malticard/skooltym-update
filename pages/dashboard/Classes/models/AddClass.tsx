@@ -6,7 +6,6 @@ import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { Stream } from '@/interfaces/StreamModel';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import FormElement from '../../Staff/models/FormElement';
-import { useRouter } from 'next/router';
 
 const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: SchoolClass) => void }) => {
 
@@ -18,6 +17,7 @@ const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { stre
     if (streams) {
         streams.map((st) => streamsOptions.push({ name: st.stream_name, value: st._id }));
     }
+
     // pickup subtitle
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {

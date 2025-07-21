@@ -3,7 +3,7 @@ import PageHeader from '@/shared/layout-components/page-header/page-header';
 import "react-data-table-component-extensions/dist/index.css";
 import Seo from '@/shared/layout-components/seo/seo';
 import useSWR from 'swr';
-import { fetchClasses, fetchStream, fetchStudents } from '@/utils/data_fetch';
+import { fetchClasses, fetchStudents } from '@/utils/data_fetch';
 import StudentsDataTable from './StudentsDataTable';
 import { exportStudents } from '@/utils/reports';
 
@@ -16,7 +16,6 @@ const Orders = () => {
     // Custom fetcher with dynamic arguments (e.g., page)
     const { data: students, error, mutate } = useSWR("fetchStudents", () => fetchStudents(page, limit));
     const { data: classes } = useSWR("fetchClasses", async () => await fetchClasses(1, 100));
-    const { data: streams } = useSWR("fetchStream", async () => await fetchStream(1, 100));
     // Handle pagination changes
     const onChangePage = (newPage: number) => {
         setPage(newPage); // Update the page state, SWR will re-fetch the data for the new page
@@ -52,10 +51,8 @@ const Orders = () => {
             {/* Data Table */}
             {students && (
                 <StudentsDataTable
-                    streams={streams?.results ?? []}
                     addModalShow={addModalShow}
                     setAddModalShow={setAddModalShow}
-                    loadingClasses={false}
                     classes={classes?.results ?? []}
                     updatePage={onChangePage}
                     updateLimit={onChangeLimit}

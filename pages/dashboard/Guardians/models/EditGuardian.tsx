@@ -78,10 +78,8 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
         }).catch((err) => {
             console.warn(err);
             toast.error("Error while updating Guardian");
-            // setMessage(err.toString());
             setUpdating(false)
         })
-        // console.log(currentStudent);
     }
 
     return (
@@ -92,7 +90,7 @@ const EditGuardian = ({ editModalShow, students, guardianStudent, currentGuardia
                 </Modal.Header>
                 <Modal.Body>
                     {currentGuardian && (
-                        <Form onSubmit={handleEditData}>
+                        <Form encType='multipart/form-data' onSubmit={handleEditData}>
                             {/* {currentStudent._id} */}
                             <FormElement
                                 value={currentGuardian.guardian_fname}

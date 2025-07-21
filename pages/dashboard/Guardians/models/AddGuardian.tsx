@@ -72,7 +72,7 @@ const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { 
             console.warn(err);
             toast.error("Error while posting guardian..")
             setMessage(err.toString());
-        })
+        });
     }
     return (
         <>
@@ -80,7 +80,7 @@ const AddGuardian = ({ addModalShow, students, setAddModalShow, handleSave }: { 
                 <Modal.Header closeButton>
                     <Modal.Title>Add Guardian</Modal.Title>
                 </Modal.Header>
-                <Form onSubmit={handleSubmitData}>
+                <Form encType='multipart/form-data' onSubmit={handleSubmitData}>
                     <Modal.Body>
                         <FormElement
                             value={guardianData.guardian_fname}

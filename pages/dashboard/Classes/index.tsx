@@ -18,7 +18,7 @@ const Classes = () => {
         async () => await fetchClasses(page, limit),
     );
 
-    const { data: streams, error: streamError } = useSWR('streams', () => fetchStream(1, 1000));
+    const { data: streams, error: streamError } = useSWR('streams', async () => await fetchStream(1, 100));
 
     const onChangePage = async (newPage: number) => {
         router.push({ query: { ...router.query, page: newPage } }, undefined, { shallow: true });

@@ -1,14 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
-// import { format } from 'date-fns';
 import AppUrls from './apis';
-// import { useRouter } from 'next/navigation';
 import { SettingsModel } from '@/interfaces/SettingsModel';
 import { DashboardItem } from '@/interfaces/DashboardItem';
 import { OvertimeModel } from '@/interfaces/OvertimeModel';
 import { ClassDataModel, ClassDataModelConvert } from '@/interfaces/ClassDataModel';
 import { StudentModelConvert, StudentsModel } from '@/interfaces/StudentsModel';
 import { ClassPaginatedResult } from '@/interfaces/ClassModel';
-import { PaginatedStreamResult } from '@/interfaces/StreamModel';
+import { PaginatedStreamResult, Stream } from '@/interfaces/StreamModel';
 import { StaffResponse } from '@/interfaces/StaffModel';
 import { Role } from '@/interfaces/RolesModel';
 import { StudentsNotPaginated } from '@/interfaces/StudentsNonPaginated';
@@ -16,7 +14,6 @@ import { GuardianResponse } from '@/interfaces/GuardiansModel';
 import { DropoffRecordsResponse } from '@/interfaces/DropOff';
 import { PickupResponse } from '@/interfaces/pickUp';
 import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
-import { staffClockingIn, staffClockingOut, studentClockingIn, studentClockingOut } from './clocking';
 import { dashboardStats } from './dashboard';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
 import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
@@ -32,16 +29,17 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
         throw new Error(err.response.data.message);
     }
 }
-// export async function assignRole(role: string): Promise<string> {
-//     try {
-//         const response = await axios.get(AppUrls.roles);
-//         const roles = rolesFromJson(response.data);
-//         const result = roles.find(element => element.roleType === role);
-//         return result.id;
-//     } catch (e) {
-//         return Promise.reject("Lost connection to server");
-//     }
-// }
+export async function classStreams(className: string): Promise<any[]> {
+    try {
+        let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+        const response = await axios.get(AppUrls.studentClassStreams + className + '/' + data.school);
+        const result = response.data;
+        return result;
+    } catch (e) {
+        console.log('Fetch error', e);
+        return Promise.reject("Lost connection to server");
+    }
+}
 export async function fetchAndDisplayImage(imageURL: string): Promise<string> {
     return imageURL;
 }

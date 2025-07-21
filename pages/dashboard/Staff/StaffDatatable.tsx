@@ -57,9 +57,9 @@ export default function StaffDataTable({
     };
     const setSData = staff ?? defaultData;
     const [data, setData] = React.useState<Staff[]>(setSData.results);
-    const [currentPage, setCurrentPage] = React.useState(setSData.currentPage);
-    const [pageSize, setPageSize] = React.useState(setSData.pageSize);
-    const [totalDocuments, setTotalDocuments] = React.useState(setSData.totalDocuments);
+    // const [currentPage, setCurrentPage] = React.useState(setSData.currentPage);
+    // const [pageSize, setPageSize] = React.useState(setSData.pageSize);
+    // const [totalDocuments, setTotalDocuments] = React.useState(setSData.totalDocuments);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -89,6 +89,7 @@ export default function StaffDataTable({
     const handleSaveEdit = () => {
         setEditModalShow(false);
         handleUpdates();
+        // window.location.reload();
     };
 
     const handleSaveDelete = async () => {
@@ -108,7 +109,7 @@ export default function StaffDataTable({
     };
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        // setCurrentPage(page);
         updatePage(page);
     };
 

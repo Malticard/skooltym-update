@@ -7,15 +7,17 @@ import SelectComponent, { Option } from './SelectComponent';
 import SwitchTile from './SwitchTile';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
-import { postStudentData } from '@/utils/data_fetch';
+import { classStreams, postStudentData } from '@/utils/data_fetch';
 import LiveImageComponent from '../../components/LiveImageComponent';
 import { toast } from 'react-toastify';
 
-const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: StudentResult) => void }) => {
+const AddStudent = ({ addModalShow, classes, setAddModalShow, handleSave }: { classes: SchoolClass[]; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: StudentResult) => void }) => {
     const options = [] as Option[];
     const [studentData, setStudentData] = React.useState({} as any);
     const [imageFile, setImageFile] = React.useState<File | null>(null);
+    const [studentClassStreams, setStudentClassStreams] = React.useState<any[]>([]);
     const [message, setMessage] = React.useState<string>('');
+
     const [posting, setPosting] = React.useState(false);
     // function to fetch available classes
     if (classes) {
@@ -33,20 +35,14 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
     ]
     // streams
     const streamOptions: Option[] = [];
-    if (streams) {
-        streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
-    }
-    // pickup subtitle
+
+
     // function to handle submission
     const handleSubmitData = (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('')
         setPosting(true);
-        // if (!imageFile) {
-        //     setPosting(false)
-        //     setMessage('Please select an image file');
-        //     return;
-        // }
+
         const formData = new FormData();
         // capturing school
         formData.append('school', JSON.parse(localStorage.getItem('skooltym_user') as string).school);
@@ -140,18 +136,24 @@ const AddStudent = ({ addModalShow, streams, loadingClasses = false, classes, se
                                 student_gender: selected,
                             })
                         }} />
+
                         <SelectComponent options={options} label='Class' onSelect={(selected) => {
+                            // setSelectedClass(selected);
+                            classStreams(selected).then((studentStreams) => {
+                                setStudentClassStreams(studentStreams)
+                            })
                             setStudentData({
                                 ...studentData,
                                 _class: selected
                             })
                         }} />
-                        <SelectComponent options={streamOptions} label='Stream' onSelect={(selected) => {
+
+                        {studentClassStreams.length > 0 && <SelectComponent options={studentClassStreams} label='Stream' onSelect={(selected) => {
                             setStudentData({
                                 ...studentData,
                                 stream: selected
                             });
-                        }} />
+                        }} />}
                         <SwitchTile label='Pick Up Session' subtitle={studentData.isHalfDay ? 'Half day student' : 'Full day student'} onChange={(value) => {
                             setStudentData({
                                 ...studentData,

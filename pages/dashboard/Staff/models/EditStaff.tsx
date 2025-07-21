@@ -3,18 +3,17 @@ import React from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import FormElement from './FormElement';
 import SelectComponent, { Option } from './SelectComponent';
-import SwitchTile from './SwitchTile';
 import { updateStaffData } from '@/utils/data_fetch';
 import { Role } from '@/interfaces/RolesModel';
 import { Staff } from '@/interfaces/StaffModel';
 import LiveImageComponent from '../../components/LiveImageComponent';
 
-const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<any>>; handleSaveEdit: () => void }) => {
+const EditStaff = ({ editModalShow, roles, currentStaff, setCurrentStaff, setEditModalShow, handleSaveEdit }: { roles: Role[]; loadingClasses: boolean; editModalShow: boolean; currentStaff: Staff; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setCurrentStaff: React.Dispatch<React.SetStateAction<any>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
     const [imageFile, setImageFile] = React.useState<File | null>(null);
-    const [studentData, setStudentData] = React.useState(currentStaff as Staff);
+    // const [studentData, setStudentData] = React.useState(currentStaff as Staff);
     // function to fetch available classes
 
     let selectedImage = null;
@@ -35,7 +34,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
         roles.map((r) => rolesOptions.push({ name: r.role_type, value: r._id }));
         if (Object.entries(currentStaff).length > 0) {
             defaultRole = rolesOptions.filter((pred) => pred.name === currentStaff.staff_role?.role_type || '');
-            console.log(defaultRole);
+            // console.log(defaultRole);
             if (defaultRole.length > 0) {
                 setCurrentStaff({
                     ...currentStaff,
@@ -100,13 +99,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     staff_lname: e.target.value
                                 })} />
                             <br />
-                            {/* <FormElement label='Email'
-                                value={currentStaff.staff_email}
-                                onChange={(e) => setCurrentStaff({
-                                    ...currentStaff,
-                                    staff_email: e.target.value
-                                })} /> */}
-                            {/* <br />  */}
+
                             <FormElement label='Contact'
                                 value={currentStaff.staff_contact || ''}
                                 onChange={(e) => setCurrentStaff({
@@ -162,7 +155,7 @@ const EditStaff = ({ editModalShow, roles, loadingClasses = false, currentStaff,
                                     {updating ? 'Updating...' : 'Update'}
                                 </Button>
                             </Modal.Footer>
-                            {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>}
+                            {/* {message && <p className="mt-4 bg-[#ee2020cb] p-2 text-white font-semibold text-center">{message}</p>} */}
 
                         </Form>
                     )}

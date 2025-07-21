@@ -26,7 +26,8 @@ const Checkout = () => {
   // Update data manually
   const updates = async () => {
     const newStaff = await fetchStaff(page, limit);
-    mutateStaff(newStaff, false);
+    mutateStaff(newStaff);
+    window.location.reload();
   };
 
   // Handle page change for pagination

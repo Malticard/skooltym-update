@@ -19,8 +19,6 @@ export default function StudentsDataTable({
     handleUpdates,
     addModalShow,
     setAddModalShow,
-    streams = [], // Add default value
-    loadingClasses = false, // Add default value
     updatePage,
     updateLimit,
     classes = [] // Add default value
@@ -29,30 +27,16 @@ export default function StudentsDataTable({
     handleUpdates: () => void;
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-    streams: Stream[];
-    loadingClasses: boolean;
     classes: SchoolClass[];
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }) {
     const [data, setData] = React.useState<StudentResult[]>(students?.results || []);
-    // const [currentPage, setCurrentPage] = React.useState(students?.currentPage || 1);
-    // const [pageSize] = React.useState(students?.pageSize || 10);
-    // const [totalDocuments, setTotalDocuments] = React.useState(students?.totalDocuments || 0);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const [currentStudent, setCurrentStudent] = React.useState<any>({});
-
-    // Update state when students prop changes
-    React.useEffect(() => {
-        if (students) {
-            // setData(students.results || []);
-            // setCurrentPage(students.currentPage || 1);
-            // setTotalDocuments(students.totalDocuments || 0);
-        }
-    }, [students]);
 
     const columns: any = [
         {
@@ -214,8 +198,7 @@ export default function StudentsDataTable({
 
             <EditStudent
                 classes={classes}
-                streams={streams}
-                loadingClasses={loadingClasses}
+
                 editModalShow={editModalShow}
                 studentData={currentStudent}
                 setStudentData={setCurrentStudent}
@@ -232,10 +215,8 @@ export default function StudentsDataTable({
             />
 
             <AddStudent
-                loadingClasses={loadingClasses}
                 addModalShow={addModalShow}
                 setAddModalShow={setAddModalShow}
-                streams={streams}
                 classes={classes}
                 handleSave={handleSave}
             />

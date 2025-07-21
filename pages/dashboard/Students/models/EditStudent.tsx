@@ -6,17 +6,18 @@ import FormElement from './FormElement';
 import SwitchTile from './SwitchTile';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import { Stream } from '@/interfaces/StreamModel';
-import { updateStudentData } from '@/utils/data_fetch';
+import { classStreams, updateStudentData } from '@/utils/data_fetch';
 import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import LiveImageComponent from '../../components/LiveImageComponent';
 import { toast } from 'react-toastify';
 
-const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, studentData, setStudentData, setEditModalShow, handleSaveEdit }: { streams: Stream[]; loadingClasses: boolean; classes: SchoolClass[]; editModalShow: boolean; studentData: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setStudentData: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
+const EditStudent = ({ editModalShow, classes, studentData, setStudentData, setEditModalShow, handleSaveEdit }: { classes: SchoolClass[]; editModalShow: boolean; studentData: any; setEditModalShow: React.Dispatch<React.SetStateAction<boolean>>, setStudentData: React.Dispatch<React.SetStateAction<StudentResult | null>>; handleSaveEdit: () => void }) => {
     const options = [] as Option[];
     const [updating, setUpdating] = React.useState(false);
+
     const [message, setMessage] = React.useState<string>('');
     const [imageFile, setImageFile] = React.useState<File | null>(null);
-    // const [studentData, setStudentData] = React.useState({} as any);
+    const [studentClassStreams, setStudentClassStreams] = React.useState<any[]>([]);
     // function to fetch available classes
     if (classes) {
         classes.map((cls) => options.push({ name: cls.class_name, value: cls.class_name }));
@@ -33,10 +34,12 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
         }
     ]
     // streams
-    const streamOptions: Option[] = [];
-    if (streams) {
-        streams.map((stream) => streamOptions.push({ name: stream.stream_name, value: stream.stream_name }));
-    }
+    React.useEffect(() => {
+        classStreams(studentData?.class_name).then((res) => {
+            setStudentClassStreams(res);
+        });
+    }, [])
+
     // pickup subtitle
     const enabled = studentData?.isHalfDay;
     const picked = studentData?.isVanStudent;
@@ -145,13 +148,18 @@ const EditStudent = ({ editModalShow, streams, loadingClasses = false, classes, 
                                     student_gender: selected,
                                 })
                             }} />
+
                             <SelectComponent options={options} defaultData={[{ name: studentData._class, value: studentData._class }]} label='Class' onSelect={(selected) => {
+
+                                classStreams(selected as string).then((studentStreams) => {
+                                    setStudentClassStreams(studentStreams)
+                                })
                                 setStudentData({
                                     ...studentData,
                                     _class: selected
                                 })
                             }} />
-                            <SelectComponent options={streamOptions} defaultData={[{ name: studentData.stream, value: studentData.stream }]} label='Stream' onSelect={(selected) => {
+                            <SelectComponent options={studentClassStreams} defaultData={[{ name: studentData.stream, value: studentData.stream }]} label='Stream' onSelect={(selected) => {
                                 setStudentData({
                                     ...studentData,
                                     stream: selected
