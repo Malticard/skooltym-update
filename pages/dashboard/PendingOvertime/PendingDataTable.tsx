@@ -69,7 +69,7 @@ export default function PendingDataTable({
             sortable: true,
             right: true
         },
-        (userData.role === 'Finance') && {
+        {
             name: "Actions".toLocaleUpperCase(),
             cell: (row: OvertimeRecord) => (
                 <button className='btn btn-primary' onClick={() => {
@@ -84,7 +84,15 @@ export default function PendingDataTable({
         setCurrentPage(page);
         updatePage(page);
     };
-
+    (userData.role === 'Finance') && columns.push({
+        name: "Actions".toLocaleUpperCase(),
+        cell: (row: OvertimeRecord) => (
+            <button className='btn btn-primary' onClick={() => {
+                setOvertimeData(row);
+                setAddPayment(true);
+            }}>Add Payment</button>
+        ),
+    })
     const tableData = {
         columns,
         data,
