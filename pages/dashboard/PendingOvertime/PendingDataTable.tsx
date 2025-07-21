@@ -44,7 +44,7 @@ export default function PendingDataTable({
         }
     }, [pendingData]);
 
-    const columns = [
+    const columns: any[] = [
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: OvertimeRecord) => (
@@ -69,7 +69,23 @@ export default function PendingDataTable({
             sortable: true,
             right: true
         },
-        {
+        // {
+        //     name: "Actions".toLocaleUpperCase(),
+        //     cell: (row: OvertimeRecord) => (
+        //         <button className='btn btn-primary' onClick={() => {
+        //             setOvertimeData(row);
+        //             setAddPayment(true);
+        //         }}>Add Payment</button>
+        //     ),
+        // }
+    ];
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        updatePage(page);
+    };
+    if (userData.role === 'Finance') {
+        columns.push({
             name: "Actions".toLocaleUpperCase(),
             cell: (row: OvertimeRecord) => (
                 <button className='btn btn-primary' onClick={() => {
@@ -77,22 +93,8 @@ export default function PendingDataTable({
                     setAddPayment(true);
                 }}>Add Payment</button>
             ),
-        }
-    ];
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
-    (userData.role === 'Finance') && columns.push({
-        name: "Actions".toLocaleUpperCase(),
-        cell: (row: OvertimeRecord) => (
-            <button className='btn btn-primary' onClick={() => {
-                setOvertimeData(row);
-                setAddPayment(true);
-            }}>Add Payment</button>
-        ),
-    })
+        })
+    }
     const tableData = {
         columns,
         data,
