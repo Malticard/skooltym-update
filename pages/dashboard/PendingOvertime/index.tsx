@@ -1,4 +1,3 @@
-import { OvertimeModel } from '@/interfaces/OvertimeModel';
 import PageHeader from '@/shared/layout-components/page-header/page-header';
 import Seo from '@/shared/layout-components/seo/seo';
 import { fetchSpecificOvertime } from '@/utils/data_fetch';
@@ -15,7 +14,6 @@ const PendingOvertime = () => {
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
     // load data
     // payment modal
-    const [openAddPayment, setOpenAddPayment] = React.useState(false);
     const { data: pending, mutate, error } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], async () => await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate));
     // on change of page
     const onChangePage = (data: number) => {
@@ -45,8 +43,6 @@ const PendingOvertime = () => {
                     title={`Pending Overtime (${pending?.totalDocuments})`}
                     item="Skooltym"
                     active_item="Pending Overtime"
-                    buttonText={user.role == 'Admin' ? '' : 'Add Payment'}
-                    onTap={() => setOpenAddPayment(true)}
                 />
                 <DateFilterComponent
                     enableActions
@@ -57,10 +53,7 @@ const PendingOvertime = () => {
                     <PageHeader
                         title={`Pending Overtime (${pending?.totalDocuments ?? 0})`}
                         item="Skooltym"
-
                         active_item="Pending Overtime"
-                        buttonText={user.role == 'Admin' ? '' : 'Add Payment'}
-                        onTap={() => setOpenAddPayment(true)}
                     />
                     <DateFilterComponent handleFilter={handleDateChange} />
                 </>
@@ -71,8 +64,7 @@ const PendingOvertime = () => {
                 pending && (
                     <PendingDataTable
                         pendingData={pending}
-                        openAddPayment={openAddPayment}
-                        setAddPayment={setOpenAddPayment}
+
                         updatePage={onChangePage}
                         updateLimit={changeLimit}
                     />

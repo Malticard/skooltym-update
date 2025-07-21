@@ -5,29 +5,31 @@ import dynamic from "next/dynamic";
 import AddPayment from '../Payments/modals/AddPayment';
 import LiveImageComponent from '../components/LiveImageComponent';
 import { OvertimeRecord, OvertimeResponse } from '@/interfaces/OvertimeModel';
+import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), {
     ssr: false
 });
+
 interface PendingOvertimeIF {
     pendingData: OvertimeResponse;
-    openAddPayment: boolean;
-    setAddPayment: React.Dispatch<React.SetStateAction<boolean>>;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }
+
 export default function PendingDataTable({
     pendingData,
-    openAddPayment,
-    setAddPayment,
     updatePage,
     updateLimit,
 }: PendingOvertimeIF) {
     // Initialize states with safe default values
     const [data, setData] = React.useState<OvertimeRecord[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
+    const [openAddPayment, setAddPayment] = React.useState(false);
     const [pageSize, setPageSize] = React.useState(10);
     const [totalDocuments, setTotalDocuments] = React.useState(0);
+    const [overtimeData, setOvertimeData] = React.useState<OvertimeRecord | null>(null); // Changed to null
+    const [userData, setUserData] = React.useState({} as AuthenticatedUserModel);
 
     // Update state when pendingData changes
     React.useEffect(() => {
@@ -36,6 +38,9 @@ export default function PendingDataTable({
             setCurrentPage(pendingData.currentPage || 1);
             setPageSize(pendingData.pageSize || 10);
             setTotalDocuments(pendingData.totalDocuments || 0);
+            // user data
+            const user = JSON.parse(localStorage.getItem('skooltym_user') as string);
+            setUserData(user);
         }
     }, [pendingData]);
 
@@ -64,6 +69,15 @@ export default function PendingDataTable({
             sortable: true,
             right: true
         },
+        (userData.role === 'Finance') && {
+            name: "Actions".toLocaleUpperCase(),
+            cell: (row: OvertimeRecord) => (
+                <button className='btn btn-primary' onClick={() => {
+                    setOvertimeData(row);
+                    setAddPayment(true);
+                }}>Add Payment</button>
+            ),
+        }
     ];
 
     const handlePageChange = (page: number) => {
@@ -94,19 +108,21 @@ export default function PendingDataTable({
                     persistTableHead
                     fixedHeader
                 />
-
             </DataTableExtensions>
-            {/* modal for add a payment */}
-            <AddPayment
-                show={openAddPayment}
-                handleClose={() => setAddPayment(false)}
-                amount={''}
-                guardian={''}
-                student={''}
-                studentId={''}
-                guardianId={''} />
+
+            {/* Modal for add a payment - Only render when overtimeData exists */}
+            {openAddPayment && overtimeData && (
+                <AddPayment
+                    show={openAddPayment}
+                    user={userData}
+                    handleClose={() => setAddPayment(false)}
+                    amount={`${overtimeData.overtime_charge || 0}`}
+                    guardian={overtimeData.guardian?.guardian_fname || ''}
+                    student={overtimeData.student?.student_fname || ''}
+                    studentId={overtimeData.student?._id || ''}
+                    guardianId={overtimeData.guardian?._id || ''}
+                />
+            )}
         </>
-
-
     );
 }

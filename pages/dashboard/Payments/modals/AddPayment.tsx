@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Modal, Form, Button, Spinner } from 'react-bootstrap';
+import { processPayment } from '@/utils/data_fetch';
+import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 
 interface AddPaymentProps {
     show: boolean;
@@ -10,6 +12,7 @@ interface AddPaymentProps {
     student: string;
     studentId: string;
     guardianId: string;
+    user: AuthenticatedUserModel
 }
 
 const AddPayment: React.FC<AddPaymentProps> = ({
@@ -19,53 +22,35 @@ const AddPayment: React.FC<AddPaymentProps> = ({
     guardian,
     student,
     studentId,
-    guardianId,
+    guardianId, user
 }) => {
     const [isAddingPayment, setIsAddingPayment] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("Cash");
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
-        // school: "", // Replace with actual school ID
-        // guardian: guardianId,
-        // student: studentId,
-        // payment_method: paymentMethod,
-        // staff: "staff_id_placeholder", // Replace with actual staff ID
-        // comment: "",
-        // paid_amount: 0,
-        // date_of_payment: new Date().toISOString().split("T")[0],
-        // "payment_key[0]": "0",
-    });
+    const [paidAmount, setPaidAmount] = useState("");
+    const [paymentComment, setPaymentComment] = useState("");
 
-    const handlePayment = async (data: any) => {
+    const handlePayment = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         setIsAddingPayment(true);
-        try {
-            // const response = await axios.post('/api/addPayment', {
-            //     school: "school_id_placeholder", // Replace with actual school ID
-            //     guardian: guardianId,
-            //     student: studentId,
-            //     payment_method: paymentMethod,
-            //     staff: "staff_id_placeholder", // Replace with actual staff ID
-            //     comment: data.comment,
-            //     paid_amount: data.paidAmount,
-            //     date_of_payment: new Date().toISOString().split("T")[0],
-            //     "payment_key[0]": "0",
-            // });
-
-            // if (response.status === 200 || response.status === 201) {
-            //     alert("Added new payment successfully");
-            //     handleClose();
-            // } else {
-            //     alert("Failed to add payment");
-            // }
-        } catch (error) {
-            console.error("Error adding payment:", error);
-            alert("An error occurred while adding the payment.");
-        } finally {
+        const formData = new FormData();
+        formData.append('student', studentId);
+        formData.append('school', user.school);
+        formData.append('guardian', guardianId);
+        formData.append('comment', paymentComment);
+        formData.append('payment_method', paymentMethod);
+        formData.append('staff', user.id);
+        formData.append("paid_amount", paidAmount);
+        formData.append("date_of_payment", new Date().toDateString());
+        formData.append("payment_key[key]", "[0]");
+        // console.log(f);
+        processPayment(formData).then((res) => {
             setIsAddingPayment(false);
-        }
+            window.location.reload();
+        }).catch((err) => {
+            console.log(err);
+            setIsAddingPayment(false);
+        })
     };
 
     return (
@@ -74,7 +59,7 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                 <Modal.Title>Add Payment</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleSubmit(handlePayment)}>
+                <Form onSubmit={handlePayment}>
                     <Form.Group className="mb-3">
                         <Form.Label>Amount Owed</Form.Label>
                         <Form.Control type="text" value={`UGX ${amount}`} readOnly />
@@ -85,11 +70,9 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                         <Form.Control
                             type="number"
                             placeholder="Enter amount paid"
-                            {...register('paidAmount', { required: "Amount Paid is required" })}
-                            isInvalid={!!errors.paidAmount}
+                            onChange={e => setPaidAmount(e.target.value)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {/*  errors.paidAmount.message */}
                         </Form.Control.Feedback>
                     </Form.Group>
 
@@ -97,6 +80,7 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                         <Form.Label>Payment Method</Form.Label>
                         <Form.Select
                             value={paymentMethod}
+                            name='paid_amount'
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         >
                             <option value="">Select Payment Method</option>
@@ -111,8 +95,9 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                         <Form.Label>Comment</Form.Label>
                         <Form.Control
                             type="text"
+                            name='comment'
+                            onChange={(e) => setPaymentComment(e.target.value)}
                             placeholder="e.g school activities"
-                            {...register('comment')}
                         />
                     </Form.Group>
 

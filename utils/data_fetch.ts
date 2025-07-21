@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 import AppUrls from './apis';
 import { SettingsModel } from '@/interfaces/SettingsModel';
 import { DashboardItem } from '@/interfaces/DashboardItem';
-import { OvertimeModel } from '@/interfaces/OvertimeModel';
 import { ClassDataModel, ClassDataModelConvert } from '@/interfaces/ClassDataModel';
 import { StudentModelConvert, StudentsModel } from '@/interfaces/StudentsModel';
 import { ClassPaginatedResult } from '@/interfaces/ClassModel';
@@ -17,6 +16,8 @@ import { IStaffSettings } from '@/interfaces/StaffSettingsModel';
 import { dashboardStats } from './dashboard';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
 import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
+import { OvertimeResponse } from '@/interfaces/OvertimeModel';
+import { PaginatedResponse } from '@/interfaces/PaymentModel';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
@@ -107,10 +108,16 @@ export function greetUser(): string {
     if (hour < 13) return "Good morning";
     return "Good afternoon";
 }
-// export function renameFile(fileName: string): string {
-//     const fileExtension = fileName.split(".").pop();
-//     return `${uuidv4()}.${fileExtension}`;
-// }
+
+export async function processPayment(data: FormData) {
+    const plainObject = Object.fromEntries(data.entries());
+    try {
+        const response = await axios.post(AppUrls.addPayment, plainObject);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 // fetch drop offs
@@ -563,7 +570,7 @@ export async function fetchStudentsNoPaginate(): Promise<StudentsNotPaginated[]>
 // ----------------- end of guardian data ------------
 
 // pending Overtime
-export async function fetchSpecificOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeModel> {
+export async function fetchSpecificOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.pendingOvertime + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
@@ -575,7 +582,7 @@ export async function fetchSpecificOvertime(page = 1, limit = 10, startDate = ""
     }
 }
 // cleared overtime
-export async function fetchClearedOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeModel> {
+export async function fetchClearedOvertime(page = 1, limit = 10, startDate = "", endDate = ""): Promise<OvertimeResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.clearedOvertime + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
@@ -586,7 +593,7 @@ export async function fetchClearedOvertime(page = 1, limit = 10, startDate = "",
 }
 
 // payments
-export async function fetchPayments(page = 1, limit = 10, startDate = "", endDate = ""): Promise<any> {
+export async function fetchPayments(page = 1, limit = 10, startDate = "", endDate = ""): Promise<PaginatedResponse> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.getPayment + data.school + "?page=" + page + "&limit=" + limit + "&startDate=" + startDate + "&endDate=" + endDate);
