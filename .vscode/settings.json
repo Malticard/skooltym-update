@@ -27,5 +27,6 @@
         "sweetalert",
         "varaiable"
     ],
-    "files.autoSave": "off"
+    "files.autoSave": "off",
+    "gitConfigUser.selectedProfile": "FTS"
 }

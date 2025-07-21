@@ -1,20 +1,21 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
-import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+
 import LiveImageComponent from '../components/LiveImageComponent';
+import { OvertimeRecord, OvertimeResponse } from '@/interfaces/OvertimeModel';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 interface ClearedDataTableProps {
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
-    clearedData?: OvertimeModel; // Made optional to handle undefined case
+    clearedData?: OvertimeResponse; // Made optional to handle undefined case
 }
 
 export default function ClearedDataTable({ clearedData, updatePage, updateLimit }: ClearedDataTableProps) {
     // Provide default values when clearedData is undefined
-    const defaultData: OvertimeModel = {
+    const defaultData: OvertimeResponse = {
         results: [],
         currentPage: 1,
         pageSize: 10,
@@ -25,7 +26,7 @@ export default function ClearedDataTable({ clearedData, updatePage, updateLimit 
     // Use nullish coalescing to handle undefined clearedData
     const safeData = clearedData ?? defaultData;
 
-    const [data, setData] = React.useState<Overtimes[]>(safeData.results);
+    const [data, setData] = React.useState<OvertimeRecord[]>(safeData.results);
     const [currentPage, setCurrentPage] = React.useState(safeData.currentPage);
     const [pageSize] = React.useState(safeData.pageSize);
     const [totalDocuments, setTotalDocuments] = React.useState(safeData.totalDocuments);
@@ -42,28 +43,28 @@ export default function ClearedDataTable({ clearedData, updatePage, updateLimit 
     const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
-            // selector: (row: Overtimes) => row.student?.studentProfilePic ?? '',
-            cell: (row: Overtimes) => (
-                <LiveImageComponent url={row.student?.studentProfilePic} />
+            // selector: (row: OvertimeRecord) => row.student?.studentProfilePic ?? '',
+            cell: (row: OvertimeRecord) => (
+                <LiveImageComponent url={row.student?.student_profile_pic} />
             ),
             ignoreRowClick: true,
             sortable: true
         },
         {
             name: "Student".toLocaleUpperCase(),
-            selector: (row: Overtimes) =>
-                `${row.student?.studentFname ?? ''} ${row.student?.studentLname ?? ''}`,
+            selector: (row: OvertimeRecord) =>
+                `${row.student?.student_fname ?? ''} ${row.student?.student_lname ?? ''}`,
             sortable: true
         },
         {
             name: "Guardian".toLocaleUpperCase(),
-            selector: (row: Overtimes) =>
-                `${row.guardian?.guardianFname ?? ''} ${row.guardian?.guardianLname ?? ''}`,
+            selector: (row: OvertimeRecord) =>
+                `${row.guardian?.guardian_fname ?? ''} ${row.guardian?.guardian_lname ?? ''}`,
             sortable: true
         },
         {
             name: "Overtime Charge".toLocaleUpperCase(),
-            selector: (row: Overtimes) => `UGX ${row.overtimeCharge ?? 0}`,
+            selector: (row: OvertimeRecord) => `UGX ${row.overtime_charge ?? 0}`,
             sortable: true
         },
     ];

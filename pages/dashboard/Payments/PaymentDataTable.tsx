@@ -1,9 +1,10 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
-import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
+
 import AddPayment from './modals/AddPayment';
 import LiveImageComponent from '../components/LiveImageComponent';
+import { OvertimeRecord, OvertimeResponse } from '@/interfaces/OvertimeModel';
 
 const DataTableExtensions: any = dynamic(() =>
     import('react-data-table-component-extensions'),
@@ -11,7 +12,7 @@ const DataTableExtensions: any = dynamic(() =>
 );
 
 interface PaymentDataTableProps {
-    clearedData: OvertimeModel;
+    clearedData: OvertimeResponse
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
 }
@@ -21,7 +22,7 @@ export default function PaymentDataTable({
     updateLimit,
     updatePage
 }: PaymentDataTableProps) {
-    const [data, setData] = React.useState<Overtimes[]>([]);
+    const [data, setData] = React.useState<OvertimeRecord[]>([]);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [pageSize, setPageSize] = React.useState(10);
     const [totalDocuments, setTotalDocuments] = React.useState(0);
@@ -39,27 +40,27 @@ export default function PaymentDataTable({
     const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
-            cell: (row: Overtimes) => (
-                <LiveImageComponent url={row.student.studentProfilePic} />
+            cell: (row: OvertimeRecord) => (
+                <LiveImageComponent url={row.student.student_profile_pic} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
         },
         {
             name: "Student".toLocaleUpperCase(),
-            selector: (row: Overtimes) =>
-                `${row.student.studentFname} ${row.student.studentLname}`,
+            selector: (row: OvertimeRecord) =>
+                `${row.student.student_fname} ${row.student.student_lname}`,
             sortable: true,
         },
         {
             name: "Guardian".toLocaleUpperCase(),
-            selector: (row: Overtimes) =>
-                `${row.guardian.guardianFname} ${row.guardian.guardianLname}`,
+            selector: (row: OvertimeRecord) =>
+                `${row.guardian.guardian_fname} ${row.guardian.guardian_lname}`,
             sortable: true,
         },
         {
             name: "Overtime Charge".toLocaleUpperCase(),
-            selector: (row: Overtimes) => `UGX ${row.overtimeCharge.toLocaleString()}`,
+            selector: (row: OvertimeRecord) => `UGX ${row.overtime_charge.toLocaleString()}`,
             sortable: true,
             right: true,
         },
