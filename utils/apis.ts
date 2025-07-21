@@ -1,5 +1,5 @@
 class AppUrls {
-    static devURL: string = "http://127.0.0.1:5050/";//"https://backend.skooltym.com/";
+    static devURL: string = "https://backend.skooltym.com/";
     static imageUrl: string = "asss/icons/";
     static liveImages: string = "https://backend.skooltym.com/image/images/";
 
