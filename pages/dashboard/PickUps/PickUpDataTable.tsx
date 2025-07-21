@@ -1,7 +1,6 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 import dynamic from "next/dynamic";
-import { OvertimeModel, Overtimes } from '@/interfaces/OvertimeModel';
 import { PickupRecord } from '@/interfaces/pickUp';
 import moment from 'moment';
 import LiveImageComponent from '../components/LiveImageComponent';
