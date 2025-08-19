@@ -95,7 +95,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
               location.pathname === "/spruha-ts/preview/" ||
               location.pathname === "/spruha-ts/preview"
             ) {
-              location.pathname = "/spruha-ts/preview/dashboard/";
+              location.pathname = "/dashboard/";
             }
             if (location.pathname === items.path) {
               items.active = true;

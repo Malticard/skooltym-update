@@ -7,14 +7,12 @@ const Custom404 = () => {
         <div>
             {/* <!-- Page --> */}
             <Seo title="Error" />
-
             <div className="page main-signin-wrapper bg-primary construction">
                 <div className="d-flex header-setting-icon demo-icon fa-spin">
                     <a className="nav-link icon" href="#">
                         <i className="fe fe-settings settings-icon "></i>
                     </a>
                 </div>
-
                 <div className="container ">
                     <div className="construction1 text-center details text-white">
                         <div className="">

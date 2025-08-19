@@ -9,6 +9,8 @@ import store from "@/shared/redux/store";
 import { Defaultmenu, Closedmenu, iconText, iconOverayFn, DetachedFn, DoubletFn } from "@/shared/data/switcherdata/switcherdata";
 import { AuthenticatedUserModel, AuthenticatedUserModelConvert } from "@/interfaces/AuthenticatedUserModel";
 import LiveImageComponent from "@/pages/dashboard/components/LiveImageComponent";
+import axios from "axios";
+import { toast } from "react-toastify";
 const HeadDropDown = dynamic(
   () => import('../../data/header/head'),
   { ssr: false }
@@ -16,8 +18,6 @@ const HeadDropDown = dynamic(
 
 // FullScreen-end
 function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, ThemeChanger: any }) {
-  let { basePath } = useRouter()
-
   //  headerToggleButton
   useEffect(() => {
     function debounce(func: any, delay: any) {
@@ -223,6 +223,40 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
   React.useEffect(() => {
     setLocalData(AuthenticatedUserModelConvert.toAuthenticatedUserModel(localStorage.getItem('skooltym_user') as string));
   }, [])
+
+  // handle logout function
+  const handleLogout = async () => {
+    try {
+      // Get session ID from localStorage for proper session cleanup
+      const storedData = JSON.parse(localStorage.getItem('skooltym_user') || '{}');
+      const sessionId = storedData.sessionId;
+      
+      // Call the logout API to clear cookies and session
+      await axios.post('/api/auth/logout', {
+        logoutAll: false // Set to true if you want to logout from all devices
+      }, {
+        headers: sessionId ? { 'X-Session-ID': sessionId } : {}
+      });
+
+      // Clear local storage
+      localStorage.removeItem('skooltym_user');
+      
+      // Show success message
+      toast.success("Logged out successfully");
+      
+      // Redirect to login page
+      window.location.href = '/auth/signin';
+      
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      
+      // Even if API fails, clear local storage and redirect
+      localStorage.removeItem('skooltym_user');
+      toast.warn("Logged out (some cleanup may have failed)");
+      window.location.href = '/auth/signin';
+    }
+  };
+
   return (
     <Fragment>
 
@@ -261,11 +295,7 @@ function Header({ local_varaiable, ThemeChanger }: { local_varaiable: any, Theme
                     <Dropdown.Menu>
                       {/* <Dropdown.Item href="#/action-1">Profile</Dropdown.Item> */}
                       {localData.role == 'Admin' && (<Dropdown.Item href="/dashboard/Settings">Settings</Dropdown.Item>)}
-                      <Dropdown.Item href="javascript:void(0)" onClick={() => {
-                        localStorage.removeItem('skooltym_user')
-                        window.location.replace("/");
-                        window.location.reload();
-                      }}>Logout</Dropdown.Item>
+                      <Dropdown.Item href="javascript:void(0)" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </>

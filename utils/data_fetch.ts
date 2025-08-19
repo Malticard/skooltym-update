@@ -18,12 +18,16 @@ import { GuardianStudent } from '@/interfaces/GuardianStudents';
 import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
 import { OvertimeResponse } from '@/interfaces/OvertimeModel';
 import { PaginatedResponse } from '@/interfaces/PaymentModel';
+import { AuthTokenManager, createAuthResponse } from '@/middleware/auth';
 export async function loginUser(email: string, password: string): Promise<AxiosResponse<any, any>> {
     try {
         const response = await axios.post(AppUrls.login, {
             staff_contact: email,
             staff_password: password,
         },);
+
+        // Set HTTP-only cookies
+        // AuthTokenManager.setAuthCookies(res, authResponse.tokens.accessToken, authResponse.tokens.refreshToken);
         return response;
     } catch (err: any) {
         // console.log(err);
@@ -33,6 +37,7 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
 export async function classStreams(className: string): Promise<any[]> {
     try {
         let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
+        console.log("class name", className);
         const response = await axios.get(AppUrls.studentClassStreams + className + '/' + data.school);
         const result = response.data;
         return result;

@@ -19,16 +19,16 @@ function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
   const Layout: any = layouts[Component.layout] || ((pageProps: any) => <Component>{pageProps}</Component>);
   const router = useRouter();
   React.useEffect(() => {
-    let userSession = window.localStorage.getItem("skooltym_user");
+    // let userSession = window.localStorage.getItem("skooltym_user");
 
-    if (userSession === null) {
-      router.replace('/', {
-        scroll: false,
-      });
+    // if (userSession === null) {
+    //   router.replace('/', {
+    //     scroll: false,
+    //   });
 
-    } else {
-      // console.log(userSession);
-    }
+    // } else {
+    //   // console.log(userSession);
+    // }
   }, [100]);
   return (
     <>

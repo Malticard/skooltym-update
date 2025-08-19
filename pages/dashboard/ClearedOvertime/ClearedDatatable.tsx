@@ -67,6 +67,11 @@ export default function ClearedDataTable({ clearedData, updatePage, updateLimit 
             selector: (row: OvertimeRecord) => `UGX ${row.overtime_charge ?? 0}`,
             sortable: true
         },
+        {
+            name: "DATE",
+            selector: (row: OvertimeRecord) => new Date(row.createdAt).toLocaleDateString(),
+            sortable: true
+        }
     ];
 
     const handlePageChange = (page: number) => {

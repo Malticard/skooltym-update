@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Modal, Form, Button, Spinner } from 'react-bootstrap';
 import { processPayment } from '@/utils/data_fetch';
 import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
@@ -64,18 +63,6 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                         <Form.Label>Amount Owed</Form.Label>
                         <Form.Control type="text" value={`UGX ${amount}`} readOnly />
                     </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Amount Paid</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="Enter amount paid"
-                            onChange={e => setPaidAmount(e.target.value)}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                        </Form.Control.Feedback>
-                    </Form.Group>
-
                     <Form.Group className="mb-3">
                         <Form.Label>Payment Method</Form.Label>
                         <Form.Select
@@ -86,20 +73,35 @@ const AddPayment: React.FC<AddPaymentProps> = ({
                             <option value="">Select Payment Method</option>
                             <option value="Cash">Cash</option>
                             <option value="Comment">Comment</option>
-                            <option value="Mobile Money">Comment</option>
-                            <option value="Bank">Bank Card</option>
                         </Form.Select>
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name='comment'
-                            onChange={(e) => setPaymentComment(e.target.value)}
-                            placeholder="e.g school activities"
-                        />
-                    </Form.Group>
+                    {paymentMethod === "Comment" && (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Comment</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={paymentComment}
+                                name='comment'
+                                onChange={(e) => setPaymentComment(e.target.value)}
+                                placeholder="e.g school activities"
+                            />
+                        </Form.Group>
+                    )}
+                    {paymentMethod === "Cash" && (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Amount Paid</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={paidAmount}
+                                placeholder="Enter amount paid"
+                                onChange={e => setPaidAmount(e.target.value)}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    )}
+
 
                     <Form.Group className="mb-3">
                         <Form.Label>Student</Form.Label>

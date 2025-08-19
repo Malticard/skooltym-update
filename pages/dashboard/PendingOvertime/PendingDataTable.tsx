@@ -67,8 +67,13 @@ export default function PendingDataTable({
             name: "Overtime Charge".toLocaleUpperCase(),
             selector: (row: OvertimeRecord) => `UGX ${row.overtime_charge ?? 0}`,
             sortable: true,
-            right: true
+            right: false
         },
+        {
+            name: "DATE",
+            selector: (row: OvertimeRecord) => new Date(row.createdAt).toLocaleDateString(),
+            sortable: true
+        }
         // {
         //     name: "Actions".toLocaleUpperCase(),
         //     cell: (row: OvertimeRecord) => (

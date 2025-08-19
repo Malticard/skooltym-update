@@ -4,6 +4,7 @@ import dynamic from "next/dynamic"
 import LiveImageComponent from '../components/LiveImageComponent';
 import { PaginatedResponse, Payment } from '@/interfaces/PaymentModel';
 
+
 const DataTableExtensions: any = dynamic(() =>
     import('react-data-table-component-extensions'),
     { ssr: false }
@@ -62,6 +63,11 @@ export default function PaymentDataTable({
             sortable: true,
             right: true,
         },
+        {
+            name: "DATE",
+            selector: (row: Payment) => new Date(row.createdAt).toLocaleDateString(),
+            sortable: true
+        }
     ];
 
     const handlePageChange = (page: number) => {
