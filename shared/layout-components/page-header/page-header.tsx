@@ -15,6 +15,7 @@ interface PageHeaderProps {
   left?: boolean
   onTap?: () => void
   onDownload?: () => void
+  dataTour?: string
 
 }
 const PageHeader = (props: PageHeaderProps) => {
@@ -32,7 +33,7 @@ const PageHeader = (props: PageHeaderProps) => {
       // console.log(response);
       window.location.reload();
     }).catch((error: any) => {
-      console.log(error)
+      // console.log(error)
       setUploadState(false);
     });
   }
@@ -78,7 +79,8 @@ const PageHeader = (props: PageHeaderProps) => {
           }
           {props.buttonText && (<button type="button"
             onClick={() => props.onTap && props.onTap()}
-            className="btn btn-primary mx-2 my-2 btn-icon-text d-inline-flex align-items-center">
+            className="btn btn-primary mx-2 my-2 btn-icon-text d-inline-flex align-items-center"
+            data-tour={props.dataTour}>
             <i className={`${props.buttonText === undefined ? 'fe fe-download-cloud' : 'ti-plus'} me-2`}></i>{props.buttonText ?? "Download Report"}
           </button>)}
         </div>

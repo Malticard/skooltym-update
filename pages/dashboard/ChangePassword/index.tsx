@@ -96,7 +96,7 @@ const ChangePassword = () => {
                                             <p className="mb-4 text-muted fs-13 ms-0 text-start">
                                                 {` It's`} free to signup and only takes a minute.
                                             </p>
-                                            <Form onSubmit={handleChangePassword}>
+                                            <Form onSubmit={handleChangePassword} data-tour="password-form">
 
                                                 <Form.Group
                                                     className="text-start form-group"

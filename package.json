@@ -22,6 +22,7 @@
     "@mui/material": "^5.14.7",
     "@mui/x-tree-view": "^6.17.0",
     "@popperjs/core": "^2.11.8",
+    "@reactour/tour": "^3.8.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@simonwep/pickr": "^1.9.0",
     "@types/react": "^18.2.37",

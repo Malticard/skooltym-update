@@ -47,6 +47,7 @@ const Orders = () => {
                 download
                 onTap={() => setAddModalShow(true)}
                 onDownload={() => exportStudents()}
+                dataTour='add-student'
             />
             {/* Data Table */}
             {students && (

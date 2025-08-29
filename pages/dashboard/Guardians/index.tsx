@@ -55,6 +55,7 @@ const Guardian = () => {
                 onTap={() => {
                     setAddModalShow(true);
                 }}
+                dataTour='add-guardian'
             />
             {/* <!-- Row --> */}
             {guardians && (<GuardianDataTable

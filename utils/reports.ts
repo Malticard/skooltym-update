@@ -16,7 +16,7 @@ export function exportGuardianRecords() {
 }
 // drop offs
 export function exportDropOffRecords(startDate = "", endDate = "") {
-    console.log("exportDropOffRecords", startDate, endDate);
+    // console.log("exportDropOffRecords", startDate, endDate);
     const url = AppUrls.exportDropOffRecords;
     exportTor("dropOffs", url, startDate, endDate);
 }
@@ -93,10 +93,10 @@ const exportTor = (name: string, url: string, startDate = "", endDate = "") => {
                 window.URL.revokeObjectURL(blobUrl);
             })
             .catch(error => {
-                console.error('Error downloading docs:', error);
+                // console.error('Error downloading docs:', error);
             });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
     }
 
 }

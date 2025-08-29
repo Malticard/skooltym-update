@@ -13,19 +13,30 @@ import LiveImageComponent from "@/pages/dashboard/components/LiveImageComponent"
 const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, ThemeChanger: any }) => {
   let location = useRouter();
   const [menuitems, setMenuitems] = useState(MENUITEMS);
+  const [mounted, setMounted] = useState(false);
   // local data
   const [localData, setLocalData] = useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
 
   // initial loading
   useEffect(() => {
+    setMounted(true);
     // check current role
-    const user: StaffLogin = JSON.parse(localStorage.getItem('skooltym_user') as string)
-    if (user) {
-      if (user.role == 'Admin') {
-        setMenuitems(MENUITEMS)
-
-      } else {
-        setMenuitems(Finance);
+    if (typeof window !== 'undefined') {
+      const userString = localStorage.getItem('skooltym_user');
+      if (userString) {
+        try {
+          const user: StaffLogin = JSON.parse(userString);
+          if (user) {
+            if (user.role == 'Admin') {
+              setMenuitems(MENUITEMS);
+            } else {
+              setMenuitems(Finance);
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          setMenuitems(MENUITEMS);
+        }
       }
     }
     history.push(location.pathname);  // add  history to history  stack for current location.pathname to prevent multiple history calls innerWidth  and innerWidth  calls from  multiple users. This is important because the history stack is not always empty when the user clicks  the history       
@@ -52,8 +63,16 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
 
   // loading local data
   React.useEffect(() => {
-    setLocalData(AuthenticatedUserModelConvert.toAuthenticatedUserModel(localStorage.getItem('skooltym_user') as string));
-
+    if (typeof window !== 'undefined') {
+      const userString = localStorage.getItem('skooltym_user');
+      if (userString) {
+        try {
+          setLocalData(AuthenticatedUserModelConvert.toAuthenticatedUserModel(userString));
+        } catch (error) {
+          console.error('Error parsing local data:', error);
+        }
+      }
+    }
   }, [])
   useEffect(() => {
     if (
@@ -85,7 +104,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
       menuitems.filter((mainlevel) => {
         if (mainlevel.Items) {
           mainlevel.Items.filter((items) => {
-            if (ulRef.current.href != document.location['href'] || localStorage.Spruhaverticalstyles != 'doublemenu') {
+            if ((ulRef.current && ulRef.current.href != document.location['href']) || (typeof window !== 'undefined' && localStorage.Spruhaverticalstyles != 'doublemenu')) {
               items.active = false;
             }
             items.selected = false;
@@ -468,7 +487,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
     <Fragment>
       <div
         className="app-sidebar sticky"
-
+        data-tour="sidebar"
         id="sidebar"
         onMouseOver={() => Onhover()}
         onMouseOut={() => Outhover()}
@@ -499,16 +518,34 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
             </div>
             <ul className="main-menu" style={{ marginLeft: "0px", marginRight: "0px" }}>
 
-              {menuitems.map((Item: any) =>
-                <Fragment key={Math.random()}>
+              {!mounted ? (
+                // Loading state - show skeleton or initial menu
+                <Fragment>
                   <li className="slide__category">
-                    <span className="category-name">{Item.menutitle}</span>
+                    <span className="category-name">Loading...</span>
                   </li>
+                </Fragment>
+              ) : (
+                menuitems.map((Item: any) =>
+                  <Fragment key={Math.random()}>
+                    <li className="slide__category">
+                      <span className="category-name">{Item.menutitle}</span>
+                    </li>
                   {Item.Items.map((menuItem: any) =>
                     menuItem.type === "link" ?
                       <li className={`slide ${menuItem.selected ? "active" : ''}`} key={Math.random()} >
 
-                        <Link ref={ulRef} onClick={(event) => { setSidemenu(); noChild() }} href={menuItem.path + "/"} className={`side-menu__item ${menuItem.selected ? "active" : ""}`}>
+                        <Link ref={ulRef} onClick={(event) => { setSidemenu(); noChild() }} href={menuItem.path + "/"} className={`side-menu__item ${menuItem.selected ? "active" : ""}`}
+                          data-tour={
+                            menuItem.path === "/dashboard/ChangePassword" ? "change-password" :
+                            menuItem.path === "/dashboard/Settings" ? "settings" :
+                            menuItem.path === "/dashboard/Streams" ? "streams" :
+                            menuItem.path === "/dashboard/Classes" ? "classes" :
+                            menuItem.path === "/dashboard/Students" ? "students" :
+                            menuItem.path === "/dashboard/Staff" ? "staff" :
+                            menuItem.path === "/dashboard/Guardians" ? "guardians" :
+                            undefined
+                          }>
                           <span className="shape1"></span>
                           <span className="shape2"></span>
                           <i
@@ -604,6 +641,7 @@ const SideBar = ({ local_varaiable, ThemeChanger }: { local_varaiable: any, Them
 
                   }
                 </Fragment>
+              )
               )}
             </ul>
 

@@ -7,6 +7,7 @@ import Authenticationlayout from '../shared/layout-components/layout/authenticat
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { ToastContainer } from 'react-toastify'
+import SkooltymTourProvider from '../shared/components/TourProvider'
 
 const layouts: any = {
   Contentlayout: Contentlayout,
@@ -32,19 +33,21 @@ function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
   }, [100]);
   return (
     <>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover />
+      <SkooltymTourProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
+      </SkooltymTourProvider>
     </>
   )
 }

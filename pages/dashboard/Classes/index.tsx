@@ -52,6 +52,7 @@ const Classes = () => {
                 active_item='Classes'
                 buttonText='Add Class'
                 onTap={() => setAddModalShow(true)}
+                dataTour='add-class'
             />
             {classes && (
                 <ClassDataTable

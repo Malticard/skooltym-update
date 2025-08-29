@@ -7,7 +7,6 @@ import { ChangeEvent } from 'react';
 import Seo from '@/shared/layout-components/seo/seo';
 import axios from 'axios';
 import React from 'react';
-import { StaffLogin } from '@/interfaces/StaffLogin';
 import { toast } from 'react-toastify';
 
 
@@ -68,7 +67,7 @@ const Home = () => {
                     if (user.isNewUser === true) {
                         toast.info("Logged in successfully, but first change your password.");
                         // Use window.location to ensure proper cookie handling
-                        window.location.href = '/dashboard/ChangePassword';
+                        navigate.replace('/dashboard/ChangePassword');
                     } else {
                         toast.success(message || "Logged in successfully.");
 
@@ -84,7 +83,7 @@ const Home = () => {
                         }
 
                         // Use window.location to ensure proper cookie handling
-                        window.location.href = targetUrl;
+                        navigate.replace(targetUrl);
                     }
                 } else {
                     toast.error("You are not authorized to access this page");
@@ -151,6 +150,7 @@ const Home = () => {
                                         </span>
                                     </div>
                                 </Col>
+
                                 <Col lg={12} xl={7} xs={12} sm={12} className="login_form ">
                                     <Container fluid>
                                         <Row className="row-sm">

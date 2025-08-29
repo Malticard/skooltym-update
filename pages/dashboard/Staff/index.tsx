@@ -57,6 +57,7 @@ const Checkout = () => {
         upload
         typeOfUpload='staff'
         onDownload={() => exportStaff()}
+        dataTour='add-staff'
       >
         <li className='breadcrumb-item'><Link href="/dashboard">Dashboard</Link></li>
         <li className='breadcrumb-item active'>Staff Data</li>

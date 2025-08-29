@@ -44,6 +44,7 @@ const Streams = () => {
                 active_item='Streams'
                 buttonText='Add Stream'
                 onTap={() => setAddModalShow(true)}
+                dataTour='add-stream'
             />
             {/* <b>{}</b> */}
             {!streams ? (<LoaderComponent />) : streams && (

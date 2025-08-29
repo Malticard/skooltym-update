@@ -37,7 +37,7 @@ export async function loginUser(email: string, password: string): Promise<AxiosR
 export async function classStreams(className: string): Promise<any[]> {
     try {
         let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
-        console.log("class name", className);
+        // console.log("class name", className);
         const response = await axios.get(AppUrls.studentClassStreams + className + '/' + data.school);
         const result = response.data;
         return result;
@@ -67,7 +67,7 @@ export async function fetchStaffSettings(): Promise<IStaffSettings> {
         const response = await axios.get(`${AppUrls.get_staff_settings}/${data.school}/get`);
         return (response.data);
     } catch (error: any) {
-        console.log(error);
+        // console.log(error);
         throw new Error(error);
     }
 }
@@ -84,7 +84,7 @@ export async function saveSettings(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        console.log(error.response.data);
+        // console.log(error.response.data);
         throw new Error(error.response.data);
     }
 }
@@ -94,7 +94,7 @@ export async function saveStaffSettings(data: FormData): Promise<any> {
     let scl = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         const plainObject = Object.fromEntries(data.entries());
-        console.log(plainObject);
+        // console.log(plainObject);
         let response = await axios.post(AppUrls.addStaffSettings + scl.school + '/update', plainObject, {
             headers: {
                 'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ export async function fetchPickUps(page = 1, limit = 10, startDate = "", endDate
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.getPickUps + data.school + `?page=${page}&pageSize=${limit}&startDate=${startDate}&endDate=${endDate}`);
-        console.log(response.data);
+        // console.log(response.data);
         return response.data;
     } catch (error: any) {
         throw new Error(error.toString());
@@ -271,7 +271,7 @@ export async function fetchDashBoardClasses(): Promise<ClassDataModel[]> {
     let data = JSON.parse(localStorage.getItem("skooltym_user") as string);
     try {
         let response = await axios.get(AppUrls.dashboard + data.school);
-        console.log(response.data);
+        // console.log(response.data);
         return ClassDataModelConvert.toClassDataModel(JSON.stringify(response.data));
     } catch (error: any) {
         throw new Error(error.toString());
@@ -323,7 +323,7 @@ export async function updateStudentData(data: FormData, id: any): Promise<any> {
         },);
         return response.data;
     } catch (error: any) {
-        console.log(error);
+        // console.log(error);
         throw new Error(error.toString());
     }
 }
@@ -412,7 +412,7 @@ export async function postStreamData(data: FormData): Promise<any> {
         });
         return response.data;
     } catch (error: any) {
-        console.dir(error)
+        // console.dir(error)
         throw new Error(error.toString());
     }
 }

@@ -91,7 +91,7 @@ const SettingsData: React.FC<SettingsDataProps> = ({ settings, handleUpdates }) 
     };
     return (
         <div className='sm:mx-25 xsm:mx-2'>
-            <Form method='POST' onSubmit={handleForm}>
+            <Form method='POST' onSubmit={handleForm} data-tour="settings-form">
                 {updateSettings.enable_drop_offs}
                 {/*  enable or disable drop offs */}
                 <SettingComponent title='Drop Off Switch' subTitle='Enable or disable drop offs' trailing={<SwitchComponent defaultChecked={updateSettings.enable_drop_offs} onChange={(b) => setUpdateSettings({
