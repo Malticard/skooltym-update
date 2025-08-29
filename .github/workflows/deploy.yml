@@ -53,7 +53,7 @@ jobs:
           cd ${{ secrets.SERVER_DESTINATION }}
           
           # Install ALL dependencies (including devDependencies for NestJS CLI)
-          npm ci && npm run build
+          npm i && npm run build
 
           # Set proper permissions
           find . -type f -name "*.js" -exec chmod 644 {} \;
