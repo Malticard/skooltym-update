@@ -486,7 +486,7 @@ const SkooltymTourProvider: React.FC<SkooltymTourProviderProps> = ({ children })
           const currentStep = state?.currentStep ?? 0;
           const sidebarSteps = [1, 3, 5, 7, 9, 11, 13]; // Navigation steps for sidebar items
           const isSidebarStep = sidebarSteps.includes(currentStep);
-
+          // handleStepChange(currentStep);
           return {
             ...base,
             borderRadius: 12,

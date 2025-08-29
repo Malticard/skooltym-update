@@ -1,4 +1,7 @@
 node_modules
 /dist
-.next
-.git
+/.next
+
+# github configs
+/.git
+.git/
