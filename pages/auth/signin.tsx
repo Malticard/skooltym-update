@@ -21,11 +21,11 @@ const Home = () => {
     const [serverMessage, setServerMessage] = useState("");
     const { contact, password } = data;
     let navigate = useRouter();
-    
+
     // Get redirect URL from query params
     const redirectUrl = navigate.query.redirect as string;
     const returnParams = navigate.query.returnParams as string;
-    
+
     React.useEffect(() => {
         // const user = localStorage.getItem("skooltym_user");
     }, [])
@@ -52,13 +52,6 @@ const Home = () => {
             if (response.status === 200) {
                 const { user, message, sessionId } = response.data;
 
-                console.log('🔐 Frontend - Login successful:', {
-                    user: user.id,
-                    role: user.role,
-                    sessionId,
-                    aboutToRedirect: true
-                });
-
                 // Store user data and session in localStorage for compatibility
                 localStorage.setItem("skooltym_user", JSON.stringify({
                     ...user,
@@ -78,10 +71,10 @@ const Home = () => {
                         window.location.href = '/dashboard/ChangePassword';
                     } else {
                         toast.success(message || "Logged in successfully.");
-                        
+
                         // Determine where to redirect
                         let targetUrl = '/dashboard'; // default
-                        
+
                         if (redirectUrl) {
                             targetUrl = redirectUrl;
                             // Add back the original query params if they existed
@@ -89,7 +82,7 @@ const Home = () => {
                                 targetUrl += returnParams;
                             }
                         }
-                        
+
                         // Use window.location to ensure proper cookie handling
                         window.location.href = targetUrl;
                     }
@@ -100,7 +93,7 @@ const Home = () => {
             }
         } catch (error: any) {
             setLoading(false);
-
+            console.log(error)
             // Handle different types of errors from the server
             if (error.response?.data) {
                 const { message, code } = error.response.data;

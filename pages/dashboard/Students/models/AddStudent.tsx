@@ -6,7 +6,6 @@ import FormElement from './FormElement';
 import SelectComponent, { Option } from './SelectComponent';
 import SwitchTile from './SwitchTile';
 import { SchoolClass } from '@/interfaces/ClassModel';
-import { Stream } from '@/interfaces/StreamModel';
 import { classStreams, postStudentData } from '@/utils/data_fetch';
 import LiveImageComponent from '../../components/LiveImageComponent';
 import { toast } from 'react-toastify';

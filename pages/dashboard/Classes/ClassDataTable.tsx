@@ -9,6 +9,7 @@ import { deleteClassData } from '@/utils/data_fetch';
 import { ClassResponse, SchoolClass } from '@/interfaces/ClassesModel';
 import { Stream } from '@/interfaces/StreamModel';
 import AddClass from './models/AddClass';
+import { mutate } from 'swr';
 
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
@@ -107,12 +108,12 @@ export default function ClassDataTable({
     const handleSave = (newClass: SchoolClass) => {
         setAddModalShow(false);
         setData(prevData => [newClass, ...prevData]);
-        handleUpdates();
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
-        handleUpdates();
+
+        mutate("fetchClasses");
     };
 
     const handleSaveDelete = async () => {
@@ -122,7 +123,7 @@ export default function ClassDataTable({
         try {
             await deleteClassData(currentClass._id);
             setDeleteModalShow(false);
-            handleUpdates();
+            mutate("fetchClasses");
         } catch (error) {
             console.error("Error deleting class:", error);
         } finally {

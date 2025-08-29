@@ -10,6 +10,7 @@ import AddStream from './models/AddStream';
 import { PaginatedStreamResult, Stream } from '@/interfaces/StreamModel';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { mutate } from 'swr';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -102,7 +103,7 @@ export default function StreamDataTable({
         try {
             await deleteStreamData(currentStream._id);
             setDeleteModalShow(false);
-            handleUpdates();
+            mutate("fetchStreams");
             toast.success("Stream deleted successfully", {
                 position: "top-right",
                 autoClose: 3000,

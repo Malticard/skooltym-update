@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             staff_contact,
             staff_password
         });
-
+        console.log(response.data)
         if (response.status !== 200 || !response.data) {
             return res.status(401).json({
                 message: 'Invalid credentials',
@@ -54,8 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
     } catch (error: any) {
-        if (error.response?.status === 401) {
-            return res.status(401).json({
+        console.log("Error" + error)
+        if (error.response?.status === 400) {
+            return res.status(400).json({
                 message: 'Invalid credentials',
                 code: 'INVALID_CREDENTIALS'
             });

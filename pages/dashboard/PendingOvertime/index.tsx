@@ -13,8 +13,8 @@ const PendingOvertime = () => {
     const [user, setUser] = React.useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
     // load data
-    // payment modal
-    const { data: pending, mutate, error } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], async () => await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate));
+    // payment modal [page, limit, dateChange.startDate, dateChange.endDate]
+    const { data: pending, mutate, error } = useSWR("pending-overtime", async () => await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate));
     // on change of page
     const onChangePage = (data: number) => {
         setPages(data);
@@ -64,7 +64,6 @@ const PendingOvertime = () => {
                 pending && (
                     <PendingDataTable
                         pendingData={pending}
-
                         updatePage={onChangePage}
                         updateLimit={changeLimit}
                     />

@@ -12,6 +12,7 @@ import AddStudent from './models/AddStudent';
 import { deleteStudentData } from '@/utils/data_fetch';
 import LiveImageComponent from '../components/LiveImageComponent';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 export default function StudentsDataTable({
@@ -124,15 +125,13 @@ export default function StudentsDataTable({
     const handleSave = (dat: StudentResult) => {
         setAddModalShow(false);
         setData([dat, ...data]);
-        // toast.success("Student data updated successfully")
-        handleUpdates();
+        mutate("fetchStudents");
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
         toast.success("Student data updated successfully");
-        handleUpdates();
-        window.location.reload();
+        mutate("fetchStudents");
     };
 
     const handleSaveDelete = async () => {
@@ -143,7 +142,7 @@ export default function StudentsDataTable({
             await deleteStudentData(currentStudent?._id as string);
             setDeleteModalShow(false);
             toast.success("Student deleted successfully");
-            handleUpdates();
+            mutate("fetchStudents");
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred while deleting the student');
             toast.error("Error deleting student");
@@ -155,6 +154,7 @@ export default function StudentsDataTable({
     const handlePageChange = (page: number) => {
         // setCurrentPage(page);
         updatePage(page);
+        mutate("fetchStudents");
     };
 
     if (error) {

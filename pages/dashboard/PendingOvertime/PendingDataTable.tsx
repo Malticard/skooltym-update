@@ -128,6 +128,7 @@ export default function PendingDataTable({
             {/* Modal for add a payment - Only render when overtimeData exists */}
             {openAddPayment && overtimeData && (
                 <AddPayment
+                    overtime={overtimeData._id}
                     show={openAddPayment}
                     user={userData}
                     handleClose={() => setAddPayment(false)}

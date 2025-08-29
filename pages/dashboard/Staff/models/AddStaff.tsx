@@ -8,6 +8,7 @@ import { Staff } from '@/interfaces/StaffModel';
 import { Role } from '@/interfaces/RolesModel';
 import LiveImageComponent from '../../components/LiveImageComponent';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
 const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow, handleSave }: { roles: Role[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (student: Staff) => void }) => {
     const options = [] as Option[];
@@ -54,7 +55,7 @@ const AddStaff = ({ addModalShow, roles, loadingClasses = false, setAddModalShow
             toast.success('Staff added successfully');
             handleSave(res);
             setPosting(false)
-            // window.location.reload();
+            mutate("fetchStaff");
         }).catch((err) => {
             console.log(err);
             toast.error(err.toString());

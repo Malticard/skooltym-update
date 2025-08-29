@@ -12,6 +12,7 @@ import AddGuardian from './models/AddGuardian';
 import LiveImageComponent from '../components/LiveImageComponent';
 import { GuardianStudent } from '@/interfaces/GuardianStudents';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
 // Define proper types for DataTableExtensions
 interface DataTableExtensionsProps {
@@ -86,13 +87,13 @@ export default function GuardianDataTable({
 
     const handleSave = (newGuardian: Guardian) => {
         setData(prevData => [newGuardian, ...prevData]);
-        handleSync();
+        mutate("fetchGuardians");
         setAddModalShow(false);
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
-        handleSync()
+        mutate("fetchGuardians");
     };
 
     const handleSaveDelete = async () => {
@@ -102,7 +103,7 @@ export default function GuardianDataTable({
         try {
             await deleteGuardianData(currentGuardian._id);
             setDeleteModalShow(false);
-            handleSync();
+            mutate("fetchGuardians");
             toast.success("Deleted guardian successfully");
         } catch (error) {
             console.error("Error deleting guardian:", error);

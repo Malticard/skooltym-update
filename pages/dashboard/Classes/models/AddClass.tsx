@@ -6,6 +6,7 @@ import SelectComponent, { Option } from '../../Staff/models/SelectComponent';
 import { Stream } from '@/interfaces/StreamModel';
 import { SchoolClass } from '@/interfaces/ClassModel';
 import FormElement from '../../Staff/models/FormElement';
+import { mutate } from 'swr';
 
 const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { streams: Stream[]; loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (classData: SchoolClass) => void }) => {
 
@@ -35,9 +36,10 @@ const AddClass = ({ addModalShow, streams, setAddModalShow, handleSave }: { stre
 
         // posting data
         postClassData(formData).then((res) => {
-            handleSave(res);
+
             setPosting(false)
             setClassData({});
+            mutate("fetchClasses");
         }).catch((err) => {
             setMessage(err.toString());
         })

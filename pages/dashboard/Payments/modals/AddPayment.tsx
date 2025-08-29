@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Button, Spinner } from 'react-bootstrap';
 import { processPayment } from '@/utils/data_fetch';
 import { AuthenticatedUserModel } from '@/interfaces/AuthenticatedUserModel';
+import { mutate } from 'swr';
 
 interface AddPaymentProps {
     show: boolean;
@@ -10,6 +11,7 @@ interface AddPaymentProps {
     guardian: string;
     student: string;
     studentId: string;
+    overtime: string;
     guardianId: string;
     user: AuthenticatedUserModel
 }
@@ -21,7 +23,7 @@ const AddPayment: React.FC<AddPaymentProps> = ({
     guardian,
     student,
     studentId,
-    guardianId, user
+    guardianId, user, overtime
 }) => {
     const [isAddingPayment, setIsAddingPayment] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("Cash");
@@ -37,6 +39,7 @@ const AddPayment: React.FC<AddPaymentProps> = ({
         formData.append('school', user.school);
         formData.append('guardian', guardianId);
         formData.append('comment', paymentComment);
+        formData.append('overtime', overtime);
         formData.append('payment_method', paymentMethod);
         formData.append('staff', user.id);
         formData.append("paid_amount", paidAmount);
@@ -45,7 +48,8 @@ const AddPayment: React.FC<AddPaymentProps> = ({
         // console.log(f);
         processPayment(formData).then((res) => {
             setIsAddingPayment(false);
-            window.location.reload();
+            mutate("pending-overtime");
+            handleClose();
         }).catch((err) => {
             console.log(err);
             setIsAddingPayment(false);

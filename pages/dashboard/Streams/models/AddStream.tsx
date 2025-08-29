@@ -5,6 +5,7 @@ import { postStreamData } from '@/utils/data_fetch';
 import { Stream } from '@/interfaces/StreamModel';
 import FormElement from '../../Staff/models/FormElement';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
 const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handleSave }: { loadingClasses: boolean; addModalShow: boolean; setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>, handleSave: (streamData: Stream) => void }) => {
     const [streamData, setStreamData] = React.useState({} as Stream);
@@ -31,10 +32,11 @@ const AddClass = ({ addModalShow, loadingClasses = false, setAddModalShow, handl
             handleSave(res);
             setStreamData({} as Stream);
             setPosting(false)
+            mutate("fetchStreams");
         }).catch((err) => {
             console.warn(err);
             setMessage(err.toString());
-            toast.error(err.toString);
+            toast.error(err.toString());
             setPosting(false)
         })
     }

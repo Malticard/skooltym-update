@@ -33,7 +33,6 @@ const Guardian = () => {
     const handleUpdatesSync = async () => {
         const result = await fetchGuardians(page, limit,);
         mutateGuardians(result);
-        window.location.reload();
     }
     // handle limit
     const onChangeLimit = async (newLimit: number) => {

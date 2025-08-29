@@ -11,6 +11,7 @@ import { Role } from '@/interfaces/RolesModel';
 import AddStaff from './models/AddStaff';
 import LiveImageComponent from '../components/LiveImageComponent';
 import StaffDetailsComponent from './StaffDetailsComponent';
+import { mutate } from 'swr';
 
 interface DataTableExtensionsProps {
     columns: any[];
@@ -57,9 +58,6 @@ export default function StaffDataTable({
     };
     const setSData = staff ?? defaultData;
     const [data, setData] = React.useState<Staff[]>(setSData.results);
-    // const [currentPage, setCurrentPage] = React.useState(setSData.currentPage);
-    // const [pageSize, setPageSize] = React.useState(setSData.pageSize);
-    // const [totalDocuments, setTotalDocuments] = React.useState(setSData.totalDocuments);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -84,12 +82,12 @@ export default function StaffDataTable({
     const handleSave = (newStaff: Staff) => {
         setData(prevData => [newStaff, ...prevData]);
         setAddModalShow(false);
+        mutate("fetchStaff");
     };
 
     const handleSaveEdit = () => {
         setEditModalShow(false);
-        handleUpdates();
-        // window.location.reload();
+        mutate("fetchStaff");
     };
 
     const handleSaveDelete = async () => {
@@ -99,8 +97,7 @@ export default function StaffDataTable({
         try {
             await deleteStaffData(currentStaff._id);
             setDeleteModalShow(false);
-            handleUpdates();
-            window.location.reload();
+            mutate("fetchStaff");
         } catch (error) {
             console.error("Error deleting staff:", error);
         } finally {
