@@ -17,27 +17,32 @@ const PickUps = () => {
     });
 
     // Use SWR for data fetching
-    const { data: pickUp, error, isValidating, mutate } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], async () => await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate));
+    const { data: pickUp, error, isValidating, mutate } = useSWR(
+        [page, limit, dateChange.startDate, dateChange.endDate], 
+        () => fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate)
+    );
 
     // Handle page change
-    const onChangePage = async (newPage: number) => {
-        setPage(newPage); // SWR will refetch when page changes
-        const result = await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    };
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
     // handle limit change
-    const onChangeLimit = async (lm: number) => {
-        setLimit(lm);
-        const result = await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    };
+    const onChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
     console.log(pickUp);
     // handle date change
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data)
-        const result = await fetchPickUps(page, limit, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    }
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
 
     if (error) return <div>Error loading PickUps: {error.message}</div>;
 
@@ -51,15 +56,12 @@ const PickUps = () => {
                     exportData={(data) => exportPickUpRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
-            {isValidating ? (<LoaderComponent />) : (<>
-                {pickUp && (
-                    <PickUpDataTable
-                        pickUpData={pickUp}
-                        updatePage={onChangePage}
-                        updateLimit={onChangeLimit}
-                    />
-                )}
-            </>)}
+            <PickUpDataTable
+                pickUpData={pickUp || null}
+                updatePage={onChangePage}
+                updateLimit={onChangeLimit}
+                isLoading={isValidating}
+            />
 
         </div>
     );

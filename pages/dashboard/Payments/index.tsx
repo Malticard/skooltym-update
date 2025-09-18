@@ -12,27 +12,32 @@ const Payments = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
-    // Using SWR to handle data fetching
-    const { data: payments, error, isValidating, mutate } = useSWR([page, limit, dateChange.startDate, dateChange.endDate], () => fetchPayments(page));
+    // Using SWR to handle data fetching with proper dependency array
+    const { data: payments, error, isValidating, mutate } = useSWR(
+        [page, limit, dateChange.startDate, dateChange.endDate], 
+        () => fetchPayments(page, limit, dateChange.startDate, dateChange.endDate)
+    );
 
     // Handle page change for pagination
-    const onChangePage = (newPage: number) => {
-        setPage(newPage); // SWR will refetch when page changes
-        const result = fetchPayments(newPage, limit, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    };
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
 
-    const onChangeLimit = async (newLimit: number) => {
-        setLimit(newLimit);
-        const result = await fetchPayments(page, limit, dateChange.startDate, dateChange.endDate)
-        mutate(result);
-    }
-    // handle date 
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data)
-        const result = await fetchPayments(page, limit, data.startDate, data.endDate);
-        mutate(result);
-    }
+    const onChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
+    // Handle date filter changes
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
     if (error) return <div>Error loading Payments: {error.message}</div>;
 
     return (
@@ -43,13 +48,12 @@ const Payments = () => {
                 enableActions
                 exportData={() => exportPaymentRecords(dateChange.startDate, dateChange.endDate)}
                 handleFilter={handleDateChange} />
-            {payments && (
-                <PaymentDataTable
-                    clearedData={payments}
-                    updateLimit={onChangeLimit}
-                    updatePage={onChangePage}
-                />
-            )}
+            <PaymentDataTable
+                clearedData={payments || null}
+                updateLimit={onChangeLimit}
+                updatePage={onChangePage}
+                isLoading={isValidating}
+            />
         </div>
     );
 };

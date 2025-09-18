@@ -12,26 +12,31 @@ const ClearedOvertime = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
     const [dataChange, setDataChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
-    // load data
-    const { data: cleared, mutate, error } = useSWR([page, limit, dataChange.startDate, dataChange.endDate], async () => await fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate));
-    // on change of page
-    const onChangePage = (page: number) => {
-        setPage(page);
-        const result = fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate);
-        mutate(result);
-    }
-    // handle limit change
-    const onChangeLimit = async (lm: number) => {
-        setLimit(lm);
-        const result = await fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate);
-        mutate(result);
-    }
-    // handle date change 
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDataChange(data)
-        const result = await fetchClearedOvertime(page, limit, data.startDate, data.endDate);
-        mutate(result);
-    }
+    // Using SWR to handle data fetching with proper dependency array
+    const { data: cleared, mutate, error, isValidating } = useSWR(
+        [page, limit, dataChange.startDate, dataChange.endDate], 
+        () => fetchClearedOvertime(page, limit, dataChange.startDate, dataChange.endDate)
+    );
+    // Handle page change for pagination
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
+    // Handle limit change
+    const onChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
+    // Handle date filter changes
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dataChange.startDate || data.endDate !== dataChange.endDate) {
+            setDataChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dataChange.startDate, dataChange.endDate]);
     return (
         <div className='my-2'>
             <Seo title="Cleared Overtime" />
@@ -47,15 +52,12 @@ const ClearedOvertime = () => {
             </div>
 
 
-            {
-                cleared && (
-                    <ClearedDataTable
-                        clearedData={cleared}
-                        updatePage={onChangePage}
-                        updateLimit={onChangeLimit}
-                    />
-                )
-            }
+            <ClearedDataTable
+                clearedData={cleared || null}
+                updatePage={onChangePage}
+                updateLimit={onChangeLimit}
+                isLoading={isValidating}
+            />
         </div>
     );
 };

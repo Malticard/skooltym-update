@@ -14,7 +14,7 @@ import { mutate } from 'swr';
 const DataTableExtensions: any = dynamic(() => import('react-data-table-component-extensions'), { ssr: false });
 
 interface ClassDataTableProps {
-    classData: ClassResponse;
+    classData: ClassResponse | null;
     handleUpdates: () => void;
     streams: Stream[];
     addModalShow: boolean;
@@ -22,6 +22,7 @@ interface ClassDataTableProps {
     loadingClasses: boolean;
     updatePage: (value: number) => void;
     updateRows: (value: number) => void;
+    isLoading?: boolean;
 }
 
 export default function ClassDataTable({
@@ -32,37 +33,30 @@ export default function ClassDataTable({
     setAddModalShow,
     loadingClasses,
     updatePage,
-    updateRows
+    updateRows,
+    isLoading = false
 }: ClassDataTableProps) {
-    // Provide default values when classData is undefined
-    const defaultData: ClassResponse = {
-        results: [],
-        currentPage: 1,
-        pageSize: 10,
-        totalDocuments: 0,
-        totalPages: 0
-    };
+    // Use useMemo for derived state to avoid unnecessary re-renders
+    const data = React.useMemo(() => {
+        return classData?.results || [];
+    }, [classData?.results]);
 
-    // Use nullish coalescing to handle undefined classData
-    const safeData = classData ?? defaultData;
+    const currentPage = React.useMemo(() => {
+        return classData?.currentPage || 1;
+    }, [classData?.currentPage]);
 
-    const [data, setData] = React.useState<SchoolClass[]>(safeData.results);
-    const [currentPage, setCurrentPage] = React.useState(safeData.currentPage);
-    const [pageSize] = React.useState(safeData.pageSize);
-    const [totalDocuments, setTotalDocuments] = React.useState(safeData.totalDocuments);
+    const pageSize = React.useMemo(() => {
+        return classData?.pageSize || 10;
+    }, [classData?.pageSize]);
+
+    const totalDocuments = React.useMemo(() => {
+        return classData?.totalDocuments || 0;
+    }, [classData?.totalDocuments]);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
     const [currentClass, setCurrentClass] = React.useState<SchoolClass>({} as SchoolClass);
 
-    // Update state when classData changes
-    React.useEffect(() => {
-        if (classData) {
-            setData(classData.results);
-            setCurrentPage(classData.currentPage);
-            setTotalDocuments(classData.totalDocuments);
-        }
-    }, [classData]);
 
     const columns = [
         {
@@ -107,7 +101,7 @@ export default function ClassDataTable({
 
     const handleSave = (newClass: SchoolClass) => {
         setAddModalShow(false);
-        setData(prevData => [newClass, ...prevData]);
+        mutate("fetchClasses");
     };
 
     const handleSaveEdit = () => {
@@ -131,10 +125,17 @@ export default function ClassDataTable({
         }
     };
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
+    const handlePageChange = React.useCallback((page: number) => {
+        if (page !== currentPage && !isLoading) {
+            updatePage(page);
+        }
+    }, [currentPage, updatePage, isLoading]);
+
+    const handleRowsPerPageChange = React.useCallback((newPerPage: number, _page: number) => {
+        if (newPerPage !== pageSize && !isLoading) {
+            updateRows(newPerPage);
+        }
+    }, [pageSize, updateRows, isLoading]);
 
     const tableData = {
         columns,
@@ -152,8 +153,21 @@ export default function ClassDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={(page, tt) => handlePageChange(page)}
-                    onChangeRowsPerPage={(limit, page) => updateRows(limit)}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    progressPending={isLoading}
+                    progressComponent={
+                        <div className="p-4 text-center">
+                            <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-gray-500 bg-white transition ease-in-out duration-150">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading classes...
+                            </div>
+                        </div>
+                    }
+                    disabled={isLoading}
                     paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
                     paginationComponentOptions={{
                         noRowsPerPage: false,
@@ -163,7 +177,11 @@ export default function ClassDataTable({
                         selectAllRowsItemText: 'All',
                     }}
                     persistTableHead
-                    noDataComponent={<div className="p-4">No classes found</div>}
+                    noDataComponent={
+                        <div className="p-4 text-center text-gray-500">
+                            {isLoading ? "Loading..." : "No classes found"}
+                        </div>
+                    }
                 />
             </DataTableExtensions>
 

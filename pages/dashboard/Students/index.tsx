@@ -14,25 +14,28 @@ const Orders = () => {
     const [addModalShow, setAddModalShow] = React.useState(false);
 
     // Custom fetcher with dynamic arguments (e.g., page)
-    const { data: students, error, mutate } = useSWR("fetchStudents", () => fetchStudents(page, limit));
+    const { data: students, error, mutate, isValidating } = useSWR(
+        [page, limit], 
+        () => fetchStudents(page, limit)
+    );
     const { data: classes } = useSWR("fetchClasses", async () => await fetchClasses(1, 100));
     // Handle pagination changes
-    const onChangePage = (newPage: number) => {
-        setPage(newPage); // Update the page state, SWR will re-fetch the data for the new page
-    };
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
 
     // Update student data and revalidate
-    const handleUpdateStudent = async () => {
-
-        const result = await fetchStudents(page, limit);
-        mutate(result); // Re-fetch data after update
-
-    };
-    const onChangeLimit = async (lm: number) => {
-        setLimit(lm);
-        const result = await fetchStudents(page, limit);
-        mutate(result);
-    }
+    const handleUpdateStudent = React.useCallback(() => {
+        mutate(); // Re-fetch data after update
+    }, [mutate]);
+    const onChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
 
     return (
         <>
@@ -50,17 +53,16 @@ const Orders = () => {
                 dataTour='add-student'
             />
             {/* Data Table */}
-            {students && (
-                <StudentsDataTable
-                    addModalShow={addModalShow}
-                    setAddModalShow={setAddModalShow}
-                    classes={classes?.results ?? []}
-                    updatePage={onChangePage}
-                    updateLimit={onChangeLimit}
-                    students={students}
-                    handleUpdates={handleUpdateStudent} // Pass update function
-                />
-            )}
+            <StudentsDataTable
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                classes={classes?.results ?? []}
+                updatePage={onChangePage}
+                updateLimit={onChangeLimit}
+                students={students}
+                handleUpdates={handleUpdateStudent}
+                isLoading={isValidating}
+            />
         </>
     );
 };

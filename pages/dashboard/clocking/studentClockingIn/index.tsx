@@ -17,32 +17,33 @@ const StudentClockingPage = () => {
 
     // Using SWR with automatic revalidation for student clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StudentClockingResponse>(
-        'fetchStudentClocking',
-        async () => await studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate),
-
+        [page, limit, dateChange.startDate, dateChange.endDate],
+        () => studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate),
     );
     // Handle error state
     if (clockingError) {
         return <div>Error loading student clocking data</div>;
     }
-    // function to handle mutating staff clocking
-    const handleChangePage = async (page: number) => {
-        setPage(page);
-        const clock = await studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
-        mutateClockingData(clock)
-    }
+    // function to handle mutating student clocking
+    const handleChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isClockingLoading) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isClockingLoading]);
 
-    const handleChangeLimit = async (lm: number) => {
-        setLimit(lm);
-        const clock = await studentClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
-        mutateClockingData(clock)
-    }
+    const handleChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isClockingLoading) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isClockingLoading]);
     // handleDate change
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data)
-        const clock = await studentClockingIn(page, limit, data.startDate, data.endDate);
-        mutateClockingData(clock)
-    }
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
     return (
         <div className='my-2'>
             <Seo title="Student Clock In" />
@@ -57,11 +58,12 @@ const StudentClockingPage = () => {
                     exportData={() => exportStudentClockInRecords(dateChange.startDate, dateChange.endDate)}
                     handleFilter={handleDateChange} />
             </div>
-            {clockingData && (<StudentClockingDataTable
+            <StudentClockingDataTable
                 updatePage={handleChangePage}
                 updateLimit={handleChangeLimit}
-                clockingData={clockingData}
-            />)}
+                clockingData={clockingData || null}
+                isLoading={isClockingLoading}
+            />
         </div>
     );
 };

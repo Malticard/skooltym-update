@@ -13,24 +13,27 @@ const Streams = () => {
 
 
     // Fetch streams with SWR and dynamic pagination
-    const { data: streams, error, mutate: mutateStream } = useSWR("fetchStreams", () => fetchStream(page, limit));
+    const { data: streams, error, mutate: mutateStream, isValidating } = useSWR(
+        [page, limit], 
+        () => fetchStream(page, limit)
+    );
     // console.log(streams);
     // Handle page change for pagination
-    const onChangePage = async (newPage: number) => {
-        setPage(newPage); // Set new page number
-        const result = await fetchStream(newPage, limit);
-        mutateStream(result); // Revalidate data on page change
-    };
-    const updates = async () => {
-        const streams = await fetchStream(page, limit);
-        mutateStream(streams);
-    }
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
+    const updates = React.useCallback(() => {
+        mutateStream(); // Re-fetch data after update
+    }, [mutateStream]);
     // handle updated limit
-    const updateLimit = async (lm: number) => {
-        setLimit(lm);
-        const streams = await fetchStream(page, limit);
-        mutateStream(streams);
-    }
+    const updateLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
     // if (streamLoading) return <LoaderComponent />;
     if (error) return <div>Error loading streams</div>;
 
@@ -47,16 +50,15 @@ const Streams = () => {
                 dataTour='add-stream'
             />
             {/* <b>{}</b> */}
-            {!streams ? (<LoaderComponent />) : streams && (
-                <StreamDataTable
-                    addModalShow={addModalShow}
-                    setAddModalShow={setAddModalShow}
-                    updatePage={onChangePage}
-                    updateLimit={updateLimit}
-                    streamData={streams}
-                    handleUpdates={updates}
-                />
-            )}
+            <StreamDataTable
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                updatePage={onChangePage}
+                updateLimit={updateLimit}
+                streamData={streams || null}
+                handleUpdates={updates}
+                isLoading={isValidating}
+            />
         </div>
     );
 };

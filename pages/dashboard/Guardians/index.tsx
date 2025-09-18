@@ -11,11 +11,15 @@ import LoaderComponent from '@/pages/components/LoaderComponent';
 const Guardian = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
-    const { data: guardians, isValidating, isLoading, mutate: mutateGuardians } = useSWR("fetchGuardians", async () => await fetchGuardians(page, limit), {
-        refreshInterval: 0, // Disable polling as we'll use WebSocket
-        revalidateOnFocus: true, // Still revalidate on focus
-        dedupingInterval: 2000, // Prevent duplicate requests
-    });
+    const { data: guardians, isValidating, isLoading, mutate: mutateGuardians } = useSWR(
+        [page, limit], 
+        () => fetchGuardians(page, limit), 
+        {
+            refreshInterval: 0, // Disable polling as we'll use WebSocket
+            revalidateOnFocus: true, // Still revalidate on focus
+            dedupingInterval: 2000, // Prevent duplicate requests
+        }
+    );
     const { data: students } = useSWR("students", async () => await fetchStudentsNoPaginate());
     // fetch guardian students
     const { data: guardianStudents } = useSWR("guardianStudents", async () => await fetchGuardianStudents());
@@ -25,21 +29,21 @@ const Guardian = () => {
         return
     }
     // methods for change of page
-    const onChangePage = async (page: number) => {
-        setPage(page)
-        const result = await fetchGuardians(page, limit);
-        mutateGuardians(result);
-    }
-    const handleUpdatesSync = async () => {
-        const result = await fetchGuardians(page, limit,);
-        mutateGuardians(result);
-    }
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
+    const handleUpdatesSync = React.useCallback(() => {
+        mutateGuardians(); // Re-fetch data after update
+    }, [mutateGuardians]);
     // handle limit
-    const onChangeLimit = async (newLimit: number) => {
-        setLimit(newLimit)
-        const result = await fetchGuardians(page, limit);
-        mutateGuardians(result);
-    }
+    const onChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
 
     return (
         <div className='my-2'>
@@ -58,7 +62,7 @@ const Guardian = () => {
                 dataTour='add-guardian'
             />
             {/* <!-- Row --> */}
-            {guardians && (<GuardianDataTable
+            <GuardianDataTable
                 addModalShow={addModalShow}
                 setAddModalShow={setAddModalShow}
                 guardianStudents={guardianStudents}
@@ -66,8 +70,9 @@ const Guardian = () => {
                 handleSync={handleUpdatesSync}
                 updatePage={onChangePage}
                 updateLimit={onChangeLimit}
-                guardians={guardians}
-            />)}
+                guardians={guardians || null}
+                isLoading={isValidating}
+            />
             {/* <!-- End Row --> */}
         </div>
     )

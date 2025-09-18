@@ -21,28 +21,34 @@ const DataTableExtensions = dynamic<DataTableExtensionsProps>(
 );
 
 interface DropOffDataTableProps {
-    dropOffData: DropoffRecordsResponse;
+    dropOffData: DropoffRecordsResponse | null;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
+    isLoading?: boolean;
 }
 
 export default function DropOffDataTable({
     dropOffData,
-    updatePage, updateLimit
+    updatePage, 
+    updateLimit,
+    isLoading = false
 }: DropOffDataTableProps) {
-    const [data, setData] = React.useState<DropoffRecord[]>([]);
-    // const [currentPage, setCurrentPage] = React.useState(1);
-    // const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+    // Use useMemo for derived state to avoid unnecessary re-renders
+    const data = React.useMemo(() => {
+        return dropOffData?.results || [];
+    }, [dropOffData?.results]);
 
-    React.useEffect(() => {
-        if (dropOffData) {
-            setData(dropOffData.results || []);
-            // setCurrentPage(dropOffData.currentPage || 1);
-            // setPageSize(dropOffData.pageSize || 10);
-            setTotalDocuments(dropOffData.totalDocuments || 0);
-        }
-    }, [dropOffData]);
+    const currentPage = React.useMemo(() => {
+        return dropOffData?.currentPage || 1;
+    }, [dropOffData?.currentPage]);
+
+    const pageSize = React.useMemo(() => {
+        return dropOffData?.pageSize || 10;
+    }, [dropOffData?.pageSize]);
+
+    const totalDocuments = React.useMemo(() => {
+        return dropOffData?.totalDocuments || 0;
+    }, [dropOffData?.totalDocuments]);
 
     const columns = [
         {
@@ -81,11 +87,17 @@ export default function DropOffDataTable({
         },
     ];
 
-    const handlePageChange = (page: number) => {
-        // setCurrentPage(page);
-        console.log(`Page ${page}`);
-        updatePage(page);
-    };
+    const handlePageChange = React.useCallback((page: number) => {
+        if (page !== currentPage && !isLoading) {
+            updatePage(page);
+        }
+    }, [currentPage, updatePage, isLoading]);
+
+    const handleRowsPerPageChange = React.useCallback((newPerPage: number, _page: number) => {
+        if (newPerPage !== pageSize && !isLoading) {
+            updateLimit(newPerPage);
+        }
+    }, [pageSize, updateLimit, isLoading]);
 
     const tableData: DataTableExtensionsProps = {
         columns,
@@ -105,18 +117,31 @@ export default function DropOffDataTable({
                     pagination
                     fixedHeader
                     paginationServer
-                    paginationTotalRows={dropOffData?.totalDocuments ?? 0}
-                    paginationDefaultPage={dropOffData?.totalPages ?? 1}
-                    paginationPerPage={dropOffData?.pageSize ?? 1}
-                    onChangePage={(page, total) => handlePageChange(page)}
-                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
+                    paginationTotalRows={totalDocuments}
+                    paginationDefaultPage={currentPage}
+                    paginationPerPage={pageSize}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    progressPending={isLoading}
+                    progressComponent={
+                        <div className="p-4 text-center">
+                            <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-gray-500 bg-white transition ease-in-out duration-150">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading drop-off records...
+                            </div>
+                        </div>
+                    }
+                    disabled={isLoading}
                     responsive
                     striped
                     persistTableHead
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
-                            No drop-off records found
+                            {isLoading ? "Loading..." : "No drop-off records found"}
                         </div>
                     }
 

@@ -11,30 +11,34 @@ const DataTableExtensions: any = dynamic(() =>
 );
 
 interface PaymentDataTableProps {
-    clearedData: PaginatedResponse
+    clearedData: PaginatedResponse | null;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
+    isLoading?: boolean;
 }
 
 export default function PaymentDataTable({
     clearedData,
     updateLimit,
-    updatePage
+    updatePage,
+    isLoading = false
 }: PaymentDataTableProps) {
-    const [data, setData] = React.useState<Payment[]>([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [totalDocuments, setTotalDocuments] = React.useState(0);
+    // Safely extract data from clearedData with proper defaults
+    const data = React.useMemo(() => {
+        return clearedData?.results || [];
+    }, [clearedData?.results]);
 
-    // Update state when clearedData changes
-    React.useEffect(() => {
-        if (clearedData) {
-            setData(clearedData.results || []);
-            setCurrentPage(clearedData.currentPage || 1);
-            setPageSize(clearedData.pageSize || 10);
-            setTotalDocuments(clearedData.totalDocuments || 0);
-        }
-    }, [clearedData]);
+    const currentPage = React.useMemo(() => {
+        return clearedData?.currentPage || 1;
+    }, [clearedData?.currentPage]);
+
+    const pageSize = React.useMemo(() => {
+        return clearedData?.pageSize || 10;
+    }, [clearedData?.pageSize]);
+
+    const totalDocuments = React.useMemo(() => {
+        return clearedData?.totalDocuments || 0;
+    }, [clearedData?.totalDocuments]);
 
     const columns = [
         {
@@ -70,10 +74,17 @@ export default function PaymentDataTable({
         }
     ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
+    const handlePageChange = React.useCallback((page: number) => {
+        if (page !== currentPage && !isLoading) {
+            updatePage(page);
+        }
+    }, [currentPage, updatePage, isLoading]);
+
+    const handleRowsPerPageChange = React.useCallback((newPerPage: number, _page: number) => {
+        if (newPerPage !== pageSize && !isLoading) {
+            updateLimit(newPerPage);
+        }
+    }, [pageSize, updateLimit, isLoading]);
 
     const tableData = {
         columns,
@@ -94,10 +105,23 @@ export default function PaymentDataTable({
                     onChangePage={handlePageChange}
                     responsive
                     striped
-                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    progressPending={isLoading}
+                    progressComponent={
+                        <div className="p-4 text-center">
+                            <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-gray-500 bg-white transition ease-in-out duration-150">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading payments...
+                            </div>
+                        </div>
+                    }
+                    disabled={isLoading}
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
-                            No payment records found
+                            {isLoading ? "Loading..." : "No payment records found"}
                         </div>
                     }
                     persistTableHead

@@ -23,9 +23,10 @@ interface PickupResponse {
 }
 
 interface PickUpDataTableProps {
-    pickUpData: PickupResponse;
+    pickUpData: PickupResponse | null;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
+    isLoading?: boolean;
 }
 
 const DataTableExtensions = dynamic<DataTableExtensionsProps>(
@@ -36,16 +37,32 @@ const DataTableExtensions = dynamic<DataTableExtensionsProps>(
 export default function PickUpDataTable({
     pickUpData,
     updatePage,
-    updateLimit
+    updateLimit,
+    isLoading = false
 }: PickUpDataTableProps) {
-    const [data, setData] = React.useState<PickupRecord[]>(pickUpData?.results);
+    // Use useMemo for derived state to avoid unnecessary re-renders
+    const data = React.useMemo(() => {
+        return pickUpData?.results || [];
+    }, [pickUpData?.results]);
+
+    const currentPage = React.useMemo(() => {
+        return pickUpData?.currentPage || 1;
+    }, [pickUpData?.currentPage]);
+
+    const pageSize = React.useMemo(() => {
+        return pickUpData?.pageSize || 10;
+    }, [pickUpData?.pageSize]);
+
+    const totalDocuments = React.useMemo(() => {
+        return pickUpData?.totalDocuments || 0;
+    }, [pickUpData?.totalDocuments]);
 
 
     const columns = [
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: PickupRecord) => (
-                <LiveImageComponent url={row.student_name.student_profile_pic} />
+                <LiveImageComponent url={row.student_name?.student_profile_pic ?? ''} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -84,7 +101,17 @@ export default function PickUpDataTable({
         },
     ];
 
+    const handlePageChange = React.useCallback((page: number) => {
+        if (page !== currentPage && !isLoading) {
+            updatePage(page);
+        }
+    }, [currentPage, updatePage, isLoading]);
 
+    const handleRowsPerPageChange = React.useCallback((newPerPage: number, _page: number) => {
+        if (newPerPage !== pageSize && !isLoading) {
+            updateLimit(newPerPage);
+        }
+    }, [pageSize, updateLimit, isLoading]);
 
     const tableData: DataTableExtensionsProps = {
         columns,
@@ -100,20 +127,33 @@ export default function PickUpDataTable({
             <DataTableExtensions {...tableData}>
                 <DataTable
                     columns={columns}
-                    data={pickUpData?.results ?? []}
+                    data={data}
                     pagination
                     paginationServer
-                    paginationTotalRows={pickUpData?.totalDocuments ?? 0}
-                    paginationDefaultPage={pickUpData?.currentPage ?? 1}
-                    paginationPerPage={pickUpData?.pageSize ?? 1}
+                    paginationTotalRows={totalDocuments}
+                    paginationDefaultPage={currentPage}
+                    paginationPerPage={pageSize}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
-                    onChangePage={(page, tt) => updatePage(page)}
-                    onChangeRowsPerPage={(limit, tt) => updateLimit(limit)}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    progressPending={isLoading}
+                    progressComponent={
+                        <div className="p-4 text-center">
+                            <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-gray-500 bg-white transition ease-in-out duration-150">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading pick-up records...
+                            </div>
+                        </div>
+                    }
+                    disabled={isLoading}
                     responsive
                     striped
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
-                            No pick-up records found
+                            {isLoading ? "Loading..." : "No pick-up records found"}
                         </div>
                     }
                     theme="default"

@@ -12,25 +12,29 @@ const PendingOvertime = () => {
     const [limit, setLimit] = React.useState(10);
     const [user, setUser] = React.useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
-    // load data
-    // payment modal [page, limit, dateChange.startDate, dateChange.endDate]
-    const { data: pending, mutate, error } = useSWR("pending-overtime", async () => await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate));
-    // on change of page
-    const onChangePage = (data: number) => {
-        setPages(data);
-        const result = fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
-        mutate(result);
-    }
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data);
-        const result = await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
-        mutate(result);
-    }
-    const changeLimit = async (data: number) => {
-        setLimit(data);
-        const result = await fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
-        mutate(result);
-    }
+    // Using SWR to handle data fetching with proper dependency array
+    const { data: pending, mutate, error, isValidating } = useSWR(
+        [page, limit, dateChange.startDate, dateChange.endDate], 
+        () => fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
+    );
+    // Handle page change for pagination
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPages(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPages(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
+    const changeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidating) {
+            setLimit(newLimit);
+            setPages(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidating]);
     React.useEffect(() => {
         const result = JSON.parse(localStorage.getItem("skooltym_user") as string) as AuthenticatedUserModel;
         setUser(result);
@@ -60,15 +64,12 @@ const PendingOvertime = () => {
             )}
 
 
-            {
-                pending && (
-                    <PendingDataTable
-                        pendingData={pending}
-                        updatePage={onChangePage}
-                        updateLimit={changeLimit}
-                    />
-                )
-            }
+            <PendingDataTable
+                pendingData={pending || null}
+                updatePage={onChangePage}
+                updateLimit={changeLimit}
+                isLoading={isValidating}
+            />
         </div>
     );
 };

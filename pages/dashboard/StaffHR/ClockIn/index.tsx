@@ -20,9 +20,8 @@ const StaffClockingPage = () => {
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
     // Using SWR with automatic revalidation for staff clocking data
     const { data: clockingData, error: clockingError, isValidating: isClockingLoading, mutate: mutateClockingData } = useSWR<StaffClockingResponse>(
-        'fetchStaffClocking',
-        async () => await staffClockingIn(page, limit, dateChange.startDate, dateChange.endDate),
-
+        [page, limit, dateChange.startDate, dateChange.endDate],
+        () => staffClockingIn(page, limit, dateChange.startDate, dateChange.endDate),
     );
 
     // Handle error state
@@ -30,23 +29,25 @@ const StaffClockingPage = () => {
         return <div>Error loading staff clocking data</div>;
     }
     // function to handle mutating staff clocking
-    const handleChangePage = async (page: number) => {
-        setPage(page);
-        const clock = await staffClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
-        mutateClockingData(clock)
-    }
+    const handleChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isClockingLoading) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isClockingLoading]);
     // handle change limit
-    const handleChangeLimit = async (lm: number) => {
-        setLimit(lm);
-        const clock = await staffClockingIn(page, limit, dateChange.startDate, dateChange.endDate);
-        mutateClockingData(clock)
-    }
+    const handleChangeLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isClockingLoading) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isClockingLoading]);
     // handle date change
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data)
-        const clock = await staffClockingIn(page, limit, data.startDate, data.endDate);
-        mutateClockingData(clock);
-    }
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
 
     return (
         <div className='my-2'>
@@ -66,15 +67,12 @@ const StaffClockingPage = () => {
                 />
             </div>
 
-            {
-                clockingData && (
-                    <StaffClockingInDataTable
-                        updatePage={handleChangePage}
-                        updateLimit={handleChangeLimit}
-                        clockingData={clockingData}
-                    />
-                )
-            }
+            <StaffClockingInDataTable
+                updatePage={handleChangePage}
+                updateLimit={handleChangeLimit}
+                clockingData={clockingData || null}
+                isLoading={isClockingLoading}
+            />
 
         </div>
     );

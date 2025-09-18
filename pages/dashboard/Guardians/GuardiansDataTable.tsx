@@ -31,7 +31,7 @@ const DataTableExtensions = dynamic<DataTableExtensionsProps>(
 );
 
 interface GuardianDataTableProps {
-    guardians: GuardianResponse;
+    guardians: GuardianResponse | null;
     students: StudentsNotPaginated[];
     addModalShow: boolean;
     setAddModalShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,6 +39,7 @@ interface GuardianDataTableProps {
     handleSync: () => void;
     updatePage: (value: number) => void;
     updateLimit: (value: number) => void;
+    isLoading?: boolean;
 }
 
 export default function GuardianDataTable({
@@ -49,20 +50,25 @@ export default function GuardianDataTable({
     setAddModalShow,
     updatePage,
     updateLimit,
-    handleSync
+    handleSync,
+    isLoading = false
 }: GuardianDataTableProps) {
-    const defaultData: GuardianResponse = {
-        results: [],
-        currentPage: 1,
-        totalPages: 0,
-        pageSize: 10,
-        totalDocuments: 0
-    };
-    const setGData = guardians ?? defaultData;
-    const [data, setData] = React.useState<Guardian[]>(setGData.results);
-    const [currentPage, setCurrentPage] = React.useState(setGData.currentPage);
-    const [pageSize, setPageSize] = React.useState(setGData.pageSize ?? 10);
-    const [totalDocuments, setTotalDocuments] = React.useState(setGData.totalDocuments);
+    // Use useMemo for derived state to avoid unnecessary re-renders
+    const data = React.useMemo(() => {
+        return guardians?.results || [];
+    }, [guardians?.results]);
+
+    const currentPage = React.useMemo(() => {
+        return guardians?.currentPage || 1;
+    }, [guardians?.currentPage]);
+
+    const pageSize = React.useMemo(() => {
+        return guardians?.pageSize || 10;
+    }, [guardians?.pageSize]);
+
+    const totalDocuments = React.useMemo(() => {
+        return guardians?.totalDocuments || 0;
+    }, [guardians?.totalDocuments]);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -86,7 +92,6 @@ export default function GuardianDataTable({
     };
 
     const handleSave = (newGuardian: Guardian) => {
-        setData(prevData => [newGuardian, ...prevData]);
         mutate("fetchGuardians");
         setAddModalShow(false);
     };
@@ -112,10 +117,17 @@ export default function GuardianDataTable({
         }
     };
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        updatePage(page);
-    };
+    const handlePageChange = React.useCallback((page: number) => {
+        if (page !== currentPage && !isLoading) {
+            updatePage(page);
+        }
+    }, [currentPage, updatePage, isLoading]);
+
+    const handleRowsPerPageChange = React.useCallback((newPerPage: number, _page: number) => {
+        if (newPerPage !== pageSize && !isLoading) {
+            updateLimit(newPerPage);
+        }
+    }, [pageSize, updateLimit, isLoading]);
 
     const columns: any = [
         {
@@ -194,8 +206,21 @@ export default function GuardianDataTable({
                     paginationTotalRows={totalDocuments}
                     paginationDefaultPage={currentPage}
                     paginationPerPage={pageSize}
-                    onChangePage={(page, ttt) => handlePageChange(page)}
-                    onChangeRowsPerPage={(limit, page) => updateLimit(limit)}
+                    onChangePage={handlePageChange}
+                    onChangeRowsPerPage={handleRowsPerPageChange}
+                    progressPending={isLoading}
+                    progressComponent={
+                        <div className="p-4 text-center">
+                            <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-gray-500 bg-white transition ease-in-out duration-150">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading guardians...
+                            </div>
+                        </div>
+                    }
+                    disabled={isLoading}
                     customStyles={
                         {
                             rows: {
@@ -215,7 +240,7 @@ export default function GuardianDataTable({
                     persistTableHead
                     noDataComponent={
                         <div className="p-4 text-center text-gray-500">
-                            No guardians found
+                            {isLoading ? "Loading..." : "No guardians found"}
                         </div>
                     }
                 />

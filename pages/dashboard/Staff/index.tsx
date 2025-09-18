@@ -13,8 +13,8 @@ const Checkout = () => {
   const [limit, setLimit] = React.useState(10);
   // Fetch staff and roles data using SWR with automatic revalidation
   const { data: staff, error: staffError, isValidating: staffLoading, mutate: mutateStaff } = useSWR(
-    "fetchStaff",
-    async () => await fetchStaff(page, limit),
+    [page, limit],
+    () => fetchStaff(page, limit),
   );
 
   const { data: roles, error: rolesError, isValidating: rolesLoading } = useSWR(
@@ -24,24 +24,23 @@ const Checkout = () => {
   );
 
   // Update data manually
-  const updates = async () => {
-    const newStaff = await fetchStaff(page, limit);
-    mutateStaff(newStaff);
-    window.location.reload();
-  };
+  const updates = React.useCallback(() => {
+    mutateStaff(); // Re-fetch data after update
+  }, [mutateStaff]);
 
   // Handle page change for pagination
-  const onChangePage = async (newPage: number) => {
-    setPage(newPage);
-    const newStaff = await fetchStaff(page, limit);
-    mutateStaff(newStaff);
-  };
+  const onChangePage = React.useCallback((newPage: number) => {
+    if (newPage !== page && !staffLoading) {
+      setPage(newPage); // SWR will automatically refetch when dependencies change
+    }
+  }, [page, staffLoading]);
 
-  const onChangeLimit = async (lm: number) => {
-    setLimit(lm);
-    const newStaff = await fetchStaff(page, limit);
-    mutateStaff(newStaff);
-  }
+  const onChangeLimit = React.useCallback((newLimit: number) => {
+    if (newLimit !== limit && !staffLoading) {
+      setLimit(newLimit);
+      setPage(1); // Reset to first page when changing limit
+    }
+  }, [limit, staffLoading]);
 
   // If loading or error, show loader or error message
   if (staffError || rolesError) return <div>Error loading data: {staffError?.message || rolesError?.message}</div>;
@@ -63,18 +62,17 @@ const Checkout = () => {
         <li className='breadcrumb-item active'>Staff Data</li>
       </PageHeader>
       {/* Row */}
-      {staff && (
-        <StaffDataTable
-          loadingClasses={false}
-          handleUpdates={updates}
-          addModalShow={addModalShow}
-          setAddModalShow={setAddModalShow}
-          roles={roles || []}
-          updatePage={onChangePage}
-          updateLimit={onChangeLimit}
-          staff={staff}
-        />
-      )}
+      <StaffDataTable
+        loadingClasses={false}
+        handleUpdates={updates}
+        addModalShow={addModalShow}
+        setAddModalShow={setAddModalShow}
+        roles={roles || []}
+        updatePage={onChangePage}
+        updateLimit={onChangeLimit}
+        staff={staff || null}
+        isLoading={staffLoading}
+      />
       {/* End Row */}
     </div>
   );

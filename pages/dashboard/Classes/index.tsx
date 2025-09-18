@@ -14,30 +14,30 @@ const Classes = () => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
     const { data: classes, error: classError, mutate: mutateClasses, isValidating: isValidatingClasses } = useSWR(
-        "fetchClasses",
-        async () => await fetchClasses(page, limit),
+        [page, limit],
+        () => fetchClasses(page, limit),
     );
 
     const { data: streams, error: streamError } = useSWR('streams', async () => await fetchStream(1, 100));
 
-    const onChangePage = async (newPage: number) => {
-        router.push({ query: { ...router.query, page: newPage } }, undefined, { shallow: true });
-        setPage(newPage);
-        const result = await fetchClasses(newPage, limit);
-        mutateClasses(result);
-    };
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidatingClasses) {
+            router.push({ query: { ...router.query, page: newPage } }, undefined, { shallow: true });
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidatingClasses, router]);
 
-    const handleUpdates = async () => {
-        const cls = await fetchClasses(page, limit);
-        mutateClasses(cls);
-    };
+    const handleUpdates = React.useCallback(() => {
+        mutateClasses(); // Re-fetch data after update
+    }, [mutateClasses]);
 
     // handle updated limit
-    const handleLimit = async (lm: number) => {
-        setLimit(lm);
-        const cls = await fetchClasses(page, limit);
-        mutateClasses(cls);
-    }
+    const handleLimit = React.useCallback((newLimit: number) => {
+        if (newLimit !== limit && !isValidatingClasses) {
+            setLimit(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [limit, isValidatingClasses]);
 
     if (classError || streamError) {
         return <div>Error loading data: {classError?.message || streamError?.message}</div>;
@@ -54,18 +54,17 @@ const Classes = () => {
                 onTap={() => setAddModalShow(true)}
                 dataTour='add-class'
             />
-            {classes && (
-                <ClassDataTable
-                    loadingClasses
-                    streams={streams?.results ?? []}
-                    addModalShow={addModalShow}
-                    setAddModalShow={setAddModalShow}
-                    updatePage={onChangePage}
-                    classData={classes as ClassResponse}
-                    handleUpdates={handleUpdates}
-                    updateRows={handleLimit}
-                />
-            )}
+            <ClassDataTable
+                loadingClasses={false}
+                streams={streams?.results ?? []}
+                addModalShow={addModalShow}
+                setAddModalShow={setAddModalShow}
+                updatePage={onChangePage}
+                classData={classes || null}
+                handleUpdates={handleUpdates}
+                updateRows={handleLimit}
+                isLoading={isValidatingClasses}
+            />
         </div>
     );
 };

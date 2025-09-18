@@ -13,29 +13,32 @@ const DropOffs = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" });
     // Use SWR for fetching drop-offs with dynamic pagination
-    const { data: dropOffs, error, isValidating, mutate } = useSWR([page, rowsPerPage, dateChange.startDate, dateChange.endDate], async () => await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate));
+    const { data: dropOffs, error, isValidating, mutate } = useSWR(
+        [page, rowsPerPage, dateChange.startDate, dateChange.endDate], 
+        () => fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate)
+    );
 
     // Handle page change
-    const onChangePage = async (newPage: number) => {
-        setPage(newPage); // SWR will automatically refetch when the page changes
-        const result = await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    };
+    const onChangePage = React.useCallback((newPage: number) => {
+        if (newPage !== page && !isValidating) {
+            setPage(newPage); // SWR will automatically refetch when dependencies change
+        }
+    }, [page, isValidating]);
 
     // Handle rows per page change
-    const onChangeRowsPerPage = async (lm: number) => {
-        setRowsPerPage(lm); // SWR will automatically refetch when rowsPerPage changes
-        console.log(`limit ${lm}`);
-        const result = await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    };
+    const onChangeRowsPerPage = React.useCallback((newLimit: number) => {
+        if (newLimit !== rowsPerPage && !isValidating) {
+            setRowsPerPage(newLimit);
+            setPage(1); // Reset to first page when changing limit
+        }
+    }, [rowsPerPage, isValidating]);
     // Handle date change
-    const handleDateChange = async (data: DateFilterIF) => {
-        setDateChange(data)
-        console.log(dateChange)
-        const result = await fetchDropOffs(page, rowsPerPage, dateChange.startDate, dateChange.endDate);
-        mutate(result);
-    }
+    const handleDateChange = React.useCallback((data: DateFilterIF) => {
+        if (data.startDate !== dateChange.startDate || data.endDate !== dateChange.endDate) {
+            setDateChange(data);
+            setPage(1); // Reset to first page when changing filters
+        }
+    }, [dateChange.startDate, dateChange.endDate]);
 
     if (error) return <div>Error loading drop-offs: {error.message}</div>;
 
@@ -46,13 +49,12 @@ const DropOffs = () => {
                 <PageHeader title={`All Time Drop Offs (${dropOffs?.totalDocuments ?? 0})`} item="Skooltym" active_item="Drop Offs" />
                 <DateFilterComponent enableActions exportData={(data) => exportDropOffRecords(dateChange.startDate, dateChange.endDate)} handleFilter={handleDateChange} />
             </div>
-            {dropOffs && (
-                <DropOffDataTable
-                    dropOffData={dropOffs}
-                    updateLimit={onChangeRowsPerPage}
-                    updatePage={onChangePage}
-                />
-            )}
+            <DropOffDataTable
+                dropOffData={dropOffs || null}
+                updateLimit={onChangeRowsPerPage}
+                updatePage={onChangePage}
+                isLoading={isValidating}
+            />
         </div>
     );
 };
