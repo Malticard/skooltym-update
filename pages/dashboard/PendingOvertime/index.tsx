@@ -13,8 +13,8 @@ const PendingOvertime = () => {
     const [user, setUser] = React.useState<AuthenticatedUserModel>({} as AuthenticatedUserModel)
     const [dateChange, setDateChange] = React.useState<DateFilterIF>({ startDate: "", endDate: "" })
     // Using SWR to handle data fetching with proper dependency array
-    const { data: pending, mutate, error, isValidating } = useSWR(
-        [page, limit, dateChange.startDate, dateChange.endDate], 
+    const { data: pending, mutate, error, isValidating } = useSWR("pending-overtime",
+        // [page, limit, dateChange.startDate, dateChange.endDate], 
         () => fetchSpecificOvertime(page, limit, dateChange.startDate, dateChange.endDate)
     );
     // Handle page change for pagination
