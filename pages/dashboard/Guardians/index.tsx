@@ -24,10 +24,7 @@ const Guardian = () => {
     // fetch guardian students
     const { data: guardianStudents } = useSWR("guardianStudents", async () => await fetchGuardianStudents());
     const [addModalShow, setAddModalShow] = React.useState(false);
-    if (isLoading) {
-        // return <LoaderComponent />
-        return
-    }
+    
     // methods for change of page
     const onChangePage = React.useCallback((newPage: number) => {
         if (newPage !== page && !isValidating) {
@@ -44,6 +41,10 @@ const Guardian = () => {
             setPage(1); // Reset to first page when changing limit
         }
     }, [limit, isValidating]);
+
+    if (isLoading) {
+        return <LoaderComponent />
+    }
 
     return (
         <div className='my-2'>

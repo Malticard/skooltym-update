@@ -55,7 +55,7 @@ export default function PendingDataTable({
         {
             name: "Student Picture".toLocaleUpperCase(),
             cell: (row: OvertimeRecord) => (
-                <LiveImageComponent url={row.student?.student_profile_pic} />
+                <LiveImageComponent url={row.student?.student_profile_pic ?? ''} />
             ),
             ignoreRowClick: true,
             allowOverflow: true,
